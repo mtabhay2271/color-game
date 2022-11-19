@@ -39,6 +39,9 @@ export class SignupViewModel {
   password!: string;
 
   @Expose()
+  role: string;
+
+  @Expose()
   @IsDefined()
   @IsNotEmpty()
   @IsNumber()

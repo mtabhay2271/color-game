@@ -11,6 +11,9 @@ export class UserModel {
   password!: string;
 
   @prop()
+  role: string;
+
+  @prop()
   phoneNumber!: number;
 
   @prop()

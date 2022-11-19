@@ -36,7 +36,8 @@ class UserServicesData {
             };
           } else {
             const salt = await bcrypt.genSalt(10);
-            signupViewModel.password = await bcrypt.hash(signupViewModel.password, salt);
+            signupViewModel.password = await bcrypt.hash(signupViewModel.password, salt);            
+            signupViewModel.role = "user";
             let newUser = await Users.create(signupViewModel);
             if (newUser) {
               newUser.password = '';
@@ -73,17 +74,17 @@ class UserServicesData {
             data: {
               email: user.email,
               // name: user.name,
-              // role: user.role,
+              role: user.role,
               username: user.username,
               // isPaymentDone: user.isPaymentDone,
               // paymentStatus: user.paymentStatus,
-              _id: user._id,
+              userId: user._id,
               token: utility.signJWT(
                 {
                   email: user.email,
                   username: user.username,
-                  _id: user._id,
-                  // role: user.role,
+                  userId: user._id,
+                  role: user.role,
                 },
                 TOKEN_EXP_TIME
               ),
