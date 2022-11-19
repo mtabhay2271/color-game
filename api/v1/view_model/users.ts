@@ -58,21 +58,12 @@ export class LoginViewModel {
   password!: string;
 }
 
-export class LoginWithPhoneViewModel {
+export class verifyOtpViewModel {
   @Expose()
   @IsDefined()
   @IsNotEmpty()
-  @IsNumber()
-  @Type(() => Number)
-  phoneNumber!: number;
-}
-export class verifyPhoneViewModel {
-  @Expose()
-  @IsDefined()
-  @IsNotEmpty()
-  @IsNumber()
-  @Type(() => Number)
-  phoneNumber!: number;
+  @IsString()
+  userId!: string;
 
   @Expose()
   @IsDefined()

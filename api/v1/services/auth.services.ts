@@ -111,36 +111,48 @@ class UserServicesData {
     }
   };
 
-  loginWithPhone = async (req: Request): Promise<ICommonServices> => {
+  forgotPassword = async (email: string): Promise<ICommonServices> => {
     try {
-      let otp = 88888;
-      let user = await Users.updateOne({ phoneNumber: req.body.phoneNumber }, { $set: { otp } }, { upsert: true });
-      return {
-        statusCode: 200,
-        data: {
-          success: true,
-          data: {
-            phoneNumber: req.body.phoneNumber,
-            otp: otp
-          },
-          message: responseMessages.USER_OTP_SENT
+      let user = await Users.findOne({ email: email.toLowerCase() }).lean();
+      if (!user) {
+        return {
+          statusCode: 400,
+          data: { success: false, message: "User not found" }
+        };
+      } else {
+        // let otp = OtpGenerator.generate(4, { alphabets: false, upperCase: false, specialChars: false });
+        let otp = 888888;
+        // const timeCount = OTP_VALID_MINUTES * 60 * 1000;
+        // const expires = Date.now() + timeCount;
+        // const otpWithExpires = `${otp}.${expires}`;
+        // let updatedUser = await Users.findByIdAndUpdate(user._id, { $set: { otp: otpWithExpires } });
+        let updatedUser = await Users.findByIdAndUpdate(user._id, { $set: { otp: otp } });
+        if (updatedUser) {
+          return {
+            statusCode: 200,
+            data: { success: true, data: { otp, userId: user._id }, message: responseMessages.USER_OTP_SENT }
+          };
+        } else {
+          return {
+            statusCode: 200,
+            data: { success: false, message: responseMessages.USER_OTP_NOT_SENT, data: otp }
+          };
         }
+
       }
-    } catch (error) {
+
+    } catch (err) {
+      console.log(err);
       return {
         statusCode: 500,
-        data: {
-          success: false,
-          message: responseMessages.ERROR_OCCURRE,
-          error
-        }
+        data: { success: false, message: responseMessages.ERROR_ISE }
       };
     }
   };
 
-  verifyPhone = async (req: Request): Promise<ICommonServices> => {
+  verifyOtp = async (req: Request): Promise<ICommonServices> => {
     try {
-      let user = await Users.findOne({ phoneNumber: req.body.phoneNumber });
+      let user = await Users.findById(req.body.userId);
       if (user) {
         if (user.otp == req.body.otp) {
           return {
@@ -177,7 +189,7 @@ class UserServicesData {
           statusCode: 400,
           data: {
             success: false,
-            message: "User not exist with this phone number",
+            message: "User not exist",
           }
         };
       }
@@ -189,46 +201,6 @@ class UserServicesData {
           message: responseMessages.ERROR_OCCURRE,
           error
         }
-      };
-    }
-  };
-
-
-  forgotPassword = async (email: string): Promise<ICommonServices> => {
-    try {
-      let user = await Users.findOne({ email: email.toLowerCase() }).lean();
-      if (!user) {
-        return {
-          statusCode: 400,
-          data: { success: false, message: "User not found" }
-        };
-      } else {
-        // let otp = OtpGenerator.generate(4, { alphabets: false, upperCase: false, specialChars: false });
-        let otp = 888888;
-        // const timeCount = OTP_VALID_MINUTES * 60 * 1000;
-        // const expires = Date.now() + timeCount;
-        // const otpWithExpires = `${otp}.${expires}`;
-        // let updatedUser = await Users.findByIdAndUpdate(user._id, { $set: { otp: otpWithExpires } });
-        let updatedUser = await Users.findByIdAndUpdate(user._id, { $set: { otp: otp } });
-        if (updatedUser) {
-          return {
-            statusCode: 200,
-            data: { success: true, data: { otp, phoneNumber: user.phoneNumber }, message: responseMessages.USER_OTP_SENT }
-          };
-        } else {
-          return {
-            statusCode: 200,
-            data: { success: false, message: responseMessages.USER_OTP_NOT_SENT, data: otp }
-          };
-        }
-
-      }
-
-    } catch (err) {
-      console.log(err);
-      return {
-        statusCode: 500,
-        data: { success: false, message: responseMessages.ERROR_ISE }
       };
     }
   };

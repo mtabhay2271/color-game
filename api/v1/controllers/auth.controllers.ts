@@ -3,7 +3,7 @@ import responseMessages from "../common/response.messages";
 import utility, { Validation } from "../common/utility";
 import { ICommonController } from "../interfaces/response_interfaces";
 import Services from "../services/auth.services";
-import { SignupViewModel, LoginViewModel, LoginWithPhoneViewModel, verifyPhoneViewModel,ChangePasswordViewModel, ForgetPasswordViewModel, ResetPasswordViewModel } from "../view_model/users";
+import { SignupViewModel, LoginViewModel,  verifyOtpViewModel, ForgetPasswordViewModel } from "../view_model/users";
 class authControllersData {
   signup = async (req: Request, res: Response<ICommonController>, next: NextFunction) => {
     try {
@@ -51,9 +51,9 @@ class authControllersData {
     }
   };
 
-  loginWithPhone = async (req: Request, res: Response<ICommonController>, next: NextFunction) => {
+  verifyOtp = async (req: Request, res: Response<ICommonController>, next: NextFunction) => {
     try {
-      let validatedData: Validation = await utility.validateAndConvert(LoginWithPhoneViewModel, req.body);
+      let validatedData: Validation = await utility.validateAndConvert(verifyOtpViewModel, req.body);
       if (validatedData.error) {
         return res.status(400).send({
           success: false,
@@ -61,39 +61,14 @@ class authControllersData {
           data: validatedData.error,
         });
       } else {
-        let user = await Services.loginWithPhone(req);
+        let user = await Services.verifyOtp(req);
         return res.status(user.statusCode).send(user.data);
       }
-    } catch (error) {
-      
+    } catch (error) {      
       console.log("error>>",error);
       return res.status(500).send({
         success: false,
-        message: "responseMessages.ERROR_ISE",
-        error
-      });
-    }
-  };
-
-  verifyPhone = async (req: Request, res: Response<ICommonController>, next: NextFunction) => {
-    try {
-      let validatedData: Validation = await utility.validateAndConvert(verifyPhoneViewModel, req.body);
-      if (validatedData.error) {
-        return res.status(400).send({
-          success: false,
-          message: responseMessages.VALIDATION_ERROR,
-          data: validatedData.error,
-        });
-      } else {
-        let user = await Services.verifyPhone(req);
-        return res.status(user.statusCode).send(user.data);
-      }
-    } catch (error) {
-      
-      console.log("error>>",error);
-      return res.status(500).send({
-        success: false,
-        message: "responseMessages.ERROR_ISE",
+        message: responseMessages.ERROR_ISE,
         error
       });
     }
@@ -122,6 +97,8 @@ class authControllersData {
       });
     }
   };
+
+
   // changePassword = async (req: Request, res: Response) => {
   //   try {
   //     let validatedData: Validation = await utility.validateAndConvert(ChangePasswordViewModel, req.body);
