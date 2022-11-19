@@ -11,7 +11,7 @@ export class UserModel {
   password!: string;
 
   @prop()
-  phone_number!: number;
+  phoneNumber!: number;
 
   @prop()
   device_token!: number;

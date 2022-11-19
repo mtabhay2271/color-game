@@ -38,7 +38,7 @@ class authControllersData {
           data: validatedData.error,
         });
       } else {
-        let user = await Services.loginWithPhone(req);
+        let user = await Services.login(req);
         return res.status(user.statusCode).send(user.data);
       }
     } catch (error) {

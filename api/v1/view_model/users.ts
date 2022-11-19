@@ -43,14 +43,14 @@ export class SignupViewModel {
   @IsNotEmpty()
   @IsNumber()
   @Type(() => Number)
-  phone_number!: number;
+  phoneNumber!: number;
 
 }
 
 export class LoginViewModel {
   @Expose()
   @IsDefined()
-  user!: string;
+  username!: string;
 
   @Expose()
   @IsDefined()
@@ -64,7 +64,7 @@ export class LoginWithPhoneViewModel {
   @IsNotEmpty()
   @IsNumber()
   @Type(() => Number)
-  phone_number!: number;
+  phoneNumber!: number;
 }
 export class verifyPhoneViewModel {
   @Expose()
@@ -72,7 +72,7 @@ export class verifyPhoneViewModel {
   @IsNotEmpty()
   @IsNumber()
   @Type(() => Number)
-  phone_number!: number;
+  phoneNumber!: number;
 
   @Expose()
   @IsDefined()

@@ -20,22 +20,30 @@ class UserServicesData {
           data: { success: false, message: responseMessages.EMAIL_EXIST }
         };
       } else {
-        signupViewModel.username = signupViewModel.username.toLowerCase();
-        let verifiedPhone = await Users.findOne({ phone_number: signupViewModel.phone_number });
+        let verifiedPhone = await Users.findOne({ phoneNumber: signupViewModel.phoneNumber });
         if (verifiedPhone) {
           return {
             statusCode: 409,
             data: { success: false, message: responseMessages.PHONE_EXIST }
           };
         } else {
-          const salt = await bcrypt.genSalt(10);
-          signupViewModel.password = await bcrypt.hash(signupViewModel.password, salt);
-          let newUser = await Users.create(signupViewModel);
-          if (newUser) {
-            newUser.password = '';
-            return { statusCode: 200, data: { success: true, data: newUser, message: responseMessages.USER_SIGNUP } };
+          signupViewModel.username = signupViewModel.username.toLowerCase();
+          let verifiedUsername = await Users.findOne({ username: signupViewModel.username });
+          if (verifiedUsername) {
+            return {
+              statusCode: 409,
+              data: { success: false, message: responseMessages.USERNAME_EXIST }
+            };
           } else {
-            return { statusCode: 400, data: { success: false, message: responseMessages.USER_SIGNUP_NOT } };
+            const salt = await bcrypt.genSalt(10);
+            signupViewModel.password = await bcrypt.hash(signupViewModel.password, salt);
+            let newUser = await Users.create(signupViewModel);
+            if (newUser) {
+              newUser.password = '';
+              return { statusCode: 200, data: { success: true, data: newUser, message: responseMessages.USER_SIGNUP } };
+            } else {
+              return { statusCode: 400, data: { success: false, message: responseMessages.USER_SIGNUP_NOT } };
+            }
           }
         }
       }
@@ -47,10 +55,7 @@ class UserServicesData {
 
   login = async (req: Request): Promise<ICommonServices> => {
     try {
-      let user = await Users.findOne({ email: req.body.user.toLowerCase() });
-      if (!user) {
-        user = await Users.findOne({ phone_number: req.body.user.toLowerCase() });
-      }
+      let user = await Users.findOne({ username: req.body.username.toLowerCase() });
       if (!user) {
         return {
           statusCode: 200,
@@ -109,13 +114,13 @@ class UserServicesData {
   loginWithPhone = async (req: Request): Promise<ICommonServices> => {
     try {
       let otp = 88888;
-      let user = await Users.updateOne({ phone_number: req.body.phone_number }, { $set: { otp } }, { upsert: true });
+      let user = await Users.updateOne({ phoneNumber: req.body.phoneNumber }, { $set: { otp } }, { upsert: true });
       return {
         statusCode: 200,
         data: {
           success: true,
           data: {
-            phone_number: req.body.phone_number,
+            phoneNumber: req.body.phoneNumber,
             otp: otp
           },
           message: responseMessages.USER_OTP_SENT
@@ -135,7 +140,7 @@ class UserServicesData {
 
   verifyPhone = async (req: Request): Promise<ICommonServices> => {
     try {
-      let user = await Users.findOne({ phone_number: req.body.phone_number });
+      let user = await Users.findOne({ phoneNumber: req.body.phoneNumber });
       if (user) {
         if (user.otp == req.body.otp) {
           return {
@@ -208,7 +213,7 @@ class UserServicesData {
         if (updatedUser) {
           return {
             statusCode: 200,
-            data: { success: true, data: { otp, phone_number: user.phone_number }, message: responseMessages.USER_OTP_SENT }
+            data: { success: true, data: { otp, phoneNumber: user.phoneNumber }, message: responseMessages.USER_OTP_SENT }
           };
         } else {
           return {
