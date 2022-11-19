@@ -1,23 +1,23 @@
 import { getModelForClass, prop } from "@typegoose/typegoose";
 
-export class VideoModel {
+export class ColorModel {
   @prop({
     required: true
   })
-  title: string;
+  num: number;
 
   @prop({
     required: true
   })
-  url: string;
+  result: number;
 
 }
 
-const Videos = getModelForClass(VideoModel, {
+const Color = getModelForClass(ColorModel, {
   schemaOptions: {
-    collection: "videos",
+    collection: "colorresult",
     timestamps: true,
   },
 });
 
-export default Videos;
+export default Color;

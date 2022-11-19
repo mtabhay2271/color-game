@@ -1,20 +1,16 @@
 import { Expose } from "class-transformer";
 import {
   IsDefined,
+  IsNumber,
   IsString
 } from "class-validator";
 
 
-export class AddVideoViewModel {
+export class AddColor {
   @Expose()
   @IsDefined()
-  @IsString()
-  title: string;
-
-  @Expose()
-  @IsDefined()
-  @IsString()
-  url: string;
+  @IsNumber()
+  result: string;
 }
 
 

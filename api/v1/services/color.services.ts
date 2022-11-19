@@ -2,25 +2,26 @@ import { Request } from "express";
 import { ICommonServices } from "../interfaces/response_interfaces";
 import _ from "lodash";
 import responseMessages from "../common/response.messages";
-import { AddAartiViewModel } from "../view_model/commondata";
-import Aarti from "../models/aarti";
+import { AddColor } from "../view_model/commondata";
+import Color from "../models/color";
 
 class dataServicesData {
 
-  add = async (req: Request, addData: AddAartiViewModel): Promise<ICommonServices> => {
+  add = async (req: Request, addColor: AddColor): Promise<ICommonServices> => {
     try {
-      let data: any = await Aarti.create(addData);
+      let getdata = await Color.find({});
+      let data: any = await Color.create({ result: addColor.result, num: (getdata.length + 1) });
       if (data) {
         return {
           statusCode: 200,
           data: {
             success: true,
-            message: "Aarti added succuessfully",
+            message: "Color added succuessfully",
             data
           }
         };
       } else {
-        return { statusCode: 200, data: { success: false, message: "Aarti not added" } };
+        return { statusCode: 200, data: { success: false, message: "Color not added" } };
       }
     } catch (error) {
       console.log(error);
@@ -30,18 +31,18 @@ class dataServicesData {
 
   get = async (): Promise<ICommonServices> => {
     try {
-      let data: any = await Aarti.find({}).lean();
+      let data: any = await Color.find({}, { num: 1, result: 1, }).lean();
       if (data) {
         return {
           statusCode: 200,
           data: {
             success: true,
-            message: "Aarti list found succuessfully",
+            message: "list found succuessfully",
             data
           }
         };
       } else {
-        return { statusCode: 200, data: { success: false, message: "Aarti list not found succuessfully", } };
+        return { statusCode: 200, data: { success: false, message: "Color list not found succuessfully" } };
       }
     } catch (error) {
       console.log(error);
@@ -49,26 +50,27 @@ class dataServicesData {
     }
   };
 
-  getById = async (id:string): Promise<ICommonServices> => {
+  getById = async (id: string): Promise<ICommonServices> => {
     try {
-      let data: any = await Aarti.findById(id).lean();
+      let data: any = await Color.findById(id).lean();
       if (data) {
         return {
           statusCode: 200,
           data: {
             success: true,
-            message: "Aarti found succuessfully",
+            message: "Color found succuessfully",
             data
           }
         };
       } else {
-        return { statusCode: 200, data: { success: false, message: "Aarti not found succuessfully", } };
+        return { statusCode: 200, data: { success: false, message: "Color not found succuessfully", } };
       }
     } catch (error) {
       console.log(error);
       return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
     }
   };
+
 
 }
 export default new dataServicesData();

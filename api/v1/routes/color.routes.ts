@@ -1,6 +1,7 @@
 import Router from "express";
 
-import Controller from "../controllers/aarti.controllers";
+
+import Controller from "../controllers/color.controllers";
 const router = Router();
 
 

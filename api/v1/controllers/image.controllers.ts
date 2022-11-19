@@ -3,7 +3,6 @@ import responseMessages from "../common/response.messages";
 import utility, { Validation } from "../common/utility";
 import { ICommonController } from "../interfaces/response_interfaces";
 import Services from "../services/image.services";
-import { AddVideoViewModel } from "../view_model/commondata";
 class videoControllersData {
 
   add = async (req: Request, res: Response<ICommonController>) => {
