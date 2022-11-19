@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import path from "path";
 import cors from 'cors'
 import http from "http";
-import DBConnation from './db.connation'
+import DBConnation from './db'
 import imgModel from "./api/v1/models/image"
 
 

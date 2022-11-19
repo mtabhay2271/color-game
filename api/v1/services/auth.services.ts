@@ -76,8 +76,6 @@ class UserServicesData {
               // name: user.name,
               role: user.role,
               username: user.username,
-              // isPaymentDone: user.isPaymentDone,
-              // paymentStatus: user.paymentStatus,
               userId: user._id,
               token: utility.signJWT(
                 {
@@ -139,9 +137,7 @@ class UserServicesData {
             data: { success: false, message: responseMessages.USER_OTP_NOT_SENT, data: otp }
           };
         }
-
       }
-
     } catch (err) {
       console.log(err);
       return {
