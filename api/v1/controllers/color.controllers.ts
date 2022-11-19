@@ -3,23 +3,14 @@ import responseMessages from "../common/response.messages";
 import utility, { Validation } from "../common/utility";
 import { ICommonController } from "../interfaces/response_interfaces";
 import Services from "../services/color.services";
-import { AddColor,JoinGame } from "../view_model/commondata";
+import { AddColor, JoinGame } from "../view_model/commondata";
 class ControllersData {
 
   add = async (req: Request, res: Response<ICommonController>, next: NextFunction) => {
     try {
-      let validatedData: Validation = await utility.validateAndConvert(AddColor, req.body);
-      if (validatedData.error) {
-        return res.status(400).send({
-          success: false,
-          message: responseMessages.VALIDATION_ERROR,
-          data: validatedData.error,
-        });
-      } else {
-        let validated_data: AddColor = validatedData.data as AddColor;
-        let user = await Services.add(req, validated_data);
-        return res.status(user.statusCode).send(user.data);
-      }
+      let user = await Services.add(req);
+      return res.status(user.statusCode).send(user.data);
+
     } catch (error) {
       return res.status(500).send({
         success: false,

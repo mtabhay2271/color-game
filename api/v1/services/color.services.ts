@@ -4,14 +4,37 @@ import _ from "lodash";
 import responseMessages from "../common/response.messages";
 import { AddColor } from "../view_model/commondata";
 import Color from "../models/color";
-import Join from "../models/joined";
+import Join, { JoinModel } from "../models/joined";
 
 class dataServicesData {
 
-  add = async (req: Request, addColor: AddColor): Promise<ICommonServices> => {
+  add = async (req: Request): Promise<ICommonServices> => {
     try {
       let getGames = await Color.find({});
-      let data: any = await Color.create({ result: addColor.result, num: (getGames.length + 1) });
+      let FoundJoin = await Join.find({ num: (getGames.length + 1) })
+      console.log(FoundJoin.length);
+      let resultData = { red: 0, green: 0, yellow: 0 }
+      if (FoundJoin) {
+        FoundJoin.forEach((e: JoinModel) => {
+          if (e.color == 1) {
+            resultData.red = resultData.red + e.amount;
+          } else if (e.color == 2) {
+            resultData.green = resultData.green + e.amount;
+          } else {
+            resultData.yellow = resultData.yellow + e.amount;
+          }
+        })
+      }
+      let sortedResult = Object.entries(resultData).sort(([, v1], [, v2]) => v1 - v2);
+      let result = 1;
+      if (sortedResult[0][0] == 'red') {
+        result = 1;
+      } else if (sortedResult[0][0] == 'green') {
+        result = 2;
+      } else {
+        result = 3;
+      }
+      let data: any = await Color.create({ result, num: (getGames.length + 1) });
       if (data) {
         return {
           statusCode: 200,

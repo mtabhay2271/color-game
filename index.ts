@@ -25,8 +25,8 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", (req: Request, res: Response, next: NextFunction) => {
-  console.log("headers>>>>", req.headers.authorization, "<<<<<headers");
-  console.log("req.body>>>> ", req.method, req.originalUrl, req.body, "<<<<<req.body");
+  // console.log("headers>>>>", req.headers.authorization, "<<<<<headers");
+  // console.log("req.body>>>> ", req.method, req.originalUrl, req.body, "<<<<<req.body");
   next();
 }, routes);
 
