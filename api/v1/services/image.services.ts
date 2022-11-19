@@ -78,12 +78,12 @@ class dataServicesData {
           statusCode: 200,
           data: {
             success: true,
-            message: "Image found succuessfully",
+            message: "Image found successfully",
             data
           }
         };
       } else {
-        return { statusCode: 200, data: { success: false, message: "Image not found succuessfully", } };
+        return { statusCode: 200, data: { success: false, message: "Image not found successfully", } };
       }
     } catch (error) {
       console.log(error);

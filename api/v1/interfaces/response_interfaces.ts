@@ -1,5 +1,5 @@
 export interface IPayAuth {
-    _id: string;
+    userId: string;
     email: string;
     username: string;
     exp: number;

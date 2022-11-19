@@ -13,6 +13,18 @@ export class AddColor {
   result: string;
 }
 
+export class JoinGame {
+  @Expose()
+  @IsDefined()
+  @IsNumber()
+  amount: number;
+
+  @Expose()
+  @IsDefined()
+  @IsNumber()
+  color: number;
+}
+
 
 export class AddAartiViewModel {
   @Expose()

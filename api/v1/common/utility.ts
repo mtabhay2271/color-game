@@ -27,6 +27,7 @@ class Utility {
     );
     return result;
   };
+  
   authenticateUser = async (req: any, res: any, next: NextFunction) => {
     try {
       const auth_header: string = req.headers.authorization;
@@ -42,9 +43,9 @@ class Utility {
               } else {
                 return res.status(401).json({ status: false, msg: "Token expired" });
               }
-            } else if (user && user._id) {
+            } else if (user && user.userId) {
               let result: any;
-              result = await Users.findById(user._id);
+              result = await Users.findById(user.userId);
               if (result && result.username && result.username === user.username) {
                 req.user = user;
                 result.password = '';

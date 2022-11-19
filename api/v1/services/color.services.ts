@@ -1,22 +1,23 @@
 import { Request } from "express";
-import { ICommonServices } from "../interfaces/response_interfaces";
+import { ICommonServices, IPayAuth } from "../interfaces/response_interfaces";
 import _ from "lodash";
 import responseMessages from "../common/response.messages";
 import { AddColor } from "../view_model/commondata";
 import Color from "../models/color";
+import Join from "../models/joined";
 
 class dataServicesData {
 
   add = async (req: Request, addColor: AddColor): Promise<ICommonServices> => {
     try {
-      let getdata = await Color.find({});
-      let data: any = await Color.create({ result: addColor.result, num: (getdata.length + 1) });
+      let getGames = await Color.find({});
+      let data: any = await Color.create({ result: addColor.result, num: (getGames.length + 1) });
       if (data) {
         return {
           statusCode: 200,
           data: {
             success: true,
-            message: "Color added succuessfully",
+            message: "Color added successfully",
             data
           }
         };
@@ -37,12 +38,12 @@ class dataServicesData {
           statusCode: 200,
           data: {
             success: true,
-            message: "list found succuessfully",
+            message: "list found successfully",
             data
           }
         };
       } else {
-        return { statusCode: 200, data: { success: false, message: "Color list not found succuessfully" } };
+        return { statusCode: 200, data: { success: false, message: "Color list not found successfully" } };
       }
     } catch (error) {
       console.log(error);
@@ -50,27 +51,41 @@ class dataServicesData {
     }
   };
 
-  getById = async (id: string): Promise<ICommonServices> => {
+  join = async (req: Request): Promise<ICommonServices> => {
     try {
-      let data: any = await Color.findById(id).lean();
-      if (data) {
+      let payload = req.user as IPayAuth;
+      let getGames = await Color.find({});
+      let foundData = await Join.findOne({ userId: payload.userId, num: (getGames.length + 1) });
+      if (!foundData) {
+        let data: any = await Join.create({ ...req.body, userId: payload.userId, num: (getGames.length + 1) });
+        if (data) {
+          return {
+            statusCode: 200,
+            data: {
+              success: true,
+              message: "Join successfully",
+              data
+            }
+          };
+        } else {
+          return { statusCode: 200, data: { success: false, message: "Not Joined" } };
+        }
+      } else {
         return {
           statusCode: 200,
           data: {
             success: true,
-            message: "Color found succuessfully",
-            data
+            message: "Join successfully",
+            data: foundData
           }
         };
-      } else {
-        return { statusCode: 200, data: { success: false, message: "Color not found succuessfully", } };
       }
+
     } catch (error) {
       console.log(error);
       return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
     }
   };
-
 
 }
 export default new dataServicesData();
