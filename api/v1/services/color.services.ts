@@ -55,7 +55,7 @@ class dataServicesData {
 
   get = async (): Promise<ICommonServices> => {
     try {
-      let data: any = await Color.find({}, { num: 1, result: 1, }).lean();
+      let data: any = await Color.find({}, { num: 1, result: 1 }).sort({num:-1}).lean();
       if (data) {
         return {
           statusCode: 200,
