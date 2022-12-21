@@ -10,38 +10,38 @@ export class BankModel {
   userId: Ref<UserModel>;
 
   @prop()
-  username!: string;
+  accountHolderName!: string;
 
   @prop()
-  email!: string;
+  bank!: string;
 
   @prop()
-  password!: string;
+  IfscCode!: string;
 
   @prop()
-  role: string;
+  accountNumber!: number;
 
   @prop()
   phoneNumber!: number;
 
   @prop()
-  device_token!: number;
+  city!: string;
   
   @prop()
-  userToken!: number;
+  state!: string;
 
   @prop()
-  block: string
+  country: string
 
   @prop()
-  otp: string;
+  email: string;
 }
 
-const Users = getModelForClass(BankModel, {
+const BankDetails = getModelForClass(BankModel, {
   schemaOptions: {
-    collection: "bankDetails",
+    collection: "bankdetails",
     timestamps: true,
   },
 });
 
-export default Users;
+export default BankDetails;

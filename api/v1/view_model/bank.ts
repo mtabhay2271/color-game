@@ -17,24 +17,30 @@ import {
 
 export class BankDetailsViewModel {
 
-  @Expose()
-  @IsDefined()
-  @IsString()
-  username!: string;
   
   @Expose()
   @IsDefined()
-  @IsEmail()
-  email!: string;
-  
+  @IsNotEmpty()
+  accountHolderName!: string;
+
   @Expose()
   @IsDefined()
-  @IsString()
-  password!: string;
+  @IsNotEmpty()
+  bank!: string;
 
   @Expose()
-  role: string;
+  @IsDefined()
+  @IsNotEmpty()
+  IfscCode!: string;
 
+  @Expose()
+  @IsDefined()
+  @IsNotEmpty()
+  @IsNumber()
+  @Type(() => Number)
+  accountNumber!: number;
+
+  
   @Expose()
   @IsDefined()
   @IsNotEmpty()
@@ -42,74 +48,23 @@ export class BankDetailsViewModel {
   @Type(() => Number)
   phoneNumber!: number;
 
-}
-
-export class LoginViewModel {
-  @Expose()
-  @IsDefined()
-  username!: string;
-
-  @Expose()
-  @IsDefined()
-  @IsString()
-  password!: string;
-}
-
-export class verifyOtpViewModel {
   @Expose()
   @IsDefined()
   @IsNotEmpty()
-  @IsString()
-  userId!: string;
-
+  city!: string;
+  
   @Expose()
   @IsDefined()
   @IsNotEmpty()
-  @IsNumber()
-  @Type(() => Number)
-  otp!: number;
-}
-
-export class ChangePasswordViewModel {
-  @Expose()
-  @IsDefined()
-  @IsString()
-  oldPassword: string;
+  state!: string;
 
   @Expose()
   @IsDefined()
-  @IsString()
-  newPassword: string;
-}
+  @IsEmail()
+  country: string
 
-export class ForgetPasswordViewModel {
   @Expose()
   @IsDefined()
-  @IsString()
+  @IsEmail()
   email: string;
-}
-
-export class ResetPasswordViewModel {
-  @Expose()
-  @IsDefined()
-  @IsString()
-  userId: string;
-  
-  // @Expose()
-  // @IsDefined()
-  // @IsString()
-  // otp: string;
-  
-  @Expose()
-  @IsDefined()
-  @IsString()
-  password: string;
-}
-export class PaymentRefViewModel {
-  @Expose()
-  @IsDefined()
-  @IsNotEmpty()
-  @IsNumber()
-  @Type(() => Number)
-  paymentRefNumber!: number;
 }

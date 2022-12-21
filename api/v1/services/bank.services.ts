@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { ICommonServices, IPayAuth } from "../interfaces/response_interfaces";
 import _ from "lodash";
 import responseMessages from "../common/response.messages";
-import ContactUs from "../models/contactUS";
+import BankDetails from "../models/bank";
 import SupportModel from "../models/support";
 import { BankDetailsViewModel } from "../view_model/bank";
 
@@ -11,7 +11,7 @@ class dataServicesData {
   addBankDetails = async (req: Request, reqData: BankDetailsViewModel): Promise<ICommonServices> => {
     try {
       let payload = req.user as IPayAuth;
-      let data: any = await ContactUs.create({ ...reqData, userId: payload.userId });
+      let data: any = await BankDetails.create({ ...reqData, userId: payload.userId });
       if (data) {
         console.log(data);
         return {
@@ -33,7 +33,7 @@ class dataServicesData {
 
   getContactUs = async (): Promise<ICommonServices> => {
     try {
-      let data: any = await ContactUs.findOne({}).lean();
+      let data: any = await BankDetails.findOne({}).lean();
       if (data) {
         console.log(data);
         return {
