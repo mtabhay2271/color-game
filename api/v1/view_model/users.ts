@@ -99,12 +99,12 @@ export class ResetPasswordViewModel {
   @Expose()
   @IsDefined()
   @IsString()
-  username: string;
+  userId: string;
   
-  @Expose()
-  @IsDefined()
-  @IsString()
-  otp: string;
+  // @Expose()
+  // @IsDefined()
+  // @IsString()
+  // otp: string;
   
   @Expose()
   @IsDefined()

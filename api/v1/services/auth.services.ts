@@ -202,6 +202,40 @@ class UserServicesData {
     }
   };
 
+  resetPassword = async (reqData:ResetPasswordViewModel): Promise<ICommonServices> => {
+    try {
+      let user = await Users.findById(reqData.userId).lean();
+      if (!user) {
+        return {
+          statusCode: 400,
+          data: { success: false, message: "User not found" }
+        };
+      } else {
+        const salt = await bcrypt.genSalt(10);
+        reqData.password = await bcrypt.hash(reqData.password, salt);            
+            
+        let updatedUser = await Users.findByIdAndUpdate(reqData.userId, { $set: { password: reqData.password } });
+        if (updatedUser) {
+          return {
+            statusCode: 200,
+            data: { success: true, message: responseMessages.USER_PASSWORD_UPDATED }
+          };
+        } else {
+          return {
+            statusCode: 200,
+            data: { success: false, message: responseMessages.USER_PASSWORD_NOT_UPDATED }
+          };
+        }
+      }
+    } catch (err) {
+      console.log(err);
+      return {
+        statusCode: 500,
+        data: { success: false, message: responseMessages.ERROR_ISE }
+      };
+    }
+  };
+
   // changePassword = async (req: Request, reqBodyData: ChangePasswordViewModel): Promise<ICommonServices> => {
   //   try {
   //     let payload = req.user as IPayAuth;
