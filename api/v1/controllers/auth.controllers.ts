@@ -3,7 +3,7 @@ import responseMessages from "../common/response.messages";
 import utility, { Validation } from "../common/utility";
 import { ICommonController } from "../interfaces/response_interfaces";
 import Services from "../services/auth.services";
-import { SignupViewModel, LoginViewModel,  verifyOtpViewModel, ForgetPasswordViewModel , ResetPasswordViewModel} from "../view_model/users";
+import { SignupViewModel, LoginViewModel,  verifyOtpViewModel, ForgetPasswordViewModel , ResetPasswordViewModel , ChangePasswordViewModel} from "../view_model/users";
 class authControllersData {
   signup = async (req: Request, res: Response<ICommonController>, next: NextFunction) => {
     try {
@@ -138,6 +138,29 @@ class authControllersData {
       } else {
         let reqBodyData: ResetPasswordViewModel = validatedData.data as ResetPasswordViewModel;
         let response = await Services.resetPassword(reqBodyData);
+        return res.status(response.statusCode).send(response.data);
+      }
+
+    } catch (error) {
+      return res.status(500).send({
+        success: false,
+        message: responseMessages.ERROR_ISE,
+        error
+      });
+    }
+  };
+
+  changePassword = async (req: Request, res: Response) => {
+    try {
+      let validatedData: Validation = await utility.validateAndConvert(ChangePasswordViewModel, req.body);
+      if (validatedData.error) {
+        return res.status(400).send({
+          success: false,
+          message: responseMessages.VALIDATION_ERROR,
+          data: validatedData.error
+        });
+      } else {
+        let response = await Services.changePassword(req);
         return res.status(response.statusCode).send(response.data);
       }
 

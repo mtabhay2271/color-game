@@ -236,60 +236,63 @@ class UserServicesData {
     }
   };
 
-  // changePassword = async (req: Request, reqBodyData: ChangePasswordViewModel): Promise<ICommonServices> => {
-  //   try {
-  //     let payload = req.user as IPayAuth;
-  //     console.log(payload, "<<<<payload", reqBodyData);
-  //     if (reqBodyData.oldPassword == reqBodyData.newPassword) {
-  //       return {
-  //         statusCode: 400,
-  //         data: { success: false, message: responseMessages.USER_OLD_NEW_PASSWORD_SAME }
-  //       };
-  //     }
-  //     let user = await Users.findById(payload._id).lean();
-  //     if (user) {
-  //       if (await bcrypt.compare(reqBodyData.oldPassword, user.password)) {
-  //         const salt = await bcrypt.genSalt(10);
-  //         reqBodyData.newPassword = await bcrypt.hash(reqBodyData.newPassword, salt);
-  //         let result = await Users.findByIdAndUpdate(payload._id,
-  //           {
-  //             $set: {
-  //               password: reqBodyData.newPassword
-  //             },
-  //           }
-  //         );
-  //         if (result) {
-  //           return {
-  //             statusCode: 200,
-  //             data: { success: true, message: responseMessages.USER_PASSWORD_CHANGED }
-  //           };
-  //         } else {
-  //           return {
-  //             statusCode: 200,
-  //             data: { success: false, message: responseMessages.USER_PASSWORD_NOT_CHANGED }
-  //           };
-  //         }
-  //       } else {
-  //         return {
-  //           statusCode: 400,
-  //           data: { success: false, message: responseMessages.USER_OLD_PASSWORD_NOT_SAME }
-  //         };
-  //       }
-  //     } else {
-  //       return {
-  //         statusCode: 400,
-  //         data: { success: false, message: "user Not found" }
-  //       };
-  //     }
 
-  //   } catch (err) {
-  //     console.log(err);
-  //     return {
-  //       statusCode: 500,
-  //       data: { success: false, message: responseMessages.ERROR_ISE }
-  //     };
-  //   }
-  // };
+
+
+  changePassword = async (req: Request): Promise<ICommonServices> => {
+    try {
+      let payload = req.user as IPayAuth;
+      console.log(payload, "<<<<payload", req.body);
+      if (req.body.oldPassword == req.body.newPassword) {
+        return {
+          statusCode: 400,
+          data: { success: false, message: responseMessages.USER_OLD_NEW_PASSWORD_SAME }
+        };
+      }
+      let user = await Users.findById(payload.userId).lean();
+      if (user) {
+        if (await bcrypt.compare(req.body.oldPassword, user.password)) {
+          const salt = await bcrypt.genSalt(10);
+          req.body.newPassword = await bcrypt.hash(req.body.newPassword, salt);
+          let result = await Users.findByIdAndUpdate(payload.userId,
+            {
+              $set: {
+                password: req.body.newPassword
+              },
+            }
+          );
+          if (result) {
+            return {
+              statusCode: 200,
+              data: { success: true, message: responseMessages.USER_PASSWORD_CHANGED }
+            };
+          } else {
+            return {
+              statusCode: 200,
+              data: { success: false, message: responseMessages.USER_PASSWORD_NOT_CHANGED }
+            };
+          }
+        } else {
+          return {
+            statusCode: 400,
+            data: { success: false, message: responseMessages.USER_OLD_PASSWORD_NOT_SAME }
+          };
+        }
+      } else {
+        return {
+          statusCode: 400,
+          data: { success: false, message: "user Not found" }
+        };
+      }
+
+    } catch (err) {
+      console.log(err);
+      return {
+        statusCode: 500,
+        data: { success: false, message: responseMessages.ERROR_ISE }
+      };
+    }
+  };
 
 
   // resetPassword = async (reqBodyData: ResetPasswordViewModel) => {
