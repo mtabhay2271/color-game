@@ -32,7 +32,7 @@ class ControllersData {
   getBankDetails = async (req: Request, res: Response<ICommonController>) => {
     try {      
       let payload = req.user as IPayAuth;
-      let data = await Services.getContactUs();
+      let data = await Services.getBankDetails(payload.userId);
        return res.status(data.statusCode).send(data.data);
     } catch (error) {
       console.log("Error", error);

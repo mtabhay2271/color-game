@@ -31,16 +31,16 @@ class dataServicesData {
     }
   };
 
-  getContactUs = async (): Promise<ICommonServices> => {
+  getBankDetails = async (userId: string): Promise<ICommonServices> => {
     try {
-      let data: any = await BankDetails.findOne({}).lean();
+      let data: any = await BankDetails.findOne({ userId }).lean();
       if (data) {
         console.log(data);
         return {
           statusCode: 200,
           data: {
             success: true,
-            message: "contact-us data found",
+            message: "Bank Details found",
             data
           }
         };
