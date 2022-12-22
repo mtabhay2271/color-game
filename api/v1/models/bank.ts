@@ -16,7 +16,7 @@ export class BankModel {
   bank!: string;
 
   @prop()
-  IfscCode!: string;
+  ifscCode!: string;
 
   @prop()
   accountNumber!: number;

@@ -31,7 +31,7 @@ export class BankDetailsViewModel {
   @Expose()
   @IsDefined()
   @IsNotEmpty()
-  IfscCode!: string;
+  ifscCode!: string;
 
   @Expose()
   @IsDefined()
@@ -60,7 +60,6 @@ export class BankDetailsViewModel {
 
   @Expose()
   @IsDefined()
-  @IsEmail()
   country: string
 
   @Expose()
