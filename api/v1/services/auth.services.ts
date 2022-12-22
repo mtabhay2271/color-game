@@ -236,9 +236,6 @@ class UserServicesData {
     }
   };
 
-
-
-
   changePassword = async (req: Request): Promise<ICommonServices> => {
     try {
       let payload = req.user as IPayAuth;
@@ -293,6 +290,7 @@ class UserServicesData {
       };
     }
   };
+
 
 
   // resetPassword = async (reqBodyData: ResetPasswordViewModel) => {
