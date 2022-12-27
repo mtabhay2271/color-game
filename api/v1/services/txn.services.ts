@@ -18,7 +18,7 @@ class dataServicesData {
           statusCode: 200,
           data: {
             success: true,
-            message: "Bank details added",
+            message: "Txn added",
             data
           }
         };
@@ -40,7 +40,51 @@ class dataServicesData {
           statusCode: 200,
           data: {
             success: true,
-            message: "Bank Details found",
+            message: "Txn History found",
+            data
+          }
+        };
+      } else {
+        return { statusCode: 200, data: { success: false, message: responseMessages.USER_DETAILS_FOUND_NOT } };
+      }
+    } catch (error) {
+      console.log(error);
+      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+    }
+  };
+
+  approveTxn = async (id: string): Promise<ICommonServices> => {
+    try {
+      let data: any = await TxnModel.findByIdAndUpdate(id, { $set: { approve: 1 } },{new : true});
+      if (data) {
+        console.log(data);
+        return {
+          statusCode: 200,
+          data: {
+            success: true,
+            message: "Txn approved",
+            data
+          }
+        };
+      } else {
+        return { statusCode: 200, data: { success: false, message: responseMessages.USER_DETAILS_FOUND_NOT } };
+      }
+    } catch (error) {
+      console.log(error);
+      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+    }
+  };
+
+  rejectTxn = async (id: string): Promise<ICommonServices> => {
+    try {
+      let data: any = await TxnModel.findByIdAndUpdate(id, { $set: { approve: 2 } },{new : true});
+      if (data) {
+        console.log(data);
+        return {
+          statusCode: 200,
+          data: {
+            success: true,
+            message: "Txn rejected",
             data
           }
         };

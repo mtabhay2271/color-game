@@ -20,7 +20,14 @@ export class TxnModel {
     default: false,
     type: Boolean,
   })
-  widhrawal!: boolean;
+  widhrawal: boolean;
+
+  @prop({
+    required: false,
+    default: 0, // 0-pending, 1-approved, 2-rejected
+    type: Number,
+  })
+  status: number;
   
 }
 
