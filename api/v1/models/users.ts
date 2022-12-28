@@ -17,6 +17,12 @@ export class UserModel {
   phoneNumber!: number;
 
   @prop()
+  availabelAmount!: number;
+
+  @prop()
+  winningAmount!: number;
+
+  @prop()
   device_token!: number;
   
   @prop()

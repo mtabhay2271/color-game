@@ -5,6 +5,9 @@ import responseMessages from "../common/response.messages";
 import BankDetails from "../models/bank";
 import SupportModel from "../models/support";
 import { BankDetailsViewModel } from "../view_model/bank";
+import { UserModel } from "../models/users";
+import Users from "../models/users";
+
 
 class dataServicesData {
 
@@ -42,6 +45,30 @@ class dataServicesData {
             success: true,
             message: "Bank Details found",
             data
+          }
+        };
+      } else {
+        return { statusCode: 200, data: { success: false, message: responseMessages.USER_DETAILS_FOUND_NOT } };
+      }
+    } catch (error) {
+      console.log(error);
+      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+    }
+  };
+
+  getBalance = async (userId: string): Promise<ICommonServices> => {
+    try {
+      let data: any = await Users.findOne({ userId }).lean();
+      if (data) {
+        console.log(data);
+        return {
+          statusCode: 200,
+          data: {
+            success: true,
+            message: "User found",
+            data: {
+              availabelAmount: data.availabelAmount ? data.availabelAmount : 0
+            }
           }
         };
       } else {

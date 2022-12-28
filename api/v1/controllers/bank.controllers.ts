@@ -44,5 +44,25 @@ class ControllersData {
     }
   };
 
+  getBalance = async (req: Request, res: Response<ICommonController>) => {
+    try {      
+      let payload = req.user as IPayAuth;
+      let data = await Services.getBalance(payload.userId);
+       return res.status(data.statusCode).send(data.data);
+    } catch (error) {
+      console.log("Error", error);
+      return res.status(500).send({
+        success: false,
+        message: responseMessages.ERROR_ISE,
+        error
+      });
+    }
+  };
+
+  
+
  }
+
+
+
 export default new ControllersData();
