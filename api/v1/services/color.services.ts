@@ -5,6 +5,7 @@ import responseMessages from "../common/response.messages";
 import { AddColor } from "../view_model/commondata";
 import Color from "../models/color";
 import Join, { JoinModel } from "../models/joined";
+import Users from "../models/users";
 
 class dataServicesData {
 
@@ -55,7 +56,7 @@ class dataServicesData {
 
   get = async (): Promise<ICommonServices> => {
     try {
-      let data: any = await Color.find({}, { num: 1, result: 1 }).sort({num:-1}).lean();
+      let data: any = await Color.find({}, { num: 1, result: 1 }).sort({ num: -1 }).lean();
       if (data) {
         return {
           statusCode: 200,
@@ -77,32 +78,27 @@ class dataServicesData {
   join = async (req: Request): Promise<ICommonServices> => {
     try {
       let payload = req.user as IPayAuth;
+      let user = await Users.findById(payload.userId).lean();
+
       let getGames = await Color.find({});
-      let foundData = await Join.findOne({ userId: payload.userId, num: (getGames.length + 1) });
-      // if (!foundData) {
-        let data: any = await Join.create({ ...req.body, userId: payload.userId, num: (getGames.length + 1) });
-        if (data) {
-          return {
-            statusCode: 200,
-            data: {
-              success: true,
-              message: "Join successfully",
-              data
-            }
-          };
-        } else {
-          return { statusCode: 200, data: { success: false, message: "Not Joined" } };
-        }
-      // } else {
-      //   return {
-      //     statusCode: 200,
-      //     data: {
-      //       success: true,
-      //       message: "Join successfully",
-      //       data: foundData
-      //     }
-      //   };
-      // }
+      let data: any = await Join.create({ ...req.body, userId: payload.userId, num: (getGames.length + 1) });
+      if (user) {
+        let balance = await Users.findByIdAndUpdate(payload.userId, { $set: { availabelAmount: user.availabelAmount - data.amount } }, { new: true })
+      }
+      // console.log("dddddddddd", data);
+
+      if (data) {
+        return {
+          statusCode: 200,
+          data: {
+            success: true,
+            message: "Join successfully",
+            data
+          }
+        };
+      } else {
+        return { statusCode: 200, data: { success: false, message: "Not Joined" } };
+      }
 
     } catch (error) {
       console.log(error);
