@@ -17,9 +17,9 @@ class dataServicesData {
       if (FoundJoin) {
         FoundJoin.forEach((e: JoinModel) => {
           if (e.color == 1) {
-            resultData.red = resultData.red + e.amount;
-          } else if (e.color == 2) {
             resultData.green = resultData.green + e.amount;
+          } else if (e.color == 2) {
+            resultData.red = resultData.red + e.amount;
           } else {
             resultData.yellow = resultData.yellow + e.amount;
           }
@@ -27,9 +27,9 @@ class dataServicesData {
       }
       let sortedResult = Object.entries(resultData).sort(([, v1], [, v2]) => v1 - v2);
       let result = 1;
-      if (sortedResult[0][0] == 'red') {
+      if (sortedResult[0][0] == 'green') {
         result = 1;
-      } else if (sortedResult[0][0] == 'green') {
+      } else if (sortedResult[0][0] == 'red') {
         result = 2;
       } else {
         result = 3;
@@ -79,7 +79,7 @@ class dataServicesData {
       let payload = req.user as IPayAuth;
       let getGames = await Color.find({});
       let foundData = await Join.findOne({ userId: payload.userId, num: (getGames.length + 1) });
-      if (!foundData) {
+      // if (!foundData) {
         let data: any = await Join.create({ ...req.body, userId: payload.userId, num: (getGames.length + 1) });
         if (data) {
           return {
@@ -93,16 +93,16 @@ class dataServicesData {
         } else {
           return { statusCode: 200, data: { success: false, message: "Not Joined" } };
         }
-      } else {
-        return {
-          statusCode: 200,
-          data: {
-            success: true,
-            message: "Join successfully",
-            data: foundData
-          }
-        };
-      }
+      // } else {
+      //   return {
+      //     statusCode: 200,
+      //     data: {
+      //       success: true,
+      //       message: "Join successfully",
+      //       data: foundData
+      //     }
+      //   };
+      // }
 
     } catch (error) {
       console.log(error);

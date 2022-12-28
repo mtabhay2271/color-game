@@ -32,6 +32,7 @@ class authControllersData {
     try {
       let validatedData: Validation = await utility.validateAndConvert(LoginViewModel, req.body);
       if (validatedData.error) {
+          console.log(validatedData.error)
         return res.status(400).send({
           success: false,
           message: responseMessages.VALIDATION_ERROR,
