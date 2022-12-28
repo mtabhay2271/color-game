@@ -53,53 +53,6 @@ class dataServicesData {
     }
   };
 
-  addSupport = async (): Promise<ICommonServices> => {
-    try {
-      let data: any = await SupportModel.create({
-        email: "ramankumar407@gmail.com",
-        contactNumber: 9466660442
-      });
-      if (data) {
-        console.log(data);
-        return {
-          statusCode: 200,
-          data: {
-            success: true,
-            message: "Support data added",
-            data
-          }
-        };
-      } else {
-        return { statusCode: 200, data: { success: false, message: responseMessages.USER_DETAILS_FOUND_NOT } };
-      }
-    } catch (error) {
-      console.log(error);
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
-    }
-  };
-
-  getSupport = async (): Promise<ICommonServices> => {
-    try {
-      let data: any = await SupportModel.findOne({}).lean();
-      if (data) {
-        console.log(data);
-        return {
-          statusCode: 200,
-          data: {
-            success: true,
-            message: "Support data found",
-            data
-          }
-        };
-      } else {
-        return { statusCode: 200, data: { success: false, message: responseMessages.USER_DETAILS_FOUND_NOT } };
-      }
-    } catch (error) {
-      console.log(error);
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
-    }
-  };
-
 }
 export default new dataServicesData();
 
