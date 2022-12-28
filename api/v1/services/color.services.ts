@@ -78,7 +78,7 @@ class dataServicesData {
   join = async (req: Request): Promise<ICommonServices> => {
     try {
       let payload = req.user as IPayAuth;
-      let user = await Users.findById(payload.userId).lean();
+      let user = await Users.findById(payload.userId, { availabelAmount: 1 }).lean();
 
       let getGames = await Color.find({});
       let data: any = await Join.create({ ...req.body, userId: payload.userId, num: (getGames.length + 1) });

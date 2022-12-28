@@ -47,7 +47,7 @@ class ControllersData {
   approveTxn = async (req: Request, res: Response<ICommonController>) => {
     try {      
       let payload = req.user as IPayAuth;
-      let data = await Services.approveTxn(req.params.id);
+      let data = await Services.approveTxn(req,req.params.id);
        return res.status(data.statusCode).send(data.data);
     } catch (error) {
       console.log("Error", error);

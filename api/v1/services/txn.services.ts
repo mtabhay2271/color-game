@@ -5,6 +5,8 @@ import responseMessages from "../common/response.messages";
 import BankDetails from "../models/bank";
 import { TxnViewModel } from "../view_model/txn";
 import TxnModel from "../models/txn";
+import Users from "../models/users";
+
 
 class dataServicesData {
 
@@ -33,7 +35,7 @@ class dataServicesData {
 
   getTxn = async (userId: string): Promise<ICommonServices> => {
     try {
-      let data: any = await TxnModel.findOne({ userId }).lean();
+      let data: any = await TxnModel.find({ userId }).lean();
       if (data) {
         console.log(data);
         return {
@@ -53,9 +55,17 @@ class dataServicesData {
     }
   };
 
-  approveTxn = async (id: string): Promise<ICommonServices> => {
+  approveTxn = async (req: Request, id: string): Promise<ICommonServices> => {
     try {
+      let payload = req.user as IPayAuth;
+      let user = await Users.findById(payload.userId, { availabelAmount: 1 }).lean();
+
       let data: any = await TxnModel.findByIdAndUpdate(id, { $set: { approve: 1 } },{new : true});
+
+      if (user) {
+        let balance = await Users.findByIdAndUpdate(payload.userId, { $set: { availabelAmount: user.availabelAmount +  data.amount } }, { new: true })
+      }
+
       if (data) {
         console.log(data);
         return {
