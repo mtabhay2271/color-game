@@ -85,9 +85,17 @@ class dataServicesData {
     }
   };
 
-  rejectTxn = async (id: string): Promise<ICommonServices> => {
+  rejectTxn = async (req: Request, id: string): Promise<ICommonServices> => {
     try {
+      let payload = req.user as IPayAuth;
+      let user = await Users.findById(payload.userId, { availabelAmount: 1 }).lean();
+
       let data: any = await TxnModel.findByIdAndUpdate(id, { $set: { status: 2 } },{new : true});
+
+      if (user) {
+        let balance = await Users.findByIdAndUpdate(payload.userId, { $set: { availabelAmount: user.availabelAmount } }, { new: true })
+      }
+
       if (data) {
         console.log(data);
         return {

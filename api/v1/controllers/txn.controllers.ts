@@ -63,7 +63,7 @@ class ControllersData {
   rejectTxn = async (req: Request, res: Response<ICommonController>) => {
     try {      
       let payload = req.user as IPayAuth;
-      let data = await Services.rejectTxn(req.params.id);
+      let data = await Services.rejectTxn(req,req.params.id);
        return res.status(data.statusCode).send(data.data);
     } catch (error) {
       console.log("Error", error);
