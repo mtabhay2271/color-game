@@ -13,7 +13,7 @@ class UserServicesData {
 
   getUserList = async (): Promise<ICommonServices> => {
     try {
-      let data: any = await Users.findOne().lean();
+      let data: any = await Users.find().lean();
       if (data) {
         console.log(data);
         return {
