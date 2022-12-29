@@ -34,6 +34,30 @@ class UserServicesData {
   };
 
 
+  userById = async (userId: string): Promise<ICommonServices> =>{
+    try {
+      // let payload = req.user as IPayAuth;
+      let user = await Users.findById(userId).lean();
+      if (user) {
+        console.log(user);
+        return {
+          statusCode: 200,
+          data: {
+            success: true,
+            message: "User found",
+            data: user
+          }
+        };
+      } else {
+        return { statusCode: 200, data: { success: false, message: responseMessages.USER_FOUND_NOT } };
+      }
+
+    } catch (error) {
+      console.log(error);
+      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+    }
+  }
+
 }
 export default new UserServicesData();
 
