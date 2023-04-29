@@ -6,16 +6,20 @@ import { AddColor } from "../view_model/commondata";
 import Color from "../models/color";
 import Join, { JoinModel } from "../models/joined";
 import Users from "../models/users";
+import { ContactUsModel } from "../models/contactUS";
 
 class dataServicesData {
 
   add = async (req: Request): Promise<ICommonServices> => {
     try {
+      // console.log("addddddddddddddddddd")
+
       let getGames = await Color.find({});
       let FoundJoin = await Join.find({ num: (getGames.length + 1) })
-      console.log(FoundJoin.length);
-      let resultData = { red: 0, green: 0, yellow: 0 }
+      // console.log(FoundJoin.length,"FoundJoin.length",FoundJoin);
+      let resultData = { green: 0, red: 0, yellow: 0 }
       if (FoundJoin) {
+        // console.log("11111111")
         FoundJoin.forEach((e: JoinModel) => {
           if (e.color == 1) {
             resultData.green = resultData.green + e.amount;
@@ -33,9 +37,11 @@ class dataServicesData {
       } else if (sortedResult[0][0] == 'red') {
         result = 2;
       } else {
+        console.log("333333333")
         result = 3;
       }
       let data: any = await Color.create({ result, num: (getGames.length + 1) });
+      // console.log(data,"data")
       if (data) {
         return {
           statusCode: 200,
@@ -77,6 +83,8 @@ class dataServicesData {
 
   join = async (req: Request): Promise<ICommonServices> => {
     try {
+      // console.log("joinnnnnnnnnnnnn")
+
       let payload = req.user as IPayAuth;
       let user = await Users.findById(payload.userId, { availabelAmount: 1 }).lean();
 

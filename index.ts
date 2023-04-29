@@ -6,7 +6,7 @@ import cors from 'cors'
 import http from "http";
 import DBConnation from './db'
 import imgModel from "./api/v1/models/image"
-
+import cronJob from "./api/v1/common/cronJob";
 
 dotenv.config();
 const app: Application = express();
@@ -24,9 +24,11 @@ app.use(cors());
 
 app.use(express.urlencoded({ extended: true }));
 
+cronJob.daily.start();
+
 app.use("/api", (req: Request, res: Response, next: NextFunction) => {
-  console.log("headers>>>>", req.headers.authorization, "<<<<<headers");
-  console.log("req.body>>>> ", req.method, req.originalUrl, req.body, "<<<<<req.body");
+  // console.log("headers>>>>", req.headers.authorization, "<<<<<headers");
+  // console.log("req.body>>>> ", req.method, req.originalUrl, req.body, "<<<<<req.body");
   next();
 }, routes);
 
