@@ -16,7 +16,9 @@ export class UserModel {
   @prop()
   phoneNumber!: number;
 
-  @prop()
+  @prop({
+    default:0
+  })
   availabelAmount!: number;
 
   @prop()

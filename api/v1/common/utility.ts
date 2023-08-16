@@ -34,10 +34,10 @@ class Utility {
       if (auth_header) {
         jwt.verify(auth_header, secret_key, async (err: any, user: any) => {
           try {
-            console.log(user);
+            // console.log(user);
             
             if (user.exp > Date.now()) {
-              console.log(user.exp - Date.now());
+              // console.log(user.exp - Date.now());
               if (req.baseUrl == '/api/v1/auth/logOut') {
                 return res.status(200).json({ status: true, msg: 'logout successfully' });
               } else {
