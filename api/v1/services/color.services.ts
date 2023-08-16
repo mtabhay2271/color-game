@@ -52,7 +52,8 @@ class dataServicesData {
         result = 3;
       }
       let data: any = await Color.create({ result, num: (getGames.length + 1) });
-      // console.log(data,"data")
+      let joinResult: any = await Join.updateMany({ num: data.num }, { $set: { result } });
+      console.log(joinResult,"joinResult")
       if (data) {
         return {
           statusCode: 200,
@@ -73,7 +74,7 @@ class dataServicesData {
 
   get = async (): Promise<ICommonServices> => {
     try {
-      let data: any = await Color.find({}, { num: 1, result: 1 }).sort({ num: -1 }).lean();
+      let data: any = await Color.find({}, { num: 1, result: 1 }).sort({ num: -1 }).limit(50).lean();
       if (data) {
         return {
           statusCode: 200,
