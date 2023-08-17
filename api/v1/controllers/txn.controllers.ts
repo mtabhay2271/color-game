@@ -17,7 +17,8 @@ class ControllersData {
         });
       } else {
         let reqData: TxnViewModel = validatedData.data as TxnViewModel;
-        let user = await Services.addTxn(req, reqData);
+        let user = await Services.addTxn(req);
+        // let user = await Services.addTxn(req, reqData);
         return res.status(user.statusCode).send(user.data);
       }
     } catch (error) {
@@ -29,13 +30,77 @@ class ControllersData {
     }
   };
 
+  // for admin only
   getTxn = async (req: Request, res: Response<ICommonController>) => {
     try {      
-      let payload = req.user as IPayAuth;
-      let data = await Services.getTxn(payload.userId);
+      // let payload = req.user as IPayAuth;
+      // console.log("1111111")
+      let data = await Services.getTxn(req);
        return res.status(data.statusCode).send(data.data);
     } catch (error) {
-      console.log("Error", error);
+      // console.log("Error", error);
+      return res.status(500).send({
+        success: false,
+        message: responseMessages.ERROR_ISE,
+        error
+      });
+    }
+  };
+
+  getTxnByUser = async (req: Request, res: Response<ICommonController>) => {
+    try {      
+      let payload = req.user as IPayAuth;
+      let data = await Services.getTxnByUserId(payload.userId);
+       return res.status(data.statusCode).send(data.data);
+    } catch (error) {
+      // console.log("Error", error);
+      return res.status(500).send({
+        success: false,
+        message: responseMessages.ERROR_ISE,
+        error
+      });
+    }
+  };
+
+  verify = async (req: Request, res: Response<ICommonController>) => {
+    try {    
+     // console.log("req.params.userId",req.params.userId);
+        
+      // let payload = req.user as IPayAuth;
+      let data = await Services.verify(req);
+       return res.status(data.statusCode).send(data.data);
+    } catch (error) {
+      // console.log("Error", error);
+      return res.status(500).send({
+        success: false,
+        message: responseMessages.ERROR_ISE,
+        error
+      });
+    }
+  };
+  getTxnByUserId = async (req: Request, res: Response<ICommonController>) => {
+    try {    
+     // console.log("req.params.userId",req.params.userId);
+        
+      // let payload = req.user as IPayAuth;
+      let data = await Services.getTxnByUserId(req.params.userId);
+       return res.status(data.statusCode).send(data.data);
+    } catch (error) {
+      // console.log("Error", error);
+      return res.status(500).send({
+        success: false,
+        message: responseMessages.ERROR_ISE,
+        error
+      });
+    }
+  };
+  
+  getTxnById = async (req: Request, res: Response<ICommonController>) => {
+    try {      
+      let data = await Services.getTxnById(req.params.id);
+       return res.status(data.statusCode).send(data.data);
+    } catch (error) {
+      // console.log("Error", error);
       return res.status(500).send({
         success: false,
         message: responseMessages.ERROR_ISE,
@@ -50,7 +115,7 @@ class ControllersData {
       let data = await Services.approveTxn(req,req.params.id);
        return res.status(data.statusCode).send(data.data);
     } catch (error) {
-      console.log("Error", error);
+      // console.log("Error", error);
       return res.status(500).send({
         success: false,
         message: responseMessages.ERROR_ISE,
@@ -66,14 +131,14 @@ class ControllersData {
       let data = await Services.rejectTxn(req,req.params.id);
        return res.status(data.statusCode).send(data.data);
     } catch (error) {
-      console.log("Error", error);
+      // console.log("Error", error);
       return res.status(500).send({
         success: false,
         message: responseMessages.ERROR_ISE,
         error
       });
     }
-  };
+  };  
 
   
 

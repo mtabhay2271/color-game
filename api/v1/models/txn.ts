@@ -13,7 +13,7 @@ export class TxnModel {
   amount!: number;
 
   @prop()
-  txnNum!: number;
+  txnNum: number;
 
   @prop({
     required: false,
@@ -21,6 +21,19 @@ export class TxnModel {
     type: Boolean,
   })
   widhrawal: boolean;
+
+  @prop({
+    required: false,
+    default: false,
+    type: Boolean,
+  })
+  inBank?: boolean;
+
+  @prop({
+    required: false,
+    type: String,
+  })
+  upi?: string;
 
   @prop({
     required: false,

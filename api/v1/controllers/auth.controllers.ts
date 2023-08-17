@@ -2,8 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import responseMessages from "../common/response.messages";
 import utility, { Validation } from "../common/utility";
 import { ICommonController } from "../interfaces/response_interfaces";
+import { ICommonServices, IPayAuth } from "../interfaces/response_interfaces";
 import Services from "../services/auth.services";
-import { SignupViewModel, LoginViewModel,  verifyOtpViewModel, ForgetPasswordViewModel , ResetPasswordViewModel , ChangePasswordViewModel} from "../view_model/users";
+import Users from "../models/users";
+import { OTP_VALID_MINUTES, TOKEN_EXP_TIME } from '../common/constants/time.constants';
+
+import { LoginViewModel, SignupViewModel, verifyOtpViewModel, ChangePasswordViewModel, ForgetPasswordViewModel, ResetPasswordViewModel } from "../view_model/users";
 class authControllersData {
   signup = async (req: Request, res: Response<ICommonController>, next: NextFunction) => {
     try {
@@ -32,7 +36,6 @@ class authControllersData {
     try {
       let validatedData: Validation = await utility.validateAndConvert(LoginViewModel, req.body);
       if (validatedData.error) {
-          console.log(validatedData.error)
         return res.status(400).send({
           success: false,
           message: responseMessages.VALIDATION_ERROR,
@@ -43,7 +46,105 @@ class authControllersData {
         return res.status(user.statusCode).send(user.data);
       }
     } catch (error) {
-      
+      return res.status(500).send({
+        success: false,
+        message: responseMessages.ERROR_ISE,
+        error
+      });
+    }
+  };
+
+  
+  changePasswordByAdmin = async (req: Request, res: Response<ICommonController>) => {
+    try {
+        // let payload = req.user as IPayAuth
+        let data = await Services.changePasswordByAdmin(req)
+        return res.status(data.statusCode).send(data.data)
+    } catch (error) {
+        console.log("Error", error);
+        return res.status(500).send({
+          success: false,
+          message: responseMessages.ERROR_ISE,
+          error
+        });
+      }
+  }
+  changePassword = async (req: Request, res: Response) => {
+    try {
+      let validatedData: Validation = await utility.validateAndConvert(ChangePasswordViewModel, req.body);
+      if (validatedData.error) {
+        return res.status(400).send({
+          success: false,
+          message: responseMessages.VALIDATION_ERROR,
+          data: validatedData.error
+        });
+      } else {
+        let response = await Services.changePassword(req);
+        return res.status(response.statusCode).send(response.data);
+      }
+
+    } catch (error) {
+      return res.status(500).send({
+        success: false,
+        message: responseMessages.ERROR_ISE,
+        error
+      });
+    }
+  };
+
+  forgotPassword = async (req: Request, res: Response) => {
+    try {
+      let validatedData: Validation = await utility.validateAndConvert(ForgetPasswordViewModel, req.body);
+      if (validatedData.error) {
+        return res.status(400).send({
+          success: false,
+          message: responseMessages.VALIDATION_ERROR,
+          data: validatedData.error
+        });
+      } else {
+        let reqBodyData: ForgetPasswordViewModel = validatedData.data as ForgetPasswordViewModel;
+        let response = await Services.forgotPassword(reqBodyData.email);
+        return res.status(response.statusCode).send(response.data);
+      }
+
+    } catch (error) {
+      return res.status(500).send({
+        success: false,
+        message: responseMessages.ERROR_ISE,
+        error
+      });
+    }
+  };
+
+  resetPassword = async (req: Request, res: Response) => {
+    try {
+      let validatedData: Validation = await utility.validateAndConvert(ResetPasswordViewModel, req.body);
+      if (validatedData.error) {
+        return res.status(400).send({
+          success: false,
+          message: responseMessages.VALIDATION_ERROR,
+          data: validatedData.error
+        });
+      } else {
+        let reqBodyData: ResetPasswordViewModel = validatedData.data as ResetPasswordViewModel;
+        let response = await Services.resetPassword(reqBodyData);
+        return res.status(response.statusCode).send(response.data);
+      }
+
+    } catch (error) {
+      return res.status(500).send({
+        success: false,
+        message: responseMessages.ERROR_ISE,
+        error
+      });
+    }
+  };
+
+  acceptUser = async (req: Request, res: Response) => {
+    try {
+      let response = await Services.acceptUser(req.params.userId);
+      return res.status(response.statusCode).send(response.data);
+    } catch (error) {
       return res.status(500).send({
         success: false,
         message: responseMessages.ERROR_ISE,
@@ -74,117 +175,7 @@ class authControllersData {
       });
     }
   };
-  
-  forgotPassword = async (req: Request, res: Response) => {
-    try {
-      let validatedData: Validation = await utility.validateAndConvert(ForgetPasswordViewModel, req.body);
-      if (validatedData.error) {
-        return res.status(400).send({
-          success: false,
-          message: responseMessages.VALIDATION_ERROR,
-          data: validatedData.error
-        });
-      } else {
-        let reqBodyData: ForgetPasswordViewModel = validatedData.data as ForgetPasswordViewModel;
-        let response = await Services.forgotPassword(reqBodyData.email);
-        return res.status(response.statusCode).send(response.data);
-      }
 
-    } catch (error) {
-      return res.status(500).send({
-        success: false,
-        message: responseMessages.ERROR_ISE,
-        error
-      });
-    }
+
   };
-
-
-  // changePassword = async (req: Request, res: Response) => {
-  //   try {
-  //     let validatedData: Validation = await utility.validateAndConvert(ChangePasswordViewModel, req.body);
-  //     if (validatedData.error) {
-  //       return res.status(400).send({
-  //         success: false,
-  //         message: responseMessages.VALIDATION_ERROR,
-  //         data: validatedData.error
-  //       });
-  //     } else if (validatedData.data.oldPassword === validatedData.data.newPassword) {
-  //       return res.status(400).send({ success: false, message: responseMessages.USER_OLD_NEW_PASSWORD_SAME });
-  //     } else {
-  //       let reqBodyData: ChangePasswordViewModel = validatedData.data as ChangePasswordViewModel;
-  //       let user = await Services.changePassword(req, reqBodyData);
-  //       return res.status(user.statusCode).send(user.data);
-  //     }
-
-  //   } catch (error) {
-  //     return res.status(500).send({
-  //       success: false,
-  //       message: responseMessages.ERROR_ISE,
-  //       error
-  //     });
-  //   }
-  // };
-
-
-  resetPassword = async (req: Request, res: Response) => {
-    try {
-      let validatedData: Validation = await utility.validateAndConvert(ResetPasswordViewModel, req.body);
-      if (validatedData.error) {
-        return res.status(400).send({
-          success: false,
-          message: responseMessages.VALIDATION_ERROR,
-          data: validatedData.error
-        });
-      } else {
-        let reqBodyData: ResetPasswordViewModel = validatedData.data as ResetPasswordViewModel;
-        let response = await Services.resetPassword(reqBodyData);
-        return res.status(response.statusCode).send(response.data);
-      }
-
-    } catch (error) {
-      return res.status(500).send({
-        success: false,
-        message: responseMessages.ERROR_ISE,
-        error
-      });
-    }
-  };
-
-  changePassword = async (req: Request, res: Response) => {
-    try {
-      let validatedData: Validation = await utility.validateAndConvert(ChangePasswordViewModel, req.body);
-      if (validatedData.error) {
-        return res.status(400).send({
-          success: false,
-          message: responseMessages.VALIDATION_ERROR,
-          data: validatedData.error
-        });
-      } else {
-        let response = await Services.changePassword(req);
-        return res.status(response.statusCode).send(response.data);
-      }
-
-    } catch (error) {
-      return res.status(500).send({
-        success: false,
-        message: responseMessages.ERROR_ISE,
-        error
-      });
-    }
-  };
-
-  // acceptUser = async (req: Request, res: Response) => {
-  //   try {
-  //     let response = await Services.acceptUser(req.params.userId);
-  //     return res.status(response.statusCode).send(response.data);
-  //   } catch (error) {
-  //     return res.status(500).send({
-  //       success: false,
-  //       message: responseMessages.ERROR_ISE,
-  //       error
-  //     });
-  //   }
-  // };
-}
 export default new authControllersData();

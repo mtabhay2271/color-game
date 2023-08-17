@@ -2,6 +2,9 @@ import { getModelForClass, Index, mongoose, prop, Ref } from "@typegoose/typegoo
 
 export class UserModel {
   @prop()
+  name!: string;
+
+  @prop()
   username!: string;
 
   @prop()
@@ -10,28 +13,154 @@ export class UserModel {
   @prop()
   password!: string;
 
+
   @prop()
+  contactNumber!: number;
+
+  @prop({ default: "user" })
   role: string;
 
   @prop()
-  phoneNumber!: number;
+  referCode: string
+
+  @prop({ default: 0})
+  status: number
 
   @prop({
-    default:0
+    ref: UserModel,
+    type: mongoose.Types.ObjectId,
   })
-  availabelAmount!: number;
+  uplineId: Ref<UserModel>;
+  @prop({
+    ref: UserModel,
+    type: mongoose.Types.ObjectId,
+  })
+  uplineId2: Ref<UserModel>;
+  @prop({
+    ref: UserModel,
+    type: mongoose.Types.ObjectId,
+  })
+  uplineId3: Ref<UserModel>;
+  @prop({
+    ref: UserModel,
+    type: mongoose.Types.ObjectId,
+  })
+  uplineId4: Ref<UserModel>;
+  @prop({
+    ref: UserModel,
+    type: mongoose.Types.ObjectId,
+  })
+  uplineId5: Ref<UserModel>;
+
+  @prop({
+    required: false,
+    default: false
+  })
+  isPaymentDone: boolean;
+
+
+  @prop({
+    required: false,
+    default: 0
+  })
+  paymentStatus: number;
+
+  @prop({
+    required: false,
+    default: 0
+  })
+  plan: number;
 
   @prop()
-  winningAmount!: number;
+  paymentRefNumber: number;
 
-  @prop()
-  device_token!: number;
+  @prop({
+    required: false,
+    default: 0
+  })
+  myNetwork: number;
+
+  @prop({
+    required: false,
+    default: 0
+  })
+  availableAmount!: number;
+
+  @prop({
+    required: false,
+    default: 0
+  })
+  todayEarning: number;
+
+  @prop({
+    required: false,
+    default: 0
+  })
+  thisWeekEarning: number;
+
+  @prop({
+    required: false,
+    default: 0
+  })
+  thisMonthEarning: number;
   
-  @prop()
-  userToken!: number;
+  @prop({
+    required: false,
+    default: 0
+  })
+  totalEarning: number;
+
+  @prop({
+    required: false,
+    default: 0
+  })
+  todayLeads: number;
+
+  @prop({
+    required: false,
+    default: 0
+  })
+  todayRefLead: number;
+
+  @prop({
+    required: false,
+    default: 0
+  })
+  thisMonthRefLead: number;
+
+  @prop({
+    required: false,
+    default: 0
+  })
+  teamEarning: number;
+  
+
+  @prop({
+    required: false,
+    default: false
+  })
+  isAccepted!: boolean;
+
+  @prop({
+    required: false,
+    default: false
+  })
+  isRejected!: boolean;
+
+  @prop({
+    required: false,
+    default: false
+  })
+  isBlockeded!: boolean;
+
+  @prop({
+    required: false,
+    default: ''
+  })
+  deviceToken!: string;
 
   @prop()
-  block: string
+  forgetPassOtp!: string;
 
   @prop()
   otp: string;

@@ -22,6 +22,10 @@ enum Role {
 }
 
 export class SignupViewModel {
+  @Expose()
+  @IsDefined()
+  @IsString()
+  name!: string;
 
   @Expose()
   @IsDefined()
@@ -39,16 +43,47 @@ export class SignupViewModel {
   password!: string;
 
   @Expose()
-  role: string;
-
-  @Expose()
   @IsDefined()
   @IsNotEmpty()
   @IsNumber()
   @Type(() => Number)
-  phoneNumber!: number;
+  contactNumber!: number;
+  
+  @Expose()
+  @IsString()
+  referCode?: string;
 
+  // @Expose()
+  // @IsDefined()
+  // status!: string;
+
+
+  @Expose()
+  @IsMongoId()
+  @Type(() => mongoose.Types.ObjectId)
+  uplineId?: Ref<UserModel>;
+  
+  @Expose()
+  @IsMongoId()
+  @Type(() => mongoose.Types.ObjectId)
+  uplineId2?: Ref<UserModel>;
+  
+  @Expose()
+  @IsMongoId()
+  @Type(() => mongoose.Types.ObjectId)
+  uplineId3?: Ref<UserModel>;
+
+  @Expose()
+  @IsMongoId()
+  @Type(() => mongoose.Types.ObjectId)
+  uplineId4?: Ref<UserModel>;
+
+  @Expose()
+  @IsMongoId()
+  @Type(() => mongoose.Types.ObjectId)
+  uplineId5?: Ref<UserModel>;
 }
+
 
 export class LoginViewModel {
   @Expose()
@@ -59,6 +94,32 @@ export class LoginViewModel {
   @IsDefined()
   @IsString()
   password!: string;
+}
+
+export class ChangePasswordViewModel {
+  @Expose()
+  @IsDefined()
+  @IsString()
+  oldPassword: string;
+
+  @Expose()
+  @IsDefined()
+  @IsString()
+  newPassword: string;
+}
+
+// export class ForgetPasswordViewModel {
+//   @Expose()
+//   @IsDefined()
+//   @IsString()
+//   username: string;
+// }
+
+export class ForgetPasswordViewModel {
+  @Expose()
+  @IsDefined()
+  @IsString()
+  email: string;
 }
 
 export class verifyOtpViewModel {
@@ -76,24 +137,22 @@ export class verifyOtpViewModel {
   otp!: number;
 }
 
-export class ChangePasswordViewModel {
-  @Expose()
-  @IsDefined()
-  @IsString()
-  oldPassword: string;
-
-  @Expose()
-  @IsDefined()
-  @IsString()
-  newPassword: string;
-}
-
-export class ForgetPasswordViewModel {
-  @Expose()
-  @IsDefined()
-  @IsString()
-  email: string;
-}
+// export class ResetPasswordViewModel {
+//   @Expose()
+//   @IsDefined()
+//   @IsString()
+//   username: string;
+  
+//   @Expose()
+//   @IsDefined()
+//   @IsString()
+//   otp: string;
+  
+//   @Expose()
+//   @IsDefined()
+//   @IsString()
+//   password: string;
+// }
 
 export class ResetPasswordViewModel {
   @Expose()
@@ -111,6 +170,19 @@ export class ResetPasswordViewModel {
   @IsString()
   password: string;
 }
+
+// export class ResetPasswordViewModel {
+//   @Expose()
+//   @IsDefined()
+//   @IsString()
+//   newPassword: string;
+  
+//   @Expose()
+//   @IsDefined()
+//   @IsString()
+//   confirmPassword: string;
+// }
+
 export class PaymentRefViewModel {
   @Expose()
   @IsDefined()

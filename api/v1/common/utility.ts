@@ -1,7 +1,7 @@
 import { plainToClass } from "class-transformer";
 import { validate } from "class-validator";
 import { NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 import _ from "lodash";
 import Users from "../models/users";
 import { DEFAULT_EXP_TIME } from "./constants/time.constants";
@@ -27,7 +27,6 @@ class Utility {
     );
     return result;
   };
-  
   authenticateUser = async (req: any, res: any, next: NextFunction) => {
     try {
       const auth_header: string = req.headers.authorization;
@@ -35,7 +34,7 @@ class Utility {
         jwt.verify(auth_header, secret_key, async (err: any, user: any) => {
           try {
             // console.log(user);
-            
+
             if (user.exp > Date.now()) {
               // console.log(user.exp - Date.now());
               if (req.baseUrl == '/api/v1/auth/logOut') {
@@ -43,14 +42,75 @@ class Utility {
               } else {
                 return res.status(401).json({ status: false, msg: "Token expired" });
               }
-            } else if (user && user.userId) {
+            } else if (user && user._id) {
               let result: any;
-              result = await Users.findById(user.userId);
+              result = await Users.findById(user._id);
               if (result && result.username && result.username === user.username) {
-                req.user = user;
+                req.user = {
+                  userId: user._id,
+                  email: user.email,
+                  username: user.username,
+                  // exp: number,
+                  // iat: number,
+                  role: user.role,
+                };
                 result.password = '';
                 req.userDetail = result;
                 next();
+              } else {
+                return res.status(401).json({ status: false, error: "User not exist.", });
+              }
+            } else {
+              return res.status(401).json({ status: false, error: "Unauthorized access.", });
+            }
+          } catch (error) {
+            return res.status(401).json({ status: false, msg: "Token expired" });
+          }
+        });
+      } else {
+        return res.status(401).json({ status: false, error: "Authentication header required", });
+      }
+    } catch (error) {
+      return res.status(500).json({ status: false, error: "Internal Server Error", });
+    }
+  }
+
+  authenticateAdmin = async (req: any, res: any, next: NextFunction) => {
+    try {
+      const auth_header: string = req.headers.authorization;
+      if (auth_header) {
+        jwt.verify(auth_header, secret_key, async (err: any, user: any) => {
+          try {
+            // console.log(user);
+
+            if (user.exp > Date.now()) {
+              // console.log(user.exp - Date.now());
+              if (req.baseUrl == '/api/v1/auth/logOut') {
+                return res.status(200).json({ status: true, msg: 'logout successfully' });
+              } else {
+                return res.status(401).json({ status: false, msg: "Token expired" });
+              }
+            } else if (user && user._id) {
+              let result: any;
+              result = await Users.findById(user._id);
+              if (result && result.username && result.username === user.username) {
+                // console.log(result.role);
+                
+                if (result.role == 'admin') {
+                  req.user = {
+                    userId: user._id,
+                    email: user.email,
+                    username: user.username,
+                    // exp: number,
+                    // iat: number,
+                    role: user.role,
+                  };
+                  result.password = '';
+                  req.userDetail = result;
+                  next();
+                } else {
+                  return res.status(401).json({ status: false, error: "You are not Admin", });
+                }
               } else {
                 return res.status(401).json({ status: false, error: "User not exist.", });
               }

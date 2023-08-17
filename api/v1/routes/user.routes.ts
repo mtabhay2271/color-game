@@ -2,14 +2,18 @@ import Router from "express";
 import utility from "../common/utility";
 
 import Controller from "../controllers/users.controllers";
-
 const router = Router();
 
-router.get("/list", Controller.getUserList);
-router.get("/:userId",  Controller.userById);
-// router.get("/list", utility.authenticateUser, Controller.getUserList);
-// router.get("/profile", utility.authenticateUser, UserController.userDetails);
-// router.get("/data", utility.authenticateUser, UserController.data);
-// router.put("/update-payment-ref", utility.authenticateUser, UserController.addPaymentRefNumber);
+// router.get("/filter",  Controller.filter);
+router.get("/profile", utility.authenticateUser, Controller.userDetails);
+router.get("/list", utility.authenticateAdmin, Controller.getUserList);
+router.get("/top-earners", utility.authenticateUser, Controller.getUserMaxEarning);
+router.get("/username/:username", utility.authenticateUser, Controller.userByUsername);
+router.get("/:userId", utility.authenticateUser, Controller.userById);
+router.put("/activate-user",  utility.authenticateUser, Controller.activateUser);
+router.put("/update-payment-ref", utility.authenticateUser, Controller.addPaymentRefNumber);
+
+// router.get("/data", utility.authenticateUser, Controller.data);
+
 
 export default router;

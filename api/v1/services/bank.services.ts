@@ -16,7 +16,7 @@ class dataServicesData {
       let payload = req.user as IPayAuth;
       let data: any = await BankDetails.create({ ...reqData, userId: payload.userId });
       if (data) {
-        console.log(data);
+        // console.log(data);
         return {
           statusCode: 200,
           data: {
@@ -38,7 +38,7 @@ class dataServicesData {
     try {
       let data: any = await BankDetails.findOne({ userId }).lean();
       if (data) {
-        console.log(data);
+        // console.log(data);
         return {
           statusCode: 200,
           data: {
@@ -58,16 +58,16 @@ class dataServicesData {
 
   getBalance = async (userId: string): Promise<ICommonServices> => {
     try {
-      let data: any = await Users.findOne({ userId }).lean();
+      let data: any = await Users.findOne({ _id:userId }).lean();
       if (data) {
-        console.log(data);
+        // console.log(data);
         return {
           statusCode: 200,
           data: {
             success: true,
             message: "User found",
             data: {
-              availabelAmount: data.availabelAmount ? data.availabelAmount : 0
+              availableAmount: data.availableAmount ? data.availableAmount : 0
             }
           }
         };

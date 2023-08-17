@@ -48,19 +48,19 @@ export class BankDetailsViewModel {
   @Type(() => Number)
   phoneNumber!: number;
 
-  @Expose()
-  @IsDefined()
-  @IsNotEmpty()
-  city!: string;
+  // @Expose()
+  // @IsDefined()
+  // @IsNotEmpty()
+  // city!: string;
   
-  @Expose()
-  @IsDefined()
-  @IsNotEmpty()
-  state!: string;
+  // @Expose()
+  // @IsDefined()
+  // @IsNotEmpty()
+  // state!: string;
 
-  @Expose()
-  @IsDefined()
-  country: string
+  // @Expose()
+  // @IsDefined()
+  // country: string
 
   @Expose()
   @IsDefined()

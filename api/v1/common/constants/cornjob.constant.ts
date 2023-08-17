@@ -1,6 +1,7 @@
 
 class cronConst {
-    daily = "0 0 * * *" 
-    // daily = '*/10 * * * * *' after every 10 seconds
+    daily = '59 23 * * *'
+    weekly = '59 23 * * 0'
+    monthly = '0 0 1 * *'
 }
 export default new cronConst();

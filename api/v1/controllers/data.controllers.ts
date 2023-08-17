@@ -5,11 +5,12 @@ import Services from "../services/data.services";
 class dataControllersData {
 
   addContactUs = async (req: Request, res: Response<ICommonController>) => {
-    try {  
+    try {      
+      let payload = req.user as IPayAuth;
       let data = await Services.addContactUs();
        return res.status(data.statusCode).send(data.data);
     } catch (error) {
-      console.log("Error", error);
+      // console.log("Error", error);
       return res.status(500).send({
         success: false,
         message: responseMessages.ERROR_ISE,
@@ -24,7 +25,7 @@ class dataControllersData {
       let data = await Services.getContactUs();
        return res.status(data.statusCode).send(data.data);
     } catch (error) {
-      console.log("Error", error);
+      // console.log("Error", error);
       return res.status(500).send({
         success: false,
         message: responseMessages.ERROR_ISE,
@@ -32,28 +33,13 @@ class dataControllersData {
       });
     }
   };
-
-  addSupport = async (req: Request, res: Response<ICommonController>) => {
-    try {  
-      let data = await Services.addSupport();
-       return res.status(data.statusCode).send(data.data);
-    } catch (error) {
-      console.log("Error", error);
-      return res.status(500).send({
-        success: false,
-        message: responseMessages.ERROR_ISE,
-        error
-      });
-    }
-  };
-
-  getSupport = async (req: Request, res: Response<ICommonController>) => {
+  getUpi = async (req: Request, res: Response<ICommonController>) => {
     try {      
       let payload = req.user as IPayAuth;
-      let data = await Services.getSupport();
+      let data = await Services.getUpi();
        return res.status(data.statusCode).send(data.data);
     } catch (error) {
-      console.log("Error", error);
+      // console.log("Error", error);
       return res.status(500).send({
         success: false,
         message: responseMessages.ERROR_ISE,

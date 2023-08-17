@@ -1,25 +1,23 @@
-import { ICommonServices } from "../interfaces/response_interfaces";
+import { Request } from "express";
+import { ICommonServices, IUser } from "../interfaces/response_interfaces";
+import Users, { UserModel } from "../models/users";
 import _ from "lodash";
 import responseMessages from "../common/response.messages";
+import { IUserDetails } from "../interfaces/user";
 import ContactUs from "../models/contactUS";
-import SupportModel from "../models/support";
 
 class dataServicesData {
 
   addContactUs = async (): Promise<ICommonServices> => {
     try {
       let data: any = await ContactUs.create({
-        name: "Mr. Raman S/O Mr. Rajbir",
-        village: "Rajehri",
-        post: "Nachron",
-        teh: "Radaur",
-        dist: "Yamunanagar",
-        pincode: "135001",
-        email: "ramankumar407@gmail.com",
-        contactNumber: 9466660442
+        name: "Lead Genrator",
+        address: "VPO Kanech, pin-code 141120",
+        email: "abhay@gmail.com",
+        contactNumber: 9653309234
       });
       if (data) {
-        console.log(data);
+        // console.log(data);
         return {
           statusCode: 200,
           data: {
@@ -41,12 +39,12 @@ class dataServicesData {
     try {
       let data: any = await ContactUs.findOne({}).lean();
       if (data) {
-        console.log(data);
+        // console.log(data);
         return {
           statusCode: 200,
           data: {
             success: true,
-            message: "contact-us data found",
+            message: "data found",
             data
           }
         };
@@ -58,48 +56,33 @@ class dataServicesData {
       return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
     }
   };
-
-  addSupport = async (): Promise<ICommonServices> => {
+  getUpi = async (): Promise<ICommonServices> => {
     try {
-      let data: any = await SupportModel.create({
-        email: "ramankumar407@gmail.com",
-        contactNumber: 9466660442
-      });
-      if (data) {
-        console.log(data);
-        return {
-          statusCode: 200,
+      // let data: any = await ContactUs.findOne({}).lean();
+      // if (data) {
+      //   // console.log(data);
+      //   return {
+      //     statusCode: 200,
+      //     data: {
+      //       success: true,
+      //       message: "data found",
+      //       data
+      //     }
+      //   };
+      // } else {
+      //   return { statusCode: 200, data: { success: false, message: responseMessages.USER_DETAILS_FOUND_NOT } };
+      // }
+      return {
+        statusCode: 200,
+        data: {
+          success: true,
+          message: "found",
           data: {
-            success: true,
-            message: "Support data added",
-            data
+            upi:"Ridhu201@upi",
+            qrcode:"public/data/qr.jpg"
           }
-        };
-      } else {
-        return { statusCode: 200, data: { success: false, message: responseMessages.USER_DETAILS_FOUND_NOT } };
-      }
-    } catch (error) {
-      console.log(error);
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
-    }
-  };
-
-  getSupport = async (): Promise<ICommonServices> => {
-    try {
-      let data: any = await SupportModel.findOne({}).lean();
-      if (data) {
-        console.log(data);
-        return {
-          statusCode: 200,
-          data: {
-            success: true,
-            message: "Support data found",
-            data
-          }
-        };
-      } else {
-        return { statusCode: 200, data: { success: false, message: responseMessages.USER_DETAILS_FOUND_NOT } };
-      }
+        }
+      };
     } catch (error) {
       console.log(error);
       return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };

@@ -98,14 +98,14 @@ class dataServicesData {
       // console.log("joinnnnnnnnnnnnn")
 
       let payload = req.user as IPayAuth;
-      let user = await Users.findById(payload.userId, { availabelAmount: 1 }).lean();
-      if (user && user?.availabelAmount < req.body.amount) {
+      let user = await Users.findById(payload.userId, { availableAmount: 1 }).lean();
+      if (user && user?.availableAmount < req.body.amount) {
         return { statusCode: 200, data: { success: false, message: "Your Balance is less" } };
       } else {
         let getGames = await Color.find({});
         let data: any = await Join.create({ ...req.body, userId: payload.userId, num: (getGames.length + 1) });
         if (user) {
-          let balance = await Users.findByIdAndUpdate(payload.userId, { $set: { availabelAmount: user.availabelAmount - data.amount } }, { new: true })
+          let balance = await Users.findByIdAndUpdate(payload.userId, { $set: { availableAmount: user.availableAmount - data.amount } }, { new: true })
         }
         if (data) {
           return {

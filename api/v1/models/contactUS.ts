@@ -1,23 +1,11 @@
-import { getModelForClass, prop } from "@typegoose/typegoose";
+import { getModelForClass, Index, mongoose, prop, Ref } from "@typegoose/typegoose";
 
 export class ContactUsModel {
   @prop()
   name: string;
 
   @prop()
-  village: string;
-
-  @prop()
-  post: string;
-
-  @prop()
-  teh: string;
-
-  @prop()
-  dist: string;
-
-  @prop()
-  pincode: number;
+  address: string;
 
   @prop()
   email: string;

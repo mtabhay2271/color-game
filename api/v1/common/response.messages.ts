@@ -4,7 +4,6 @@ class ResMsgs {
     VALIDATION_ERROR = "Validation error occured";
     FILE_REQ = "Media file can not be null or undefined";
     EMAIL_EXIST = "Email already exists";
-    PHONE_EXIST = "Phone number already exists";
     USERNAME_EXIST = "Username already taken";
     EMAIL_NOT_EXIST = "Email not exists";
     COUNTRY_NOT = "Country not found";
@@ -12,6 +11,8 @@ class ResMsgs {
     CITY_NOT = "City not found";
     NOT_AUTH = "You are not authorised to to perform action";
 
+    DATA_FOUND= "Data found";
+    DATA_FOUND_NOT= "Data not found";
     USER_SIGNUP = "Signup successfully";
     USER_SIGNUP_NOT = "Signup failed";
     USER_FOUND_NOT = "User not found";

@@ -26,14 +26,19 @@ export class TxnViewModel {
   
   @Expose()
   @IsDefined()
-  @IsNotEmpty()
   @IsNumber()
   @Type(() => Number)
-  txnNum!: number;
+  txnNum: number;
 
   @Expose()
-  @IsDefined()
   @IsOptional()
-  widhrawal: boolean;
+  widhrawal?: boolean;
 
+  @Expose()
+  @IsOptional()
+  inBank?: boolean;
+
+  @Expose()
+  @IsOptional()
+  upi?: string;
 }

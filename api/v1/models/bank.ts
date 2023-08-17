@@ -8,6 +8,8 @@ export class BankModel {
     type: mongoose.Types.ObjectId,
   })
   userId: Ref<UserModel>;
+  // @prop()
+  // userId: string;
 
   @prop()
   accountHolderName!: string;
@@ -24,14 +26,14 @@ export class BankModel {
   @prop()
   phoneNumber!: number;
 
-  @prop()
-  city!: string;
+  // @prop()
+  // city: string;
   
-  @prop()
-  state!: string;
+  // @prop()
+  // state: string;
 
-  @prop()
-  country: string
+  // @prop()
+  // country: string
 
   @prop()
   email: string;
