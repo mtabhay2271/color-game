@@ -29,71 +29,13 @@ class UserServicesData {
           };
         } else {
           if (signupViewModel.referCode) {
-            // console.log("inside refercode",signupViewModel.referCode)
             let upline = await Users.findOne({ referCode: signupViewModel.referCode });
-
-            signupViewModel.uplineId = upline?._id
-            let promiseArray = [];
-            // console.log(upline, "upline>>")
-            if (signupViewModel.uplineId) {
-              if (upline?.uplineId)
-                signupViewModel.uplineId2 = upline.uplineId
-              promiseArray.push(
-                new Promise(function (resolve, reject) {
-                  // resolve(Users.updateOne({ referCode: signupViewModel.referCode }, { $inc: { myNetwork: 1,todayLeads: 1 } }))
-                  resolve(Users.findByIdAndUpdate(signupViewModel.uplineId, { $inc: { myNetwork: 1, todayLeads: 1 } }))
-                })
-              )
-
-            }
-            if (signupViewModel.uplineId2) {
-              if (upline?.uplineId2)
-                signupViewModel.uplineId3 = upline.uplineId2
-              promiseArray.push(
-                new Promise(function (resolve, reject) {
-                  // resolve(Users.updateOne({ referCode: signupViewModel.referCode }, { $inc: { myNetwork: 1,todayLeads: 1 } }))
-                  resolve(Users.findByIdAndUpdate(signupViewModel.uplineId2, { $inc: { myNetwork: 1, todayLeads: 1 } }))
-                })
-              )
-            }
-            if (signupViewModel.uplineId3) {
-              if (upline?.uplineId3)
-                signupViewModel.uplineId4 = upline.uplineId3
-              promiseArray.push(
-                new Promise(function (resolve, reject) {
-                  // resolve(Users.updateOne({ referCode: signupViewModel.referCode }, { $inc: { myNetwork: 1,todayLeads: 1 } }))
-                  resolve(Users.findByIdAndUpdate(signupViewModel.uplineId3, { $inc: { myNetwork: 1, todayLeads: 1 } }))
-                })
-              )
-            }
-            if (signupViewModel.uplineId4) {
-              if (upline?.uplineId4)
-                signupViewModel.uplineId5 = upline.uplineId4
-              promiseArray.push(
-                new Promise(function (resolve, reject) {
-                  // resolve(Users.updateOne({ referCode: signupViewModel.referCode }, { $inc: { myNetwork: 1,todayLeads: 1 } }))
-                  resolve(Users.findByIdAndUpdate(signupViewModel.uplineId4, { $inc: { myNetwork: 1, todayLeads: 1 } }))
-                })
-              )
-            }
-
-            if (signupViewModel.uplineId5) {
-              promiseArray.push(
-                new Promise(function (resolve, reject) {
-                  // resolve(Users.updateOne({ referCode: signupViewModel.referCode }, { $inc: { myNetwork: 1,todayLeads: 1 } }))
-                  resolve(Users.findByIdAndUpdate(signupViewModel.uplineId5, { $inc: { myNetwork: 1, todayLeads: 1 } }))
-                })
-              )
-            }
-
-            let data = await Promise.all(promiseArray);
-            // console.log(data, "data<<<<<<<<<<<<<<")
-
+            signupViewModel.uplineId = upline?._id;
+            if (upline?.uplineId)
+              signupViewModel.uplineId2 = upline.uplineId;
+            if (upline?.uplineId2)
+              signupViewModel.uplineId3 = upline.uplineId2;
           }
-          // else{
-          //   console.log("new refere code <<<<<<<<<<<<<<<")
-          //   signupViewModel.referCode = OtpGenerator.generate(6, { specialChars: false });
-          // }
 
           const salt = await bcrypt.genSalt(10);
           signupViewModel.password = await bcrypt.hash(signupViewModel.password, salt);
@@ -112,7 +54,7 @@ class UserServicesData {
       return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
     }
   };
- 
+
   login = async (req: Request): Promise<ICommonServices> => {
     try {
       let user = await Users.findOne({ username: req.body.username.toLowerCase() });
@@ -328,7 +270,6 @@ class UserServicesData {
     }
   };
 
-
   resetPassword = async (reqData: ResetPasswordViewModel): Promise<ICommonServices> => {
     try {
       let user = await Users.findById(reqData.userId).lean();
@@ -387,15 +328,10 @@ class UserServicesData {
 
   changePasswordByAdmin = async (req: Request): Promise<ICommonServices> => {
     try {
-
       const salt = await bcrypt.genSalt(10);
-      let password=await bcrypt.hash(req.body.password, salt);
-      let updatedUser: any = await Users.findOneAndUpdate({ username: req.body.username }, { $set: { password} }, { new: true })
-
-
+      let password = await bcrypt.hash(req.body.password, salt);
+      let updatedUser: any = await Users.findOneAndUpdate({ username: req.body.username }, { $set: { password } }, { new: true })
       return { statusCode: 200, data: { success: true, message: 'Password changed succesfully' } };
-
-
     } catch (error) {
       console.log(error);
       return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };

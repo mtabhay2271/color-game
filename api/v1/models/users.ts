@@ -58,18 +58,11 @@ export class UserModel {
   })
   isPaymentDone: boolean;
 
-
   @prop({
     required: false,
     default: 0
   })
   paymentStatus: number;
-
-  @prop({
-    required: false,
-    default: 0
-  })
-  plan: number;
 
   @prop()
   paymentRefNumber: number;
