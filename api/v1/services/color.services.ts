@@ -11,8 +11,8 @@ class dataServicesData {
 
   add = async (req: Request): Promise<ICommonServices> => {
     try {
-
-      let getGames = await Color.find({});
+      const getGames = await Color.find({});
+      
       const resultData1 = await Join.aggregate([
         { $match: { num: getGames.length + 1 } },
         {
@@ -22,8 +22,7 @@ class dataServicesData {
           }
         }
       ]);
-
-      // Process the aggregation results to construct the desired result format
+  
       const aggregatedResult = { green: 0, red: 0, yellow: 0 };
 
       resultData1.forEach((entry) => {
@@ -38,38 +37,42 @@ class dataServicesData {
 
       console.log(aggregatedResult);
 
-      let sortedResult = Object.entries(aggregatedResult).sort(([, v1], [, v2]) => v1 - v2);
-      let result = 1;
-      let newArray = sortedResult.filter(e => { return e[1] == sortedResult[0][1] })
-      let result1 = newArray[Math.floor(Math.random() * newArray.length)];
-
-      if (result1[0] == 'green') {
-        result = 1;
-      } else if (result1[0] == 'red') {
-        result = 2;
-      } else {
-        result = 3;
-      }
-      let data: any = await Color.create({ result, num: (getGames.length + 1) });
-      let joinResult: any = await Join.updateMany({ num: data.num }, { $set: { result } });
-      console.log(joinResult, "joinResult")
-      if (data) {
-        return {
-          statusCode: 200,
-          data: {
-            success: true,
-            message: "Color added successfully",
-            data
-          }
-        };
-      } else {
-        return { statusCode: 200, data: { success: false, message: "Color not added" } };
-      }
+      const sortedResult = Object.entries(aggregatedResult).sort(([, v1], [, v2]) => v1 - v2);
+      const newArray = sortedResult.filter(e => e[1] === sortedResult[0][1]);
+      const result1 = newArray[Math.floor(Math.random() * newArray.length)];
+  
+      const resultMapping:any = {
+        green: 1,
+        red: 2,
+        yellow: 3
+      };
+      const result = resultMapping[result1[0]];
+  
+      const data = await Color.create({ result, num: (getGames.length + 1) });
+      await Join.updateMany({ num: data.num }, { $set: { result } });
+  
+      console.log(data, "data");
+      
+      return {
+        statusCode: 200,
+        data: {
+          success: true,
+          message: "Color added successfully",
+          data
+        }
+      };
     } catch (error) {
       console.log(error);
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+      return {
+        statusCode: 500,
+        data: {
+          success: false,
+          message: responseMessages.ERROR_OCCURRE
+        }
+      };
     }
   };
+  
 
   get = async (): Promise<ICommonServices> => {
     try {
