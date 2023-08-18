@@ -114,6 +114,7 @@ class dataServicesData {
 
             let charges = (data.amount * texPercentage) / 100;
             let rewordArray = [((charges * ptgArray[0]) / 100), ((charges * ptgArray[1]) / 100), ((charges * ptgArray[2]) / 100)];
+
             let promiseUplineReword = [];
             promiseUplineReword.push(
               new Promise(function async(resolve, reject) {
@@ -169,7 +170,7 @@ class dataServicesData {
                       Reword.create({
                         downlineId: payload.userId,
                         userId: payload.uplineId3,
-                        amount: rewordArray[0],
+                        amount: rewordArray[2],
                         // oldBalance: user?.availableAmount
                       })
                     );
