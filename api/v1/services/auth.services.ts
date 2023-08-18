@@ -88,6 +88,9 @@ class UserServicesData {
                 {
                   email: user.email,
                   username: user.username,
+                  uplineId: user.uplineId,
+                  uplineId2: user.uplineId2,
+                  uplineId3: user.uplineId3,
                   _id: user._id,
                   role: user.role,
                 },

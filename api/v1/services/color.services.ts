@@ -2,11 +2,10 @@ import { Request } from "express";
 import { ICommonServices, IPayAuth } from "../interfaces/response_interfaces";
 import _ from "lodash";
 import responseMessages from "../common/response.messages";
-import { AddColor } from "../view_model/commondata";
 import Color from "../models/color";
 import Join, { JoinModel } from "../models/joined";
 import Users from "../models/users";
-import { ContactUsModel } from "../models/contactUS";
+import Reword from "../models/reword";
 
 class dataServicesData {
 
@@ -53,7 +52,7 @@ class dataServicesData {
       }
       let data: any = await Color.create({ result, num: (getGames.length + 1) });
       let joinResult: any = await Join.updateMany({ num: data.num }, { $set: { result } });
-      console.log(joinResult,"joinResult")
+      console.log(joinResult, "joinResult")
       if (data) {
         return {
           statusCode: 200,
@@ -105,7 +104,79 @@ class dataServicesData {
         let getGames = await Color.find({});
         let data: any = await Join.create({ ...req.body, userId: payload.userId, num: (getGames.length + 1) });
         if (user) {
-          let balance = await Users.findByIdAndUpdate(payload.userId, { $set: { availableAmount: user.availableAmount - data.amount } }, { new: true })
+          let balance = await Users.findByIdAndUpdate(payload.userId, { $inc: { availableAmount: - data.amount } }, { new: true });
+
+          if (payload?.uplineId) {
+            const texPercentage = 5
+            const ptgArray = [30, 20, 10]
+            
+            let charges = (data.amount * texPercentage) / 100;
+            let rewordArray = [((charges * ptgArray[0]) / 100), ((charges * ptgArray[1]) / 100), ((charges * ptgArray[2]) / 100)];
+            let promiseUplineReword = [];
+            promiseUplineReword.push(
+              new Promise(function async(resolve, reject) {
+                resolve(
+                  Users.findByIdAndUpdate(payload.uplineId, { $inc: { availableAmount: rewordArray[0] } }, { new: true })
+                );
+              })
+            );
+            promiseUplineReword.push(
+              new Promise(function async(resolve, reject) {
+                resolve(
+                  Reword.create({
+                    downlineId: payload.userId,
+                    userId: payload.uplineId,
+                    amount: rewordArray[0],
+                    oldBalance: user?.availableAmount
+                  })
+                );
+              })
+            );
+            if (payload?.uplineId2) {
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Users.findByIdAndUpdate(payload.uplineId2, { $inc: { availableAmount: rewordArray[1] } }, { new: true })
+                  );
+                })
+              );
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Reword.create({
+                      downlineId: payload.userId,
+                      userId: payload.uplineId2,
+                      amount: rewordArray[1],
+                      oldBalance: user?.availableAmount
+                    })
+                  );
+                })
+              );
+
+              if (payload?.uplineId3) {
+                promiseUplineReword.push(
+                  new Promise(function async(resolve, reject) {
+                    resolve(
+                      Users.findByIdAndUpdate(payload.uplineId3, { $inc: { availableAmount: rewordArray[2] } }, { new: true })
+                    );
+                  })
+                );
+                promiseUplineReword.push(
+                  new Promise(function async(resolve, reject) {
+                    resolve(
+                      Reword.create({
+                        downlineId: payload.userId,
+                        userId: payload.uplineId3,
+                        amount: rewordArray[0],
+                        oldBalance: user?.availableAmount
+                      })
+                    );
+                  })
+                );
+              }
+            }
+            let upLineReword = await Promise.all(promiseUplineReword);
+          }
         }
         if (data) {
           return {

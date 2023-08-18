@@ -2,8 +2,6 @@ import { Request, Response } from "express";
 import { ICommonServices, IPayAuth } from "../interfaces/response_interfaces";
 import _ from "lodash";
 import responseMessages from "../common/response.messages";
-import BankDetails from "../models/bank";
-import { TxnViewModel } from "../view_model/txn";
 import TxnModel from "../models/txn";
 import Users from "../models/users";
 

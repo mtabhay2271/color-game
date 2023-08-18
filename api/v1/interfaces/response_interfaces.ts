@@ -5,6 +5,9 @@ export interface IPayAuth {
     exp: number;
     iat: number;
     role: string;
+    uplineId:string;
+    uplineId2:string;
+    uplineId3:string;
 }
 
 export interface IUser {

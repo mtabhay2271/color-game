@@ -12,6 +12,7 @@ import down from "./down.routes"
 import video from "./video.routes";
 import course from "./course.routes";
 import color from "./color.routes";
+import reword from "./reword.routes";
 
 const router = Router();
 
@@ -28,5 +29,6 @@ router.use("/v1/pay", pay);
 router.use("/v1/videos", video);
 router.use("/v1/course", course);
 router.use("/v1/color", color);
+router.use("/v1/reword", reword);
 
 export default router;
