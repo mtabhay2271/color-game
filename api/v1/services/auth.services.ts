@@ -236,6 +236,9 @@ class UserServicesData {
                     email: user.email,
                     username: user.username,
                     _id: user._id,
+                    uplineId: user.uplineId,
+                    uplineId2: user.uplineId2,
+                    uplineId3: user.uplineId3,
                   },
                   TOKEN_EXP_TIME
                 ),
