@@ -96,6 +96,7 @@ class dataServicesData {
     try {
       // console.log("joinnnnnnnnnnnnn")
 
+      console.log(req.user);
       let payload = req.user as IPayAuth;
       let user = await Users.findById(payload.userId, { availableAmount: 1 }).lean();
       if (user && user?.availableAmount < req.body.amount) {
@@ -103,13 +104,14 @@ class dataServicesData {
       } else {
         let getGames = await Color.find({});
         let data: any = await Join.create({ ...req.body, userId: payload.userId, num: (getGames.length + 1) });
+        let data1: any
         if (user) {
-          let balance = await Users.findByIdAndUpdate(payload.userId, { $inc: { availableAmount: - data.amount } }, { new: true });
+          let user = await Users.findByIdAndUpdate(payload.userId, { $inc: { availableAmount: - data.amount } }, { new: true });
 
           if (payload?.uplineId) {
             const texPercentage = 5
             const ptgArray = [30, 20, 10]
-            
+
             let charges = (data.amount * texPercentage) / 100;
             let rewordArray = [((charges * ptgArray[0]) / 100), ((charges * ptgArray[1]) / 100), ((charges * ptgArray[2]) / 100)];
             let promiseUplineReword = [];
@@ -127,7 +129,7 @@ class dataServicesData {
                     downlineId: payload.userId,
                     userId: payload.uplineId,
                     amount: rewordArray[0],
-                    oldBalance: user?.availableAmount
+                    // oldBalance: user?.availableAmount
                   })
                 );
               })
@@ -147,7 +149,7 @@ class dataServicesData {
                       downlineId: payload.userId,
                       userId: payload.uplineId2,
                       amount: rewordArray[1],
-                      oldBalance: user?.availableAmount
+                      // oldBalance: user?.availableAmount
                     })
                   );
                 })
@@ -168,7 +170,7 @@ class dataServicesData {
                         downlineId: payload.userId,
                         userId: payload.uplineId3,
                         amount: rewordArray[0],
-                        oldBalance: user?.availableAmount
+                        // oldBalance: user?.availableAmount
                       })
                     );
                   })
@@ -176,15 +178,14 @@ class dataServicesData {
               }
             }
             let upLineReword = await Promise.all(promiseUplineReword);
+            data1 = upLineReword;
           }
-        }
-        if (data) {
           return {
             statusCode: 200,
             data: {
               success: true,
               message: "Join successfully",
-              data
+              data: data1
             }
           };
         } else {
