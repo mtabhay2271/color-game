@@ -172,7 +172,6 @@ class dataServicesData {
   rejectTxn = async (req: Request, id: string): Promise<ICommonServices> => {
     try {
       let data: any = await TxnModel.findByIdAndUpdate(id, { $set: { status: 2 } }, { new: true });
-
       if (data?.widhrawal) {
         let balance = await Users.findByIdAndUpdate(data.userId, { $inc: { availableAmount: data.amount } }, { new: true })
       }
@@ -193,9 +192,7 @@ class dataServicesData {
       console.log(error);
       return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
     }
-  };
-
-
+  };  
 }
 export default new dataServicesData();
 
