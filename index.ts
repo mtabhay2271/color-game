@@ -15,9 +15,14 @@ DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? '');
 
 const corsOptions = {
   origin: 'https://distinct-yak-hospital-gown.cyclic.cloud',
+  credentials: true
 };
 app.use(cors(corsOptions));
-
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', "*");
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  next();
+});
 // Set up WebSocket server using the httpServer
 const wss = new WSServer({ server:httpServer });
 
