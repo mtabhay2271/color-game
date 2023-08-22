@@ -1,52 +1,64 @@
-import express, { Request, Response, NextFunction, Application } from "express";
-import routes from "./api/v1/routes/index";
-import dotenv from "dotenv";
-import path from "path";
-import cors from 'cors'
-import http from "http";
-import DBConnation from './db.connation'
-// import cronJob from "./api/v1/common/cronJob";
-
+import express, { Request, Response, NextFunction, Application } from 'express';
+import http from 'http';
+import routes from './api/v1/routes/index';
+import dotenv from 'dotenv';
+import path from 'path';
+import DBConnation from './db.connation';
+import cors from 'cors';
+import { WebSocket, Server as WSServer } from 'ws'; // Import the Server class from 'ws'
 dotenv.config();
-//creating App
+
 const app: Application = express();
+const httpServer = http.createServer(app);
 
-//Connecting to database
-DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? "")
-
-// creating socket server using http server.;
-const server = http.createServer(app);
-
-// cronJob.daily.start();
-// cronJob.weekly.start();
-// cronJob.monthly.start();
+DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? '');
 
 app.use(cors());
-// app.use(cors({ origin: 'http://localhost:19006' }));
-// app.use(cors({
-//   allowedHeaders: ['Authorization', 'Content-Type'],
-// }));
 
+// Set up WebSocket server using the httpServer
+const wss = new WSServer({ noServer: true });
+
+httpServer.on("upgrade", (request, socket, head) => {
+  wss.handleUpgrade(request, socket, head, ws => {
+    wss.emit("connection", ws, request);
+  });
+});
+
+// Listen for WebSocket connections
+wss.on('connection', (socket: WebSocket) => {
+  // console.log('A user connected to WebSocket');
+
+  socket.on('message', (message: string) => {
+    // console.log('Received message from WebSocket:', message);
+
+    // ... handle other incoming messages ...
+  }); 
+  socket.on('close', () => {
+    // console.log('A user disconnected from WebSocket');
+  });
+});
+
+let i = 10;
+setInterval(() => {
+  --i
+  if (i < 0) {
+    i = 10
+  }
+  wss.clients.forEach(client => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(i);
+    }
+  });
+}, 1000);
 
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use("/public/data", express.static("public/imp"));
+app.use('/public/data', express.static('public/imp'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// app.use("/service_thumbnail", express.static("public/uploads/service_types_images"));
-app.use("/api", (req: Request, res: Response, next: NextFunction) => {
-  // console.log("headers>>>>", req.headers.authorization, "<<<<<headers");
-  // console.log("req.body>>>>", req.method, req.originalUrl, req.body, "<<<<<req.body");
+app.use('/api', (req: Request, res: Response, next: NextFunction) => {
   next();
 }, routes);
-//
 app.use('/pay', express.static('public'));
 
-app.get("/test", (req, res) => {
-  res.json({ message: "Working" });
-})
-
 const PORT = process.env.PORT || 7009;
-server.listen(PORT, () => console.log(`App listening on ${PORT}`));
-
+httpServer.listen(PORT, () => console.log(`App listening on ${PORT}`));
