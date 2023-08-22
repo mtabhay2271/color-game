@@ -26,7 +26,7 @@ httpServer.on("upgrade", (request, socket, head) => {
 
 // Listen for WebSocket connections
 wss.on('connection', (socket: WebSocket) => {
-  // console.log('A user connected to WebSocket');
+  console.log('A user connected to WebSocket');
 
   socket.on('message', (message: string) => {
     // console.log('Received message from WebSocket:', message);
