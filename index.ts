@@ -16,7 +16,7 @@ DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? '');
 app.use(cors());
 
 // Set up WebSocket server using the httpServer
-const wss = new WSServer({ noServer: true });
+const wss = new WSServer({ server:httpServer });
 
 httpServer.on("upgrade", (request, socket, head) => {
   wss.handleUpgrade(request, socket, head, ws => {
