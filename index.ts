@@ -27,7 +27,10 @@ httpServer.on("upgrade", (request, socket, head) => {
 // Listen for WebSocket connections
 wss.on('connection', (socket: WebSocket) => {
   console.log('A user connected to WebSocket');
-
+  socket.on('headers', (headers) => {
+    headers.push('Access-Control-Allow-Origin: *'); // Replace * with your allowed origins
+    headers.push('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
+  });
   socket.on('message', (message: string) => {
     // console.log('Received message from WebSocket:', message);
 
