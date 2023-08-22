@@ -4,7 +4,7 @@ import utility, { Validation } from "../common/utility";
 import { ICommonController } from "../interfaces/response_interfaces";
 import Services from "../services/color.services";
 import { AddColor, JoinGame } from "../view_model/commondata";
-class ControllersData {
+class ControllersData { 
 
   add = async (req: Request, res: Response<ICommonController>, next: NextFunction) => {
     try {
