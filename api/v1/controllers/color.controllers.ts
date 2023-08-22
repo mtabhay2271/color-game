@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import responseMessages from "../common/response.messages";
+// import responseMessages from "../common/response.messages";
 import utility, { Validation } from "../common/utility";
 import { ICommonController } from "../interfaces/response_interfaces";
 import Services from "../services/color.services";
@@ -14,7 +14,7 @@ class ControllersData {
     } catch (error) {
       return res.status(500).send({
         success: false,
-        message: responseMessages.ERROR_ISE,
+        message: "responseMessages.ERROR_ISE",
         error
       });
     }
@@ -28,7 +28,7 @@ class ControllersData {
       console.log("Error", error);
       return res.status(500).send({
         success: false,
-        message: responseMessages.ERROR_ISE,
+        message: "responseMessages.ERROR_ISE",
         error
       });
     }
@@ -40,7 +40,7 @@ class ControllersData {
       if (validatedData.error) {
         return res.status(400).send({
           success: false,
-          message: responseMessages.VALIDATION_ERROR,
+          message: "responseMessages.VALIDATION_ERROR",
           data: validatedData.error,
         });
       } else {
@@ -51,7 +51,7 @@ class ControllersData {
       console.log("Error", error);
       return res.status(500).send({
         success: false,
-        message: responseMessages.ERROR_ISE,
+        message: "responseMessages.ERROR_ISE",
         error
       });
     }
@@ -66,7 +66,7 @@ class ControllersData {
   //     console.log("Error", error);
   //     return res.status(500).send({
   //       success: false,
-  //       message: responseMessages.ERROR_ISE,
+  //       message: "responseMessages.ERROR_ISE",
   //       error
   //     });
   //   }
