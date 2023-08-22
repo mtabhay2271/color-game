@@ -14,7 +14,10 @@ const httpServer = http.createServer(app);
 DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? '');
 
 const corsOptions = {
-  origin: 'https://distinct-yak-hospital-gown.cyclic.cloud',
+  origin: [
+    'https://distinct-yak-hospital-gown.cyclic.cloud',
+    'https://color-game-d23fb.web.app'
+  ],
   credentials: true
 };
 app.use(cors(corsOptions));
