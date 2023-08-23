@@ -74,5 +74,6 @@ app.use('/api', (req: Request, res: Response, next: NextFunction) => {
 }, routes);
 app.use('/pay', express.static('public'));
 
-const PORT = process.env.PORT || 7009;
+const PORT = 80;
+// const PORT = process.env.PORT || 7009;
 httpServer.listen(PORT, () => console.log(`App listening on ${PORT}`));
