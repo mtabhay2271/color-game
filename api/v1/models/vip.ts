@@ -1,16 +1,16 @@
-import { getModelForClass, Index, mongoose, prop, Ref } from "@typegoose/typegoose";
+// import { getModelForClass, Index, mongoose, prop, Ref } from "@typegoose/typegoose";
 
-export class VipModel {
-  @prop()
-  phoneNumber!: number;
+// export class VipModel {
+//   @prop()
+//   phoneNumber!: number;
 
-}
+// }
 
-const VipNumber = getModelForClass(VipModel, {
-  schemaOptions: {
-    collection: "vip-number",
-    timestamps: true,
-  },
-});
+// const VipNumber = getModelForClass(VipModel, {
+//   schemaOptions: {
+//     collection: "vip-number",
+//     timestamps: true,
+//   },
+// });
 
-export default VipNumber;
+// export default VipNumber;
