@@ -7,28 +7,12 @@ import DBConnation from './db.connation';
 import cors from 'cors';
 import { WebSocket, Server as WSServer } from 'ws'; // Import the Server class from 'ws'
 dotenv.config();
-
 const app: Application = express();
 const httpServer = http.createServer(app);
-
 DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? '');
-
-const corsOptions = {
-  origin: [
-    'https://distinct-yak-hospital-gown.cyclic.cloud',
-    'https://color-game-d23fb.web.app'
-  ],
-  credentials: true
-};
-app.use(cors(corsOptions));
-app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', "*");
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  next();
-});
+app.use(cors());
 // Set up WebSocket server using the httpServer
-const wss = new WSServer({ server:httpServer });
-
+const wss = new WSServer({ noServer: true });
 httpServer.on("upgrade", (request, socket, head) => {
   wss.handleUpgrade(request, socket, head, ws => {
     wss.emit("connection", ws, request);
@@ -38,25 +22,20 @@ httpServer.on("upgrade", (request, socket, head) => {
 // Listen for WebSocket connections
 wss.on('connection', (socket: WebSocket) => {
   console.log('A user connected to WebSocket');
-  socket.on('headers', (headers) => {
-    headers.push('Access-Control-Allow-Origin: *'); // Replace * with your allowed origins
-    headers.push('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
-  });
-  socket.on('message', (message: string) => {
-    // console.log('Received message from WebSocket:', message);
 
+  socket.on('message', (message: string) => {
+    console.log('Received message from WebSocket:', message);
     // ... handle other incoming messages ...
   }); 
   socket.on('close', () => {
-    // console.log('A user disconnected from WebSocket');
+    console.log('A user disconnected from WebSocket');
   });
 });
-
-let i = 10;
+let i = 20;
 setInterval(() => {
   --i
   if (i < 0) {
-    i = 10
+    i = 20
   }
   wss.clients.forEach(client => {
     if (client.readyState === WebSocket.OPEN) {
@@ -64,7 +43,6 @@ setInterval(() => {
     }
   });
 }, 1000);
-
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/public/data', express.static('public/imp'));
 app.use(express.json());
@@ -73,7 +51,5 @@ app.use('/api', (req: Request, res: Response, next: NextFunction) => {
   next();
 }, routes);
 app.use('/pay', express.static('public'));
-
-const PORT = 80;
-// const PORT = process.env.PORT || 7009;
+const PORT = process.env.PORT || 7009;
 httpServer.listen(PORT, () => console.log(`App listening on ${PORT}`));
