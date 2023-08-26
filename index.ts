@@ -10,7 +10,12 @@ dotenv.config();
 const app: Application = express();
 const httpServer = http.createServer(app);
 DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? '');
-app.use(cors());
+const corsOptions = {
+  origin: 'https://color-game-d23fb.web.app',
+  optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.use(cors(corsOptions));
 // Set up WebSocket server using the httpServer
 const wss = new WSServer({ noServer: true });
 httpServer.on("upgrade", (request, socket, head) => {
