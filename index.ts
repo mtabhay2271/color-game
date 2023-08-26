@@ -1,14 +1,21 @@
 import express, { Request, Response, NextFunction, Application } from 'express';
 import http from 'http';
+import https from 'https';
 import routes from './api/v1/routes/index';
 import dotenv from 'dotenv';
 import path from 'path';
 import DBConnation from './db.connation';
 import cors from 'cors';
+import fs from 'fs';
+import { ServerOptions } from 'https';
 import { WebSocket, Server as WSServer } from 'ws'; // Import the Server class from 'ws'
 dotenv.config();
 const app: Application = express();
-const httpServer = http.createServer(app);
+const options: ServerOptions = {
+  key: fs.readFileSync('./key.pem'),
+  cert: fs.readFileSync('./certificate.pem')
+};
+const httpsServer = https.createServer(options, app);
 DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? '');
 const corsOptions = {
   origin: 'https://color-game-d23fb.web.app',
@@ -18,7 +25,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 // Set up WebSocket server using the httpServer
 const wss = new WSServer({ noServer: true });
-httpServer.on("upgrade", (request, socket, head) => {
+httpsServer.on("upgrade", (request, socket, head) => {
   wss.handleUpgrade(request, socket, head, ws => {
     wss.emit("connection", ws, request);
   });
@@ -57,4 +64,4 @@ app.use('/api', (req: Request, res: Response, next: NextFunction) => {
 }, routes);
 app.use('/pay', express.static('public'));
 const PORT = process.env.PORT || 7009;
-httpServer.listen(PORT, () => console.log(`App listening on ${PORT}`));
+httpsServer.listen(PORT, () => console.log(`App listening on ${PORT}`));
