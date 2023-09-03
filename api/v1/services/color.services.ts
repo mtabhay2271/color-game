@@ -9,7 +9,7 @@ import Reword from "../models/reword";
 
 class dataServicesData {
 
-  add = async (req: Request): Promise<ICommonServices> => {
+  add = async () => {
     try {
       const getGames = await Color.find({});
 
@@ -29,7 +29,7 @@ class dataServicesData {
         if (entry._id === 1) {
           aggregatedResult.green = entry.totalAmount * 2;
         } else if (entry._id === 2) {
-          aggregatedResult.red = entry.totalAmount * 3;
+          aggregatedResult.red = entry.totalAmount * 2;
         } else {
           aggregatedResult.yellow = entry.totalAmount * 5;
         }
@@ -59,7 +59,7 @@ class dataServicesData {
         if (result === 1) {
           userAmount *= 2;
         } else if (result === 2) {
-          userAmount *= 3;
+          userAmount *= 2;
         } else if (result === 3) {
           userAmount *= 5;
         }
@@ -76,26 +76,25 @@ class dataServicesData {
 
       /////////////////////////
 
-      return {
-        statusCode: 200,
-        data: {
-          success: true,
-          message: "Color added successfully",
-          data
-        }
-      };
+      // return {
+      //   statusCode: 200,
+      //   data: {
+      //     success: true,
+      //     message: "Color added successfully",
+      //     data
+      //   }
+      // };
     } catch (error) {
       console.log(error);
-      return {
-        statusCode: 500,
-        data: {
-          success: false,
-          message: responseMessages.ERROR_OCCURRE
-        }
-      };
+      // return {
+      //   statusCode: 500,
+      //   data: {
+      //     success: false,
+      //     message: responseMessages.ERROR_OCCURRE
+      //   }
+      // };
     }
   };
-
 
   get = async (): Promise<ICommonServices> => {
     try {
@@ -225,6 +224,93 @@ class dataServicesData {
     }
   };
 
+
+  // add = async (req: Request): Promise<ICommonServices> => {
+  //   try {
+  //     const getGames = await Color.find({});
+
+  //     const resultData1 = await Join.aggregate([
+  //       { $match: { num: getGames.length + 1 } },
+  //       {
+  //         $group: {
+  //           _id: "$color",
+  //           totalAmount: { $sum: "$amount" }
+  //         }
+  //       }
+  //     ]);
+
+  //     const aggregatedResult = { green: 0, red: 0, yellow: 0 };
+
+  //     resultData1.forEach((entry) => {
+  //       if (entry._id === 1) {
+  //         aggregatedResult.green = entry.totalAmount * 2;
+  //       } else if (entry._id === 2) {
+  //         aggregatedResult.red = entry.totalAmount * 3;
+  //       } else {
+  //         aggregatedResult.yellow = entry.totalAmount * 5;
+  //       }
+  //     });
+
+  //     const sortedResult = Object.entries(aggregatedResult).sort(([, v1], [, v2]) => v1 - v2);
+  //     const newArray = sortedResult.filter(e => e[1] === sortedResult[0][1]);
+  //     const result1 = newArray[Math.floor(Math.random() * newArray.length)];
+
+  //     const resultMapping: any = {
+  //       green: 1,
+  //       red: 2,
+  //       yellow: 3
+  //     };
+  //     const result = resultMapping[result1[0]];
+
+  //     const data = await Color.create({ result, num: (getGames.length + 1) });
+  //     await Join.updateMany({ num: data.num }, { $set: { result } });
+
+  //     let dataUser = await Join.find({ color: result, num: data.num }, { userId: 1, amount: 1 })
+  //     //////////////////
+
+  //     const updatePromises = dataUser.map(async (item) => {
+  //       const userId = item.userId;
+  //       let userAmount = item.amount; // The amount value from Join collection
+  //       // Update the userAmount based on the color
+  //       if (result === 1) {
+  //         userAmount *= 2;
+  //       } else if (result === 2) {
+  //         userAmount *= 3;
+  //       } else if (result === 3) {
+  //         userAmount *= 5;
+  //       }
+
+  //       // Update the amount for the user using userId and updated userAmount
+  //       return await Users.updateOne(
+  //         { _id: userId },
+  //         { $inc: { availableAmount: userAmount } }
+  //       );
+  //     });
+
+  //     const updateResults = await Promise.all(updatePromises);
+
+
+  //     /////////////////////////
+
+  //     return {
+  //       statusCode: 200,
+  //       data: {
+  //         success: true,
+  //         message: "Color added successfully",
+  //         data
+  //       }
+  //     };
+  //   } catch (error) {
+  //     console.log(error);
+  //     return {
+  //       statusCode: 500,
+  //       data: {
+  //         success: false,
+  //         message: responseMessages.ERROR_OCCURRE
+  //       }
+  //     };
+  //   }
+  // };
 }
 export default new dataServicesData();
 

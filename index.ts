@@ -5,6 +5,7 @@ import routes from './api/v1/routes/index';
 import dotenv from 'dotenv';
 import path from 'path';
 import DBConnation from './db.connation';
+import ColorService from './api/v1/services/color.services'
 import cors from 'cors';
 import fs from 'fs';
 import { ServerOptions } from 'https';
@@ -38,7 +39,7 @@ wss.on('connection', (socket: WebSocket) => {
   socket.on('message', (message: string) => {
     console.log('Received message from WebSocket:', message);
     // ... handle other incoming messages ...
-  }); 
+  });
   socket.on('close', () => {
     console.log('A user disconnected from WebSocket');
   });
@@ -46,6 +47,9 @@ wss.on('connection', (socket: WebSocket) => {
 let i = 20;
 setInterval(() => {
   --i
+  if (i == 3) {
+    ColorService.add()
+  }
   if (i < 0) {
     i = 20
   }
