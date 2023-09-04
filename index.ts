@@ -16,10 +16,11 @@ const options: ServerOptions = {
   key: fs.readFileSync('./key.pem'),
   cert: fs.readFileSync('./certificate.pem')
 };
-const httpsServer = https.createServer(options, app);
+//const httpsServer = https.createServer(options, app);
+const httpsServer = http.createServer(app);
 DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? '');
 const corsOptions = {
-  origin: 'https://color-game-d23fb.web.app',
+  origin: 'http://colorgame.s3-website.us-east-2.amazonaws.com',
   optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
