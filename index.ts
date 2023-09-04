@@ -44,14 +44,15 @@ wss.on('connection', (socket: WebSocket) => {
     console.log('A user disconnected from WebSocket');
   });
 });
-let i = 20;
+const gameTime = 50;
+let i = gameTime;
 setInterval(() => {
   --i
   if (i == 3) {
     ColorService.add()
   }
   if (i < 0) {
-    i = 20
+    i = gameTime
   }
   wss.clients.forEach(client => {
     if (client.readyState === WebSocket.OPEN) {
