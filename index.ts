@@ -42,10 +42,10 @@ wss.on('connection', (socket: WebSocket) => {
     // ... handle other incoming messages ...
   });
   socket.on('close', () => {
-    console.log('A user disconnected from WebSocket');
+    console.log('A .user disconnected from WebSocket');
   });
 });
-const gameTime = 50;
+const gameTime = 50
 let i = gameTime;
 setInterval(() => {
   --i
