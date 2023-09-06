@@ -23,7 +23,7 @@ export class UserModel {
   @prop()
   referCode: string
 
-  @prop({ default: 0})
+  @prop({ default: 0 })
   status: number
 
   @prop({
@@ -89,18 +89,6 @@ export class UserModel {
     required: false,
     default: 0
   })
-  thisWeekEarning: number;
-
-  @prop({
-    required: false,
-    default: 0
-  })
-  thisMonthEarning: number;
-  
-  @prop({
-    required: false,
-    default: 0
-  })
   totalEarning: number;
 
   @prop({
@@ -126,7 +114,7 @@ export class UserModel {
     default: 0
   })
   teamEarning: number;
-  
+
 
   @prop({
     required: false,

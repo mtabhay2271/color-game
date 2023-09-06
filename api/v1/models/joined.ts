@@ -23,7 +23,7 @@ export class JoinModel {
     required: true
   })
   amount: number;
-  
+
   @prop({
     required: false
   })

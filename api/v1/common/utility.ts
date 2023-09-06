@@ -99,7 +99,7 @@ class Utility {
               if (result && result.username && result.username === user.username) {
                 // console.log(result.role);
 
-                if (result.role == 'admin') {
+                if (result.role == 1) {
                   req.user = {
                     userId: user._id,
                     email: user.email,

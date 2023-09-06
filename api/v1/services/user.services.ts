@@ -201,9 +201,9 @@ class UserServicesData {
   activateUser = async (req: Request): Promise<ICommonServices> => {
     try {
       let payload = req.user as IPayAuth;
-      
+
       let plan = parseInt(req.body.plan) == 500 ? 1 : (parseInt(req.body.plan) == 1000 ? 2 : 0);
-      
+
       const rewordsArray: any = {
         0: [100, 20, 10, 5, 2],
         1: [250, 100, 50, 40, 30],
@@ -215,7 +215,7 @@ class UserServicesData {
 
         let updatedUser: any = await Users.findOneAndUpdate(
           { username: req.body.username },
-          { $set: { isPaymentDone: true, status: 1,plan } },
+          { $set: { isPaymentDone: true, status: 1, plan } },
           { new: true }
         );
 
@@ -284,7 +284,7 @@ class UserServicesData {
 
           let updatedUser: any = await Users.findOneAndUpdate(
             { username: req.body.username },
-            { $set: { isPaymentDone: true,status: 1, plan } },
+            { $set: { isPaymentDone: true, status: 1, plan } },
             { new: true }
           );
 

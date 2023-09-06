@@ -12,6 +12,9 @@ export class TxnModel {
   @prop()
   amount!: number;
 
+  @prop({ required: false })
+  pay: number;
+
   @prop()
   txnNum: number;
 
@@ -41,7 +44,7 @@ export class TxnModel {
     type: Number,
   })
   status: number;
-  
+
 }
 
 const Txn = getModelForClass(TxnModel, {

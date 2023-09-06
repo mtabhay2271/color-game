@@ -8,10 +8,16 @@ import Users from "../models/users";
 
 class dataServicesData {
 
+  //using
   addTxn = async (req: Request): Promise<ICommonServices> => {
     try {
       let payload = req.user as IPayAuth;
-      let data: any = await TxnModel.create({ ...req.body, userId: payload.userId });
+      //%%%
+      let data: any = await TxnModel.create({
+        ...req.body,
+        userId: payload.userId,
+        pay: req.body.widhrawal ? (req.body.amount - ((req.body.amount * 5) / 100)) : 0
+      });
       if (data.widhrawal) {
         let userData: any = await Users.findByIdAndUpdate(payload.userId, { $inc: { availableAmount: - data.amount } }, { new: true })
       }
@@ -32,21 +38,24 @@ class dataServicesData {
     }
   };
 
+  //using
   getTxn = async (req: Request): Promise<ICommonServices> => {
     try {
       let widhrawal: any = req.query?.widhrawal;
       let data: any
-      if (widhrawal != undefined) {
-        // console.log(widhrawal, "widhrawalwidhrawal");
-        data = await TxnModel.find({ status: 0, widhrawal }).sort({ createdAt: -1 }).populate('userId').lean();
-      } else
-        data = await TxnModel.find({ status: 0 }, { __v: 0, }).sort({ createdAt: -1 }).populate('userId').lean();
+      // if (widhrawal != undefined) {
+      // console.log(widhrawal, "widhrawalwidhrawal");
+      data = await TxnModel.find({ status: 0 }).sort({ createdAt: -1 }).lean();
+
+      // } else
+      //   data = await TxnModel.find({ status: 0 }, { __v: 0, }).sort({ createdAt: -1 }).populate('userId').lean();
+      // console.log(data);
       if (data) {
         return {
           statusCode: 200,
           data: {
             success: true,
-            message: "Txn History found",
+            message: "Panding Txn List found",
             // data: data
             data: data.map((e: any) => { return { _id: e._id, txnNum: e.txnNum, amount: e.amount, userName: e.userId.username, status: e.status } })
           }
@@ -84,6 +93,7 @@ class dataServicesData {
     }
   };
 
+  //using
   getTxnByUserId = async (userId: string): Promise<ICommonServices> => {
     try {
       let data: any = await TxnModel.find({ userId }).sort({ createdAt: -1 }).lean();
@@ -128,11 +138,12 @@ class dataServicesData {
     }
   };
 
+  //using
   approveTxn = async (req: Request, id: string): Promise<ICommonServices> => {
     try {
-      let data: any =  await TxnModel.findByIdAndUpdate(id, { $set: { status: 1 } }, { new: true });
+      let data: any = await TxnModel.findByIdAndUpdate(id, { $set: { status: 1 } }, { new: true });
       if (data) {
-        if (!data?.widhrawal) {          
+        if (!data?.widhrawal) {
           let user = await Users.findByIdAndUpdate(data.userId, {
             $inc: {
               availableAmount: data.amount
@@ -142,7 +153,8 @@ class dataServicesData {
             let updatedUser: any = await Users.findByIdAndUpdate(data.userId, { $set: { isPaymentDone: true, status: 1, paymentStatus: 1 } }, { new: true });
             let minAmount = 500;
             if (updatedUser?.uplineId && data.amount > minAmount) {
-              let refBounce = 5
+              //%%%
+              let refBounce = (data.amount * 5) / 100
               await Users.findByIdAndUpdate(updatedUser.uplineId, {
                 $inc: {
                   availableAmount: refBounce
@@ -167,11 +179,14 @@ class dataServicesData {
     }
   };
 
+  //using
   rejectTxn = async (req: Request, id: string): Promise<ICommonServices> => {
     try {
       let data: any = await TxnModel.findByIdAndUpdate(id, { $set: { status: 2 } }, { new: true });
       if (data?.widhrawal) {
-        let balance = await Users.findByIdAndUpdate(data.userId, { $inc: { availableAmount: data.amount } }, { new: true })
+        //%%%
+        let refBounce = (data.amount * 5) / 100
+        let balance = await Users.findByIdAndUpdate(data.userId, { $inc: { availableAmount: (data.amount + refBounce) } }, { new: true })
       }
 
       if (data) {
@@ -190,7 +205,7 @@ class dataServicesData {
       console.log(error);
       return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
     }
-  };  
+  };
 }
 export default new dataServicesData();
 
