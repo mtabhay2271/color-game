@@ -83,38 +83,13 @@ export class UserModel {
     required: false,
     default: 0
   })
-  todayEarning: number;
+  earningAmount!: number;
 
   @prop({
     required: false,
     default: 0
   })
   totalEarning: number;
-
-  @prop({
-    required: false,
-    default: 0
-  })
-  todayLeads: number;
-
-  @prop({
-    required: false,
-    default: 0
-  })
-  todayRefLead: number;
-
-  @prop({
-    required: false,
-    default: 0
-  })
-  thisMonthRefLead: number;
-
-  @prop({
-    required: false,
-    default: 0
-  })
-  teamEarning: number;
-
 
   @prop({
     required: false,
@@ -145,6 +120,7 @@ export class UserModel {
 
   @prop()
   otp: string;
+
 }
 
 const Users = getModelForClass(UserModel, {

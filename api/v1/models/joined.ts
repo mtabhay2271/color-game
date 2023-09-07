@@ -25,6 +25,11 @@ export class JoinModel {
   amount: number;
 
   @prop({
+    required: true
+  })
+  taxAmount: number;
+
+  @prop({
     required: false
   })
   result: number;

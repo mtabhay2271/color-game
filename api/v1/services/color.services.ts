@@ -49,7 +49,7 @@ class dataServicesData {
       const data = await Color.create({ result, num: (getGames.length + 1) });
       await Join.updateMany({ num: data.num }, { $set: { result } });
 
-      let dataUser = await Join.find({ color: result, num: data.num }, { userId: 1, amount: 1 })
+      let dataUser = await Join.find({ color: result, num: data.num }, { userId: 1, amount: 1, taxAmount: 1 })
       //////////////////
 
       const updatePromises = dataUser.map(async (item) => {
@@ -67,32 +67,12 @@ class dataServicesData {
         // Update the amount for the user using userId and updated userAmount
         return await Users.updateOne(
           { _id: userId },
-          { $inc: { availableAmount: userAmount } }
+          { $inc: { totalEarning: (userAmount - item.taxAmount), earningAmount: (userAmount - item.taxAmount) } }
         );
       });
-
       const updateResults = await Promise.all(updatePromises);
-
-
-      /////////////////////////
-
-      // return {
-      //   statusCode: 200,
-      //   data: {
-      //     success: true,
-      //     message: "Color added successfully",
-      //     data
-      //   }
-      // };
     } catch (error) {
       console.log(error);
-      // return {
-      //   statusCode: 500,
-      //   data: {
-      //     success: false,
-      //     message: responseMessages.ERROR_OCCURRE
-      //   }
-      // };
     }
   };
 
@@ -127,24 +107,25 @@ class dataServicesData {
       if (user && user?.availableAmount < req.body.amount) {
         return { statusCode: 200, data: { success: false, message: "Your Balance is less" } };
       } else {
+        const texPercentage = 5
+        const ptgArray = [30, 20, 10]
+        let charges = (req.body.amount * texPercentage) / 100;
+
         let getGames = await Color.find({});
-        let data: any = await Join.create({ ...req.body, userId: payload.userId, num: (getGames.length + 1) });
+        let data: any = await Join.create({ ...req.body, userId: payload.userId, num: (getGames.length + 1), taxAmount: charges });
         let data1: any
         if (user) {
           let user = await Users.findByIdAndUpdate(payload.userId, { $inc: { availableAmount: - data.amount } }, { new: true });
 
           if (payload?.uplineId) {
-            const texPercentage = 5
-            const ptgArray = [30, 20, 10]
 
-            let charges = (data.amount * texPercentage) / 100;
             let rewordArray = [((charges * ptgArray[0]) / 100), ((charges * ptgArray[1]) / 100), ((charges * ptgArray[2]) / 100)];
 
             let promiseUplineReword = [];
             promiseUplineReword.push(
               new Promise(function async(resolve, reject) {
                 resolve(
-                  Users.findByIdAndUpdate(payload.uplineId, { $inc: { availableAmount: rewordArray[0] } }, { new: true })
+                  Users.findByIdAndUpdate(payload.uplineId, { $inc: { earningAmount: rewordArray[0], totalEarning: rewordArray[0] } }, { new: true })
                 );
               })
             );
@@ -164,7 +145,7 @@ class dataServicesData {
               promiseUplineReword.push(
                 new Promise(function async(resolve, reject) {
                   resolve(
-                    Users.findByIdAndUpdate(payload.uplineId2, { $inc: { availableAmount: rewordArray[1] } }, { new: true })
+                    Users.findByIdAndUpdate(payload.uplineId2, { $inc: { earningAmount: rewordArray[1], totalEarning: rewordArray[1] } }, { new: true })
                   );
                 })
               );
@@ -185,7 +166,7 @@ class dataServicesData {
                 promiseUplineReword.push(
                   new Promise(function async(resolve, reject) {
                     resolve(
-                      Users.findByIdAndUpdate(payload.uplineId3, { $inc: { availableAmount: rewordArray[2] } }, { new: true })
+                      Users.findByIdAndUpdate(payload.uplineId3, { $inc: { earningAmount: rewordArray[2], totalEarning: rewordArray[2] } }, { new: true })
                     );
                   })
                 );

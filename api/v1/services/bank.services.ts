@@ -58,16 +58,17 @@ class dataServicesData {
 
   getBalance = async (userId: string): Promise<ICommonServices> => {
     try {
-      let data: any = await Users.findOne({ _id:userId }).lean();
+      let data: any = await Users.findById({ _id: userId }, { availableAmount: 1, earningAmount: 1 }).lean();
       if (data) {
         // console.log(data);
         return {
           statusCode: 200,
           data: {
             success: true,
-            message: "User found",
+            message: "Balance found",
             data: {
-              availableAmount: data.availableAmount ? data.availableAmount : 0
+              availableAmount: data?.availableAmount ? data.availableAmount : 0,
+              earningAmount: data?.earningAmount ? data.earningAmount : 0
             }
           }
         };

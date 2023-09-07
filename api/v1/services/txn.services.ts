@@ -19,7 +19,7 @@ class dataServicesData {
         pay: req.body.widhrawal ? (req.body.amount - ((req.body.amount * 5) / 100)) : 0
       });
       if (data.widhrawal) {
-        let userData: any = await Users.findByIdAndUpdate(payload.userId, { $inc: { availableAmount: - data.amount } }, { new: true })
+        let userData: any = await Users.findByIdAndUpdate(payload.userId, { $inc: { earningAmount: - data.amount } }, { new: true })
       }
       if (data) {
         return {

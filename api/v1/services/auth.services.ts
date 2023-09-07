@@ -83,6 +83,8 @@ class UserServicesData {
               isPaymentDone: user.isPaymentDone,
               paymentStatus: user.paymentStatus,
               availableAmount: user.availableAmount,
+              earningAmount: user.earningAmount,
+              totalEarning: user.totalEarning,
               _id: user._id,
               token: utility.signJWT(
                 {
