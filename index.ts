@@ -45,7 +45,7 @@ wss.on('connection', (socket: WebSocket) => {
     console.log('A .user disconnected from WebSocket');
   });
 });
-const gameTime = 50
+const gameTime = 60
 let i = gameTime;
 setInterval(() => {
   --i
