@@ -198,12 +198,12 @@ class UserServicesData {
     }
   };
 
-  activateUser = async (req: Request): Promise<ICommonServices> => {
+  sendMoney = async (req: Request): Promise<ICommonServices> => {
     try {
       let payload = req.user as IPayAuth;
       let sender = await Users.findByIdAndUpdate(payload?.userId, { $inc: { earningAmount: - req.body.amount } }, { new: true })
       if (sender) {
-        let reciever = await Users.findOneAndUpdate({ username: req.body.username }, { $inc: { availableAmount: + req.body.amount } }, { new: true })
+        let reciever = await Users.findOneAndUpdate({ username: req.body.username }, { $inc: { availableAmount: +(req.body.amount - ((req.body.amount * 1) / 100)) } }, { new: true })
       }
       return { statusCode: 200, data: { success: true, message: 'Money has succesfully sent to user.' } };
 

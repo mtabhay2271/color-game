@@ -31,12 +31,12 @@ export class SignupViewModel {
   @IsDefined()
   @IsString()
   username!: string;
-  
+
   @Expose()
   @IsDefined()
   @IsEmail()
   email!: string;
-  
+
   @Expose()
   @IsDefined()
   @IsString()
@@ -48,7 +48,7 @@ export class SignupViewModel {
   @IsNumber()
   @Type(() => Number)
   contactNumber!: number;
-  
+
   @Expose()
   @IsString()
   referCode?: string;
@@ -62,26 +62,16 @@ export class SignupViewModel {
   @IsMongoId()
   @Type(() => mongoose.Types.ObjectId)
   uplineId?: Ref<UserModel>;
-  
+
   @Expose()
   @IsMongoId()
   @Type(() => mongoose.Types.ObjectId)
   uplineId2?: Ref<UserModel>;
-  
+
   @Expose()
   @IsMongoId()
   @Type(() => mongoose.Types.ObjectId)
   uplineId3?: Ref<UserModel>;
-
-  @Expose()
-  @IsMongoId()
-  @Type(() => mongoose.Types.ObjectId)
-  uplineId4?: Ref<UserModel>;
-
-  @Expose()
-  @IsMongoId()
-  @Type(() => mongoose.Types.ObjectId)
-  uplineId5?: Ref<UserModel>;
 }
 
 
@@ -142,12 +132,12 @@ export class verifyOtpViewModel {
 //   @IsDefined()
 //   @IsString()
 //   username: string;
-  
+
 //   @Expose()
 //   @IsDefined()
 //   @IsString()
 //   otp: string;
-  
+
 //   @Expose()
 //   @IsDefined()
 //   @IsString()
@@ -159,12 +149,12 @@ export class ResetPasswordViewModel {
   @IsDefined()
   @IsString()
   userId: string;
-  
+
   // @Expose()
   // @IsDefined()
   // @IsString()
   // otp: string;
-  
+
   @Expose()
   @IsDefined()
   @IsString()
@@ -176,7 +166,7 @@ export class ResetPasswordViewModel {
 //   @IsDefined()
 //   @IsString()
 //   newPassword: string;
-  
+
 //   @Expose()
 //   @IsDefined()
 //   @IsString()

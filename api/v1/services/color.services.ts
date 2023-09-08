@@ -63,10 +63,10 @@ class dataServicesData {
         } else if (result === 3) {
           userAmount *= 5;
         }
+        console.log();
 
         // Update the amount for the user using userId and updated userAmount
-        return await Users.updateOne(
-          { _id: userId },
+        return Users.findByIdAndUpdate(userId,
           { $inc: { totalEarning: (userAmount - item.taxAmount), earningAmount: (userAmount - item.taxAmount) } }
         );
       });
@@ -116,9 +116,10 @@ class dataServicesData {
         let data1: any
         if (user) {
           let user = await Users.findByIdAndUpdate(payload.userId, { $inc: { availableAmount: - data.amount } }, { new: true });
+          console.log(payload?.uplineId);
 
           if (payload?.uplineId) {
-
+            console.log(payload?.uplineId);
             let rewordArray = [((charges * ptgArray[0]) / 100), ((charges * ptgArray[1]) / 100), ((charges * ptgArray[2]) / 100)];
 
             let promiseUplineReword = [];
@@ -142,6 +143,8 @@ class dataServicesData {
               })
             );
             if (payload?.uplineId2) {
+              console.log(payload?.uplineId2);
+
               promiseUplineReword.push(
                 new Promise(function async(resolve, reject) {
                   resolve(

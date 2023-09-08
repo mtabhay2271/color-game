@@ -104,9 +104,9 @@ class userControllersData {
     }
   }
 
-  activateUser = async (req: Request, res: Response<ICommonController>) => {
+  sendMoney = async (req: Request, res: Response<ICommonController>) => {
     try {
-      let data = await Services.activateUser(req)
+      let data = await Services.sendMoney(req)
       return res.status(data.statusCode).send(data.data)
     } catch (error) {
       // console.log("Error", error);
