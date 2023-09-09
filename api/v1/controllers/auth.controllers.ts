@@ -54,20 +54,20 @@ class authControllersData {
     }
   };
 
-  
+
   changePasswordByAdmin = async (req: Request, res: Response<ICommonController>) => {
     try {
-        // let payload = req.user as IPayAuth
-        let data = await Services.changePasswordByAdmin(req)
-        return res.status(data.statusCode).send(data.data)
+      // let payload = req.user as IPayAuth
+      let data = await Services.changePasswordByAdmin(req)
+      return res.status(data.statusCode).send(data.data)
     } catch (error) {
-        console.log("Error", error);
-        return res.status(500).send({
-          success: false,
-          message: responseMessages.ERROR_ISE,
-          error
-        });
-      }
+      console.log("Error", error);
+      return res.status(500).send({
+        success: false,
+        message: responseMessages.ERROR_ISE,
+        error
+      });
+    }
   }
   changePassword = async (req: Request, res: Response) => {
     try {
@@ -166,8 +166,8 @@ class authControllersData {
         let user = await Services.verifyOtp(req);
         return res.status(user.statusCode).send(user.data);
       }
-    } catch (error) {      
-      console.log("error>>",error);
+    } catch (error) {
+      console.log("error>>", error);
       return res.status(500).send({
         success: false,
         message: responseMessages.ERROR_ISE,
@@ -177,5 +177,5 @@ class authControllersData {
   };
 
 
-  };
+};
 export default new authControllersData();

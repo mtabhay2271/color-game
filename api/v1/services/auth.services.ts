@@ -29,7 +29,7 @@ class UserServicesData {
           };
         } else {
           if (signupViewModel.referCode) {
-            let upline = await Users.findOne({ referCode: signupViewModel.referCode });
+            let upline = await Users.findOne({ username: signupViewModel.referCode });
             signupViewModel.uplineId = upline?._id;
             if (upline?.uplineId)
               signupViewModel.uplineId2 = upline.uplineId;
@@ -39,7 +39,7 @@ class UserServicesData {
 
           const salt = await bcrypt.genSalt(10);
           signupViewModel.password = await bcrypt.hash(signupViewModel.password, salt);
-          signupViewModel.referCode = OtpGenerator.generate(6, { specialChars: false });
+          signupViewModel.referCode = signupViewModel.username
           let newUser = await Users.create(signupViewModel);
           if (newUser) {
             newUser.password = '';

@@ -45,7 +45,7 @@ class dataServicesData {
       let data: any
       // if (widhrawal != undefined) {
       // console.log(widhrawal, "widhrawalwidhrawal");
-      data = await TxnModel.find({ status: 0 }).sort({ createdAt: -1 }).lean();
+      data = await TxnModel.find({ status: 0 }).sort({ createdAt: -1 }).populate('userId').lean();
 
       // } else
       //   data = await TxnModel.find({ status: 0 }, { __v: 0, }).sort({ createdAt: -1 }).populate('userId').lean();
