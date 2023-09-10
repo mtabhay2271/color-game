@@ -9,6 +9,7 @@ import Reword from "../models/reword";
 
 class dataServicesData {
 
+  //add result
   add = async () => {
     try {
       const getGames = await Color.find({});
@@ -208,6 +209,31 @@ class dataServicesData {
     }
   };
 
+  getJoinList = async (req: Request): Promise<ICommonServices> => {
+    try {
+      // console.log("joinnnnnnnnnnnnn")
+
+      // console.log(req.user);
+      let payload = req.user as IPayAuth;
+      let data = await Join.find({ userId: payload.userId }, { __v: 0, updatedAt: 0 }).sort({ createdAt: -1 }).limit(20).lean();
+      if (data) {
+        return {
+          statusCode: 200,
+          data: {
+            success: true,
+            message: "User game list found",
+            data: data
+          }
+        };
+      } else {
+        return { statusCode: 200, data: { success: false, message: "Not Joined" } };
+      }
+
+    } catch (error) {
+      console.log(error);
+      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+    }
+  };
 
   // add = async (req: Request): Promise<ICommonServices> => {
   //   try {
