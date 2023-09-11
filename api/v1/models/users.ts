@@ -121,6 +121,20 @@ export class UserModel {
   @prop()
   otp: string;
 
+
+  //Bank details
+
+  @prop({ required: false })
+  accountHolderName: string;
+
+  @prop({ required: false })
+  bank: string;
+
+  @prop({ required: false })
+  ifscCode: string;
+
+  @prop({ required: false })
+  accountNumber: number;
 }
 
 const Users = getModelForClass(UserModel, {

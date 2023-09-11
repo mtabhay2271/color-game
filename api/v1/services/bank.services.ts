@@ -1,11 +1,8 @@
-import { Request, Response } from "express";
+import { Request } from "express";
 import { ICommonServices, IPayAuth } from "../interfaces/response_interfaces";
 import _ from "lodash";
 import responseMessages from "../common/response.messages";
-import BankDetails from "../models/bank";
-import SupportModel from "../models/support";
 import { BankDetailsViewModel } from "../view_model/bank";
-import { UserModel } from "../models/users";
 import Users from "../models/users";
 
 
@@ -14,7 +11,7 @@ class dataServicesData {
   addBankDetails = async (req: Request, reqData: BankDetailsViewModel): Promise<ICommonServices> => {
     try {
       let payload = req.user as IPayAuth;
-      let data: any = await BankDetails.create({ ...reqData, userId: payload.userId });
+      let data: any = await Users.findByIdAndUpdate(payload.userId, { $set: { ...reqData } });
       if (data) {
         // console.log(data);
         return {
@@ -36,7 +33,7 @@ class dataServicesData {
 
   getBankDetails = async (userId: string): Promise<ICommonServices> => {
     try {
-      let data: any = await BankDetails.findOne({ userId }).lean();
+      let data: any = await Users.findById(userId, { bank: 1, accountHolderName: 1, ifscCode: 1 }).lean();
       if (data) {
         // console.log(data);
         return {

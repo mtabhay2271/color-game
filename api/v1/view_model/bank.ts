@@ -17,7 +17,7 @@ import {
 
 export class BankDetailsViewModel {
 
-  
+
   @Expose()
   @IsDefined()
   @IsNotEmpty()
@@ -40,19 +40,19 @@ export class BankDetailsViewModel {
   @Type(() => Number)
   accountNumber!: number;
 
-  
-  @Expose()
-  @IsDefined()
-  @IsNotEmpty()
-  @IsNumber()
-  @Type(() => Number)
-  phoneNumber!: number;
+
+  // @Expose()
+  // @IsDefined()
+  // @IsNotEmpty()
+  // @IsNumber()
+  // @Type(() => Number)
+  // phoneNumber!: number;
 
   // @Expose()
   // @IsDefined()
   // @IsNotEmpty()
   // city!: string;
-  
+
   // @Expose()
   // @IsDefined()
   // @IsNotEmpty()
@@ -62,8 +62,8 @@ export class BankDetailsViewModel {
   // @IsDefined()
   // country: string
 
-  @Expose()
-  @IsDefined()
-  @IsEmail()
-  email: string;
+  // @Expose()
+  // @IsDefined()
+  // @IsEmail()
+  // email: string;
 }
