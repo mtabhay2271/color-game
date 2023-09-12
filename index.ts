@@ -10,7 +10,12 @@ import cors from 'cors';
 import fs from 'fs';
 import { ServerOptions } from 'https';
 import { WebSocket, Server as WSServer } from 'ws'; // Import the Server class from 'ws'
+
+import Corn from './api/v1/common/cronJob';
+
 dotenv.config();
+Corn.daily.start();
+Corn.monthly.start();
 const app: Application = express();
 const options: ServerOptions = {
   key: fs.readFileSync('./key.pem'),
