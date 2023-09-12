@@ -211,11 +211,16 @@ class dataServicesData {
 
   getJoinList = async (req: Request): Promise<ICommonServices> => {
     try {
-      // console.log("joinnnnnnnnnnnnn")
-
-      // console.log(req.user);
       let payload = req.user as IPayAuth;
-      let data = await Join.find({ userId: payload.userId }, { __v: 0, updatedAt: 0 }).sort({ createdAt: -1 }).limit(20).lean();
+
+      const today = new Date();
+      const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      let data = await Join.find({
+        userId: payload.userId,
+        createdAt: {
+          $gte: startOfDay
+        }
+      }, { __v: 0, updatedAt: 0 }).sort({ createdAt: -1 }).lean();
       if (data) {
         return {
           statusCode: 200,
