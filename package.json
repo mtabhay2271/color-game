@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "start":  "tsc && node build/index.js",
+    "start": "tsc && node build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.ts",
     "deploy": "git add . && git commit -m Changes && git push heroku master"
@@ -46,7 +46,7 @@
     "express-session": "^1.17.3",
     "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
-    "mongoose": "~7.4.0",
+    "mongoose": "^7.5.0",
     "nodemon": "^3.0.1",
     "otp-generator": "^4.0.0",
     "passport-jwt": "^4.0.0",
