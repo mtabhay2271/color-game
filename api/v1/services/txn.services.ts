@@ -144,7 +144,7 @@ class dataServicesData {
       let data: any = await TxnModel.findByIdAndUpdate(id, { $set: { status: 1 } }, { new: true });
       if (data) {
         if (!data?.widhrawal) {
-          let actualAmount = data.amount < 1000 ? (data.amount > 500 ? (data.amount + ((data.amount * 10) / 100)) : data.amount) : (data.amount + ((data.amount * 15) / 100))
+          let actualAmount = data.amount < 1000 ? (data.amount < 500 ? data.amount : (data.amount + ((data.amount * 10) / 100))) : (data.amount + ((data.amount * 15) / 100))
           let user = await Users.findByIdAndUpdate(data.userId, {
             $inc: {
               availableAmount: actualAmount
