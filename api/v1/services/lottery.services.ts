@@ -1,9 +1,9 @@
+import _ from "lodash";
 import { Request } from "express";
 import { ICommonServices, IPayAuth } from "../interfaces/response_interfaces";
-import _ from "lodash";
 import responseMessages from "../common/response.messages";
-import Color from "../models/color";
-import Join, { JoinModel } from "../models/color.joined";
+import Lottery from "../models/lottery";
+import JoinLottery from "../models/lottery.joined";
 import Users from "../models/users";
 import Reword from "../models/reword";
 
@@ -12,59 +12,54 @@ class dataServicesData {
   //add result
   add = async () => {
     try {
-      const getGames = await Color.find({});
+      const getGames = await Lottery.find({});
 
-      const resultData1 = await Join.aggregate([
-        { $match: { num: getGames.length + 1 } },
-        {
-          $group: {
-            _id: "$color",
-            totalAmount: { $sum: "$amount" }
+      let resultData1: any = await JoinLottery.find({ num: getGames?.length + 1 }, { choosenNum: 1 });
+      let joinedNum = [...new Set(resultData1.map((item: any) => item.choosenNum))];
+      // let joinedIds = [...new Set(resultData1.map((item: any) => item._id))];
+      console.log(joinedNum);
+      const missingNumbers = [];
+
+      for (let i = 1; i <= 100; i++) {
+        if (!joinedNum.includes(i)) {
+          missingNumbers.push(i);
+        }
+      }
+      let resultNum
+      if (missingNumbers.length) {
+        const randomIndex = Math.floor(Math.random() * missingNumbers.length);
+        // Get the random missing number
+        resultNum = missingNumbers[randomIndex];
+      } else {
+        const result = await JoinLottery.aggregate([
+          { $match: { num: getGames.length + 1 } },
+          {
+            $group: {
+              _id: '$choosenNum',
+              totalAmount: { $sum: '$amount' }
+            }
+          },
+          {
+            $sort: { totalAmount: 1 } // Sort by totalAmount in ascending order
+          },
+          {
+            $limit: 1 // Get the number with the least totalAmount
           }
-        }
-      ]);
+        ]);
+        console.log(result);
+        resultNum = result[0]._id
+      }
+      let data = await Lottery.create({ num: getGames?.length + 1, result: resultNum });
+      await JoinLottery.updateMany({ num: data.num }, { $set: { result: data?.result } })
 
-      const aggregatedResult = { green: 0, red: 0, yellow: 0 };
-
-      resultData1.forEach((entry) => {
-        if (entry._id === 1) {
-          aggregatedResult.green = entry.totalAmount * 2;
-        } else if (entry._id === 2) {
-          aggregatedResult.red = entry.totalAmount * 2;
-        } else {
-          aggregatedResult.yellow = entry.totalAmount * 5;
-        }
-      });
-
-      const sortedResult = Object.entries(aggregatedResult).sort(([, v1], [, v2]) => v1 - v2);
-      const newArray = sortedResult.filter(e => e[1] === sortedResult[0][1]);
-      const result1 = newArray[Math.floor(Math.random() * newArray.length)];
-
-      const resultMapping: any = {
-        green: 1,
-        red: 2,
-        yellow: 3
-      };
-      const result = resultMapping[result1[0]];
-
-      const data = await Color.create({ result, num: (getGames.length + 1) });
-      await Join.updateMany({ num: data.num }, { $set: { result } });
-
-      let dataUser = await Join.find({ color: result, num: data.num }, { userId: 1, amount: 1, taxAmount: 1 })
-      ////////////////// 
+      let dataUser = await JoinLottery.find({ result: data.result, num: data.num }, { userId: 1, amount: 1, taxAmount: 1 })
+      //////////////////
 
       const updatePromises = dataUser.map(async (item) => {
         const userId = item.userId;
-        let userAmount = item.amount; // The amount value from Join collection
-        // Update the userAmount based on the color
-        if (result === 1) {
-          userAmount *= 2;
-        } else if (result === 2) {
-          userAmount *= 2;
-        } else if (result === 3) {
-          userAmount *= 5;
-        }
-        
+        let userAmount = item.amount; // The amount value from JoinLottery collection
+        // Update the userAmount based on the color        
+        userAmount *= 100;
         let actualAmount=Math.floor((userAmount - item.taxAmount));
         // Update the amount for the user using userId and updated userAmount
         return Users.findByIdAndUpdate(userId,
@@ -72,14 +67,20 @@ class dataServicesData {
         );
       });
       const updateResults = await Promise.all(updatePromises);
+
+
+      // return { statusCode: 200, data: { success: false, data: resultNum, message: responseMessages.ERROR_OCCURRE } };
+
     } catch (error) {
       console.log(error);
+      // return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+
     }
   };
 
   get = async (): Promise<ICommonServices> => {
     try {
-      let data: any = await Color.find({}, { num: 1, result: 1 }).sort({ num: -1 }).limit(50).lean();
+      let data: any = await Lottery.find({}, { num: 1, result: 1 }).sort({ num: -1 }).limit(50).lean();
       if (data) {
         return {
           statusCode: 200,
@@ -90,7 +91,7 @@ class dataServicesData {
           }
         };
       } else {
-        return { statusCode: 200, data: { success: false, message: "Color list not found successfully" } };
+        return { statusCode: 200, data: { success: false, message: "Lottery list not found successfully" } };
       }
     } catch (error) {
       console.log(error);
@@ -112,8 +113,9 @@ class dataServicesData {
         const ptgArray = [30, 20, 10]
         let charges = (req.body.amount * texPercentage) / 100;
 
-        let getGames = await Color.find({});
-        let data: any = await Join.create({ ...req.body, userId: payload.userId, num: (getGames.length + 1), taxAmount: charges });
+        let getGames = await Lottery.find({});
+        let data: any = await JoinLottery.create({ ...req.body, userId: payload.userId, num: (getGames.length + 1), taxAmount: charges });
+        console.log(req.body, "<<<");
         let data1: any
         if (user) {
           let user = await Users.findByIdAndUpdate(payload.userId, { $inc: { availableAmount: - data.amount } }, { new: true });
@@ -195,7 +197,7 @@ class dataServicesData {
             statusCode: 200,
             data: {
               success: true,
-              message: "Join successfully",
+              message: "Join Lottery successfully",
               data: data1
             }
           };
@@ -215,7 +217,7 @@ class dataServicesData {
 
       const today = new Date();
       const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-      let data = await Join.find({
+      let data = await JoinLottery.find({
         userId: payload.userId,
         createdAt: {
           $gte: startOfDay
@@ -239,6 +241,7 @@ class dataServicesData {
       return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
     }
   };
+
 }
 export default new dataServicesData();
 

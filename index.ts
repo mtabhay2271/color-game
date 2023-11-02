@@ -1,16 +1,16 @@
 import express, { Request, Response, NextFunction, Application } from 'express';
 import http from 'http';
-import https from 'https';
 import routes from './api/v1/routes/index';
 import dotenv from 'dotenv';
 import path from 'path';
-import DBConnation from './db.connation';
-import ColorService from './api/v1/services/color.services'
 import cors from 'cors';
 import fs from 'fs';
 import { ServerOptions } from 'https';
 import { WebSocket, Server as WSServer } from 'ws'; // Import the Server class from 'ws'
 
+import DBConnation from './db.connation';
+import ColorService from './api/v1/services/color.services';
+import LotteryService from './api/v1/services/color.services'
 import Corn from './api/v1/common/cronJob';
 
 dotenv.config();
@@ -30,6 +30,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+// app.use(cors());
 // Set up WebSocket server using the httpServer
 const wss = new WSServer({ noServer: true });
 httpsServer.on("upgrade", (request, socket, head) => {
@@ -50,12 +51,13 @@ wss.on('connection', (socket: WebSocket) => {
     console.log('A .user disconnected from WebSocket');
   });
 });
-const gameTime = 60
+const gameTime = 300
 let i = gameTime;
 setInterval(() => {
   --i
   if (i == 3) {
-    ColorService.add()
+    ColorService.add();
+    LotteryService.add();
   }
   if (i < 0) {
     i = gameTime

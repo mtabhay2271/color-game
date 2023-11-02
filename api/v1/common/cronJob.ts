@@ -1,6 +1,8 @@
 import { CronJob } from 'cron';
 import Color from '../models/color';
-import Join from '../models/joined';
+import Join from '../models/color.joined';
+import Lottery from '../models/lottery';
+import LotteryJoin from '../models/lottery.joined';
 import Txn from '../models/txn';
 import CornConst from './constants/cornjob.constant';
 
@@ -10,6 +12,8 @@ class dailyFunction {
       let promiseArray = [];
       promiseArray.push(Color.deleteMany({}));
       promiseArray.push(Join.deleteMany({}));
+      promiseArray.push(Lottery.deleteMany({}));
+      promiseArray.push(LotteryJoin.deleteMany({}));
       let data = await Promise.all(promiseArray)
       // console.log(data);
     } catch (error) {

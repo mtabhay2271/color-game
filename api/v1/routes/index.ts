@@ -7,8 +7,9 @@ import txn from "./txn.routes";
 import dashboard from "./dashboard.routes";
 import pay from "./pay.routes"
 import down from "./down.routes"
-import color from "./color.routes";
 import reword from "./reword.routes";
+import color from "./color.routes";
+import lottery from "./lottery.routes";
 
 const router = Router();
 
@@ -20,7 +21,8 @@ router.use("/v1/bank", bank);
 router.use("/v1/txn", txn);
 router.use("/v1/dashboard", dashboard);
 router.use("/v1/pay", pay);
-router.use("/v1/color", color);
 router.use("/v1/reword", reword);
+router.use("/v1/color", color);
+router.use("/v1/lottery", lottery);
 
 export default router;

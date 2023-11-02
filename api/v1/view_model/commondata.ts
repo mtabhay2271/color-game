@@ -24,7 +24,17 @@ export class JoinGame {
   @IsNumber()
   color: number;
 }
+export class JoinLotteryGame {
+  @Expose()
+  @IsDefined()
+  @IsNumber()
+  amount: number;
 
+  @Expose()
+  @IsDefined()
+  @IsNumber()
+  choosenNum: number;
+}
 
 export class AddAartiViewModel {
   @Expose()
