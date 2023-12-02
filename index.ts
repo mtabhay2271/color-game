@@ -68,6 +68,7 @@ setInterval(() => {
     }
   });
 }, 1000);
+//commont
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/public/data', express.static('public/imp'));
 app.use(express.json());
