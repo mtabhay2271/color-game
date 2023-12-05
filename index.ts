@@ -4,6 +4,7 @@ import routes from './api/v1/routes/index';
 import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
+import https from 'https'
 import { ServerOptions } from 'https';
 import { WebSocket, Server as WSServer } from 'ws'; // Import the Server class from 'ws'
 
@@ -20,8 +21,8 @@ const options: ServerOptions = {
   key: fs.readFileSync('./key.pem'),
   cert: fs.readFileSync('./certificate.pem')
 };
-//const httpsServer = https.createServer(options, app);
-const httpsServer = http.createServer(app);
+const httpsServer = https.createServer(options, app);
+// const httpsServer = http.createServer(app);
 DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? '');
 // Enable CORS for all routes
 app.use((req, res, next) => {
