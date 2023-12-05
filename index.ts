@@ -3,7 +3,6 @@ import http from 'http';
 import routes from './api/v1/routes/index';
 import dotenv from 'dotenv';
 import path from 'path';
-import cors from 'cors';
 import fs from 'fs';
 import { ServerOptions } from 'https';
 import { WebSocket, Server as WSServer } from 'ws'; // Import the Server class from 'ws'
@@ -24,13 +23,6 @@ const options: ServerOptions = {
 //const httpsServer = https.createServer(options, app);
 const httpsServer = http.createServer(app);
 DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? '');
-// const corsOptions = {
-//   origin: 'http://colorgame.s3-website.us-east-2.amazonaws.com',
-//   optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
-// };
-
-// app.use(cors(corsOptions));
-// Add headers before the routes are defined
 // Enable CORS for all routes
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -87,5 +79,5 @@ app.use('/api', (req: Request, res: Response, next: NextFunction) => {
   next();
 }, routes);
 app.use('/pay', express.static('public'));
-const PORT = process.env.PORT || 7009;
+const PORT = process.env.PORT || 8080;
 httpsServer.listen(PORT, () => console.log(`App listening on ${PORT}`));
