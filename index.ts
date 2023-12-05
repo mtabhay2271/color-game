@@ -24,13 +24,31 @@ const options: ServerOptions = {
 //const httpsServer = https.createServer(options, app);
 const httpsServer = http.createServer(app);
 DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? '');
-const corsOptions = {
-  origin: 'http://colorgame.s3-website.us-east-2.amazonaws.com',
-  optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
-};
+// const corsOptions = {
+//   origin: 'http://colorgame.s3-website.us-east-2.amazonaws.com',
+//   optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+// };
 
-app.use(cors(corsOptions));
-// app.use(cors());
+// app.use(cors(corsOptions));
+// Add headers before the routes are defined
+app.use(function (req, res, next) {
+
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+  // Request headers you wish to allow
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+  // // Set to true if you need the website to include cookies in the requests sent
+  // // to the API (e.g. in case you use sessions)
+  // res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  // Pass to next layer of middleware
+  next();
+});
 // Set up WebSocket server using the httpServer
 const wss = new WSServer({ noServer: true });
 httpsServer.on("upgrade", (request, socket, head) => {
