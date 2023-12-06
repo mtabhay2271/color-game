@@ -62,7 +62,7 @@ setInterval(() => {
     ColorService.add();
     LotteryService.add();
   }
-  if (i < 0) {
+  if (i == 0) {
     i = gameTime
   }
   wss.clients.forEach(client => {
