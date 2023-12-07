@@ -10,7 +10,7 @@ import { WebSocket, Server as WSServer } from 'ws'; // Import the Server class f
 
 import DBConnation from './db.connation';
 import ColorService from './api/v1/services/color.services';
-import LotteryService from './api/v1/services/color.services'
+import LotteryService from './api/v1/services/lottery.services'
 import Corn from './api/v1/common/cronJob';
 
 dotenv.config();
