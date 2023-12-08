@@ -153,12 +153,13 @@ class dataServicesData {
           if (!user?.paymentStatus) {
             let updatedUser: any = await Users.findByIdAndUpdate(data.userId, { $set: { isPaymentDone: true, status: 1, paymentStatus: 1 } }, { new: true });
             let minAmount = 500;
-            if (updatedUser?.uplineId && data.amount > minAmount) {
+
+            if (updatedUser?.uplineId && data.amount >= minAmount) {
               //%%%
               let refBounce = (data.amount * 5) / 100
               await Users.findByIdAndUpdate(updatedUser.uplineId, {
                 $inc: {
-                  availableAmount: refBounce
+                  earningAmount: refBounce
                 }
               })
             }
