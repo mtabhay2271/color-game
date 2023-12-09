@@ -52,7 +52,7 @@ class ControllersData {
   getTxnByUser = async (req: Request, res: Response<ICommonController>) => {
     try {
       let payload = req.user as IPayAuth;
-      let data = await Services.getTxnByUserId(payload.userId);
+      let data = await Services.getTxnByUserId(payload.userId,req.params.status);
       return res.status(data.statusCode).send(data.data);
     } catch (error) {
       // console.log("Error", error);
@@ -87,7 +87,7 @@ class ControllersData {
       // console.log("req.params.userId",req.params.userId);
 
       // let payload = req.user as IPayAuth;
-      let data = await Services.getTxnByUserId(req.params.userId);
+      let data = await Services.getTxnByUserId(req.params.userId,req.params.status);
       return res.status(data.statusCode).send(data.data);
     } catch (error) {
       // console.log("Error", error);
@@ -99,19 +99,6 @@ class ControllersData {
     }
   };
 
-  getTxnById = async (req: Request, res: Response<ICommonController>) => {
-    try {
-      let data = await Services.getTxnById(req.params.id);
-      return res.status(data.statusCode).send(data.data);
-    } catch (error) {
-      // console.log("Error", error);
-      return res.status(500).send({
-        success: false,
-        message: responseMessages.ERROR_ISE,
-        error
-      });
-    }
-  };
 
   //using
   approveTxn = async (req: Request, res: Response<ICommonController>) => {
@@ -146,6 +133,23 @@ class ControllersData {
   };
 
 
+  //using
+  // for admin only
+  getTxnByStatus = async (req: Request, res: Response<ICommonController>) => {
+    try {
+      // let payload = req.user as IPayAuth;
+      // console.log("1111111")
+      let data = await Services.getTxnByStatus(req?.params?.status);
+      return res.status(data.statusCode).send(data.data);
+    } catch (error) {
+      // console.log("Error", error);
+      return res.status(500).send({
+        success: false,
+        message: responseMessages.ERROR_ISE,
+        error
+      });
+    }
+  };
 
 }
 export default new ControllersData();

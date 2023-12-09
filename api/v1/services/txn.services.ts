@@ -41,23 +41,22 @@ class dataServicesData {
   //using
   getTxn = async (req: Request): Promise<ICommonServices> => {
     try {
-      let widhrawal: any = req.query?.widhrawal;
-      let data: any
-      // if (widhrawal != undefined) {
-      // console.log(widhrawal, "widhrawalwidhrawal");
-      data = await TxnModel.find({ status: 0 }).sort({ createdAt: -1 }).populate('userId').lean();
 
-      // } else
-      //   data = await TxnModel.find({ status: 0 }, { __v: 0, }).sort({ createdAt: -1 }).populate('userId').lean();
-      // console.log(data);
+      let payload = req.user as IPayAuth;
+      let data: any
+      let query: any = { userId: payload.userId };
+      let status: any = req.params.status
+      if (status && status != 4) {
+        query["status"] = status
+      }
+      data = await TxnModel.find(query).sort({ createdAt: -1 }).populate('userId').lean();
       if (data) {
         return {
           statusCode: 200,
           data: {
             success: true,
-            message: "Panding Txn List found",
-            // data: data
-            data: data.map((e: any) => { return { _id: e._id, txnNum: e.txnNum, amount: e.amount, userName: e.userId.username, status: e.status } })
+            message: "Txn List found",
+            data: data.map((e: any) => { return { _id: e._id, txnNum: e.txnNum, amount: e.amount, userName: e?.userId?.username, status: e.status } })
           }
         };
       } else {
@@ -94,46 +93,28 @@ class dataServicesData {
   };
 
   //using
-  getTxnByUserId = async (userId: string): Promise<ICommonServices> => {
+  getTxnByUserId = async (userId: string, status: any): Promise<ICommonServices> => {
     try {
-      let data: any = await TxnModel.find({ userId }).sort({ createdAt: -1 }).lean();
+      let data: any
+      let query: any = { userId }
+      if (status && status != 4) {
+        query["status"] = status
+      }
+      data = await TxnModel.find(query).sort({ createdAt: -1 }).populate('userId').lean();
       if (data) {
-        // console.log(data);
         return {
           statusCode: 200,
           data: {
             success: true,
-            message: "Txn History found",
-            data
+            message: "Txn List found",
+            data: data.map((e: any) => { return { _id: e._id, txnNum: e.txnNum, amount: e.amount, userName: e?.userId?.username, status: e.status } })
           }
         };
       } else {
         return { statusCode: 200, data: { success: false, message: responseMessages.USER_DETAILS_FOUND_NOT } };
       }
     } catch (error) {
-      console.log(error);
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
-    }
-  };
-
-  getTxnById = async (txnId: string): Promise<ICommonServices> => {
-    try {
-      let data: any = await TxnModel.findById(txnId).populate('userId').lean();
-      if (data) {
-        // console.log("datadatadatadata");
-        return {
-          statusCode: 200,
-          data: {
-            success: true,
-            message: "Txn Details found",
-            data: { ...data, userName: data.userId.username, name: data.userId.name, userId: data.userId._id }
-          }
-        };
-      } else {
-        return { statusCode: 200, data: { success: false, message: responseMessages.USER_DETAILS_FOUND_NOT } };
-      }
-    } catch (error) {
-      console.log(error);
+      console.log(error, "erro");
       return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
     }
   };
@@ -205,6 +186,33 @@ class dataServicesData {
       }
     } catch (error) {
       console.log(error);
+      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+    }
+  };
+
+  //using
+  getTxnByStatus = async (status: any): Promise<ICommonServices> => {
+    try {
+      let data: any
+      let query: any = {}
+      if (status && status != 4) {
+        query["status"] = status
+      }
+      data = await TxnModel.find(query).sort({ createdAt: -1 }).populate('userId').lean();
+      if (data) {
+        return {
+          statusCode: 200,
+          data: {
+            success: true,
+            message: "Txn List found",
+            data: data.map((e: any) => { return { _id: e._id, txnNum: e.txnNum, amount: e.amount, userName: e?.userId?.username, status: e.status } })
+          }
+        };
+      } else {
+        return { statusCode: 200, data: { success: false, message: responseMessages.USER_DETAILS_FOUND_NOT } };
+      }
+    } catch (error) {
+      console.log(error, "erro");
       return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
     }
   };
