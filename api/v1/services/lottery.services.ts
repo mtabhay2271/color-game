@@ -12,6 +12,8 @@ class dataServicesData {
   //add result
   add = async () => {
     try {
+      // number of games
+     const numberCount=10
       const getGames = await Lottery.find({});
 
       let resultData1: any = await JoinLottery.find({ num: getGames?.length + 1 }, { choosenNum: 1 });
@@ -20,16 +22,20 @@ class dataServicesData {
       console.log(joinedNum);
       const missingNumbers = [];
 
-      for (let i = 1; i <= 100; i++) {
+      for (let i = 1; i <= numberCount; i++) {
         if (!joinedNum.includes(i)) {
           missingNumbers.push(i);
         }
       }
+      // console.log('missingNumbers>>>',missingNumbers);
+      
       let resultNum
       if (missingNumbers.length) {
         const randomIndex = Math.floor(Math.random() * missingNumbers.length);
         // Get the random missing number
         resultNum = missingNumbers[randomIndex];
+      // console.log('resultNum>>>',resultNum);
+
       } else {
         const result = await JoinLottery.aggregate([
           { $match: { num: getGames.length + 1 } },
@@ -46,21 +52,26 @@ class dataServicesData {
             $limit: 1 // Get the number with the least totalAmount
           }
         ]);
-        console.log(result);
         resultNum = result[0]._id
+        // console.log('result>>>',result);
       }
+
       let data = await Lottery.create({ num: getGames?.length + 1, result: resultNum });
       await JoinLottery.updateMany({ num: data.num }, { $set: { result: data?.result } })
 
-      let dataUser = await JoinLottery.find({ result: data.result, num: data.num }, { userId: 1, amount: 1, taxAmount: 1 })
+      let dataUser = await JoinLottery.find({ choosenNum: data.result, num: data.num }, { userId: 1, amount: 1, taxAmount: 1 })
       //////////////////
+      // console.log('dataUser>>>',dataUser);
 
       const updatePromises = dataUser.map(async (item) => {
         const userId = item.userId;
         let userAmount = item.amount; // The amount value from JoinLottery collection
         // Update the userAmount based on the color        
-        userAmount *= 100;
-        let actualAmount=Math.floor((userAmount - item.taxAmount));
+        // console.log('userAmount>>>',userAmount);
+        userAmount *= numberCount;
+        let actualAmount = Math.floor((userAmount - item.taxAmount));
+        // console.log('actualAmount>>>',actualAmount);
+
         // Update the amount for the user using userId and updated userAmount
         return Users.findByIdAndUpdate(userId,
           { $inc: { totalEarning: actualAmount, earningAmount: actualAmount } }
