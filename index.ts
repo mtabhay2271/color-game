@@ -36,43 +36,43 @@ app.use(cors())
 
 
 
-//set up WebSocket server using the httpServer
-const wss = new WSServer({ noServer: true });
-httpsServer.on("upgrade", (request, socket, head) => {
-  wss.handleUpgrade(request, socket, head, ws => {
-    wss.emit("connection", ws, request);
-  });
-});
+// //set up WebSocket server using the httpServer
+// const wss = new WSServer({ noServer: true });
+// httpsServer.on("upgrade", (request, socket, head) => {
+//   wss.handleUpgrade(request, socket, head, ws => {
+//     wss.emit("connection", ws, request);
+//   });
+// });
 
-// Listen for WebSocket connections
-wss.on('connection', (socket: WebSocket) => {
-  console.log('A user connected to WebSocket');
+// // Listen for WebSocket connections
+// wss.on('connection', (socket: WebSocket) => {
+//   console.log('A user connected to WebSocket');
 
-  socket.on('message', (message: string) => {
-    console.log('Received message from WebSocket:', message);
-    // ... handle other incoming messages ...
-  });
-  socket.on('close', () => {
-    console.log('A .user disconnected from WebSocket');
-  });
-});
-const gameTime = 300
-let i = gameTime;
-setInterval(() => {
-  --i
-  if (i == 3) {
-    ColorService.add();
-    LotteryService.add();
-  }
-  if (i == 0) {
-    i = gameTime
-  }
-  wss.clients.forEach(client => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(i);
-    }
-  });
-}, 1000);
+//   socket.on('message', (message: string) => {
+//     console.log('Received message from WebSocket:', message);
+//     // ... handle other incoming messages ...
+//   });
+//   socket.on('close', () => {
+//     console.log('A .user disconnected from WebSocket');
+//   });
+// });
+// const gameTime = 300
+// let i = gameTime;
+// setInterval(() => {
+//   --i
+//   if (i == 3) {
+//     ColorService.add();
+//     LotteryService.add();
+//   }
+//   if (i == 0) {
+//     i = gameTime
+//   }
+//   wss.clients.forEach(client => {
+//     if (client.readyState === WebSocket.OPEN) {
+//       client.send(i);
+//     }
+//   });
+// }, 1000);
 //commont
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/public/data', express.static('public/imp'));
