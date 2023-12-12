@@ -24,17 +24,20 @@ const options: ServerOptions = {
 };
 // const httpsServer = https.createServer(options, app);
 // Enable CORS for all routes
-var corsOptions = {
-  origin: '*',
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-}
-// app.use(cors(corsOptions))
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  next();
-});
+// const corsOptions = {
+//   origin: 'http://localhost:3000/',
+//   credentials: true,
+//   optionSuccessStatus: 200
+// }
+
+app.use(cors());
+
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//   next();
+// });
 const httpsServer = http.createServer(app);
 DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? '');
 
@@ -87,4 +90,4 @@ app.use('/api', (req: Request, res: Response, next: NextFunction) => {
 }, routes);
 app.use('/pay', express.static('public'));
 const PORT = process.env.PORT || 8080;
-httpsServer.listen(PORT, () => console.log(`App listening on ${PORT}`));
+app.listen(PORT, () => console.log(`App listening on ${PORT}`));
