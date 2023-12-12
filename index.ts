@@ -23,8 +23,6 @@ const options: ServerOptions = {
   cert: fs.readFileSync('./certificate.pem')
 };
 // const httpsServer = https.createServer(options, app);
-const httpsServer = http.createServer(app);
-DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? '');
 // Enable CORS for all routes
 var corsOptions = {
   origin: '*',
@@ -37,6 +35,8 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
+const httpsServer = http.createServer(app);
+DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? '');
 
 
 
