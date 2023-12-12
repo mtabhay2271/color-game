@@ -18,6 +18,9 @@ dotenv.config();
 Corn.daily.start();
 Corn.monthly.start();
 const app: Application = express();
+
+DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? '');
+
 const options: ServerOptions = {
   key: fs.readFileSync('./key.pem'),
   cert: fs.readFileSync('./certificate.pem')
@@ -30,6 +33,8 @@ const options: ServerOptions = {
 //   optionSuccessStatus: 200
 // }
 
+// creating socket server using http server.;
+const server = http.createServer(app);
 app.use(cors());
 
 // app.use((req, res, next) => {
@@ -39,7 +44,6 @@ app.use(cors());
 //   next();
 // });
 const httpsServer = http.createServer(app);
-DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? '');
 
 
 
@@ -90,4 +94,4 @@ app.use('/api', (req: Request, res: Response, next: NextFunction) => {
 }, routes);
 app.use('/pay', express.static('public'));
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`App listening on ${PORT}`));
+server.listen(PORT, () => console.log(`App listening on ${PORT}`));
