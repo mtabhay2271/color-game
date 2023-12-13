@@ -1,5 +1,6 @@
 
 import mongoose from "mongoose";
+mongoose.set('strictQuery', false);
 class connect {
     connect = async (dbstring: string) => {
         try {
