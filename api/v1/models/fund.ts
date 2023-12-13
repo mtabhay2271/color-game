@@ -1,0 +1,44 @@
+import { getModelForClass, Index, mongoose, prop, Ref } from "@typegoose/typegoose";
+import { UserModel } from "./users";
+
+export class FundModal {
+  @prop({
+    required: true,
+    ref: UserModel,
+    type: mongoose.Types.ObjectId,
+  })
+  userId: Ref<UserModel>;
+
+  @prop()
+  amount!: number;
+
+  @prop()
+  txnNum: number;
+
+  @prop()
+  upi: string;
+
+  @prop({
+    required: false,
+    default: false,
+    type: Boolean,
+  })
+  widhrawal: boolean;
+
+  @prop({
+    required: false,
+    default: 0, // 0-pending, 1-approved, 2-rejected
+    type: Number,
+  })
+  status: number;
+  
+}
+
+const Funds = getModelForClass(FundModal, {
+  schemaOptions: {
+    collection: "fund",
+    timestamps: true,
+  },
+});
+
+export default Funds;

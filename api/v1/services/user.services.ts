@@ -198,11 +198,154 @@ class UserServicesData {
     }
   };
 
-  transferBalance = async (req: Request): Promise<ICommonServices> => {
+  activateUser = async (req: Request): Promise<ICommonServices> => {
     try {
       let payload = req.user as IPayAuth;
-      let sender = await Users.findByIdAndUpdate(payload?.userId, { $inc: { earningAmount: - req.body.amount, availableAmount: +(req.body.amount - ((req.body.amount * 1) / 100)) } }, { new: true })
-      return { statusCode: 200, data: { success: true, message: 'Money has succesfully added.' } };
+      
+      let plan = parseInt(req.body.plan) == 500 ? 1 : (parseInt(req.body.plan) == 1000 ? 2 : 0);
+      
+      const rewordsArray: any = {
+        0: [100, 20, 10, 5, 2],
+        1: [250, 100, 50, 40, 30],
+        2: [500, 200, 100, 80, 60]
+      }
+
+
+      if (payload.role == 'admin') {
+
+        let updatedUser: any = await Users.findOneAndUpdate(
+          { username: req.body.username },
+          { $set: { isPaymentDone: true, status: 1,plan } },
+          { new: true }
+        );
+
+        if (updatedUser) {
+
+          let promiseUplinePlans = [];
+
+          // finding uplines plans
+          for (let i = 1; i <= 5; i++) {
+            const uplineId = updatedUser[`uplineId${i == 1 ? '' : i}`];
+            if (uplineId) {
+              promiseUplinePlans.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Users.findById(uplineId, { plan: 1 }).lean()
+                  );
+                })
+              );
+
+            }
+          }
+          let upLinePlans = await Promise.all(promiseUplinePlans);
+
+          let promiseUpdateUpline: any[] = [];
+          let amount = 0
+
+          // Loop through upline references and update rewards
+          upLinePlans.forEach((e: any, i: number) => {
+
+            //comparing plan with upline and choosing amount accordingly
+            let key = plan < e.plan ? plan : e.plan
+            amount = rewordsArray[key][i];
+
+            // creating promise for upline updation
+            promiseUpdateUpline.push(
+              new Promise(function async(resolve, reject) {
+                resolve(
+                  Users.findByIdAndUpdate(e._id, {
+                    $inc: {
+                      availableAmount: amount,
+                      totalEarning: amount,
+                      todayEarning: amount,
+                      thisWeekEarning: amount,
+                      thisMonthEarning: amount,
+                      teamEarning: amount
+                    }
+                  })
+                );
+              })
+            );
+          })
+
+
+          // Execute all promises for update uplines
+          let promiseData2 = await Promise.all(promiseUpdateUpline);
+        }
+
+      } else {
+        let user: any = await Users.findById(payload.userId)
+
+        if (user?.availableAmount < parseInt(req.body.plan)) {
+          return { statusCode: 200, data: { success: false, message: 'Your available amount is less than you plan amount' } };
+        } else {
+          let updatedActivator: any = await Users.findByIdAndUpdate(payload.userId, { $inc: { availableAmount: -parseInt(req.body.plan) } }, { new: true })
+
+
+          let updatedUser: any = await Users.findOneAndUpdate(
+            { username: req.body.username },
+            { $set: { isPaymentDone: true,status: 1, plan } },
+            { new: true }
+          );
+
+          if (updatedUser) {
+
+            let promiseUplinePlans = [];
+
+            // finding uplines plans
+            for (let i = 1; i <= 5; i++) {
+              const uplineId = updatedUser[`uplineId${i == 1 ? '' : i}`];
+              if (uplineId) {
+                promiseUplinePlans.push(
+                  new Promise(function async(resolve, reject) {
+                    resolve(
+                      Users.findById(uplineId, { plan: 1 }).lean()
+                    );
+                  })
+                );
+
+              }
+            }
+            let upLinePlans = await Promise.all(promiseUplinePlans);
+
+
+            let promiseUpdateUpline: any[] = [];
+            let amount = 0
+
+            // Loop through upline references and update rewards
+            upLinePlans.forEach((e: any, i: number) => {
+
+              //comparing plan with upline and choosing amount accordingly
+              let key = plan < e.plan ? plan : e.plan
+              amount = rewordsArray[key][i];
+
+              // creating promise for upline updation
+              promiseUpdateUpline.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Users.findByIdAndUpdate(e._id, {
+                      $inc: {
+                        availableAmount: amount,
+                        totalEarning: amount,
+                        todayEarning: amount,
+                        thisWeekEarning: amount,
+                        thisMonthEarning: amount,
+                        teamEarning: amount
+                      }
+                    })
+                  );
+                })
+              );
+            })
+
+
+            // Execute all promises for update uplines
+            let promiseData2 = await Promise.all(promiseUpdateUpline);
+          }
+
+        }
+      }
+      return { statusCode: 200, data: { success: true, message: 'User activated succesfully' } };
 
     } catch (error) {
       console.log(error);

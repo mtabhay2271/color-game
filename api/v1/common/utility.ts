@@ -53,9 +53,6 @@ class Utility {
                   // exp: number,
                   // iat: number,
                   role: user.role,
-                  uplineId: user.uplineId,
-                  uplineId2: user.uplineId2,
-                  uplineId3: user.uplineId3,
                 };
                 result.password = '';
                 req.userDetail = result;
@@ -98,8 +95,8 @@ class Utility {
               result = await Users.findById(user._id);
               if (result && result.username && result.username === user.username) {
                 // console.log(result.role);
-
-                if (result.role == 1) {
+                
+                if (result.role == 'admin') {
                   req.user = {
                     userId: user._id,
                     email: user.email,
@@ -107,9 +104,6 @@ class Utility {
                     // exp: number,
                     // iat: number,
                     role: user.role,
-                    uplineId: user.uplineId,
-                    uplineId2: user.uplineId2,
-                    uplineId3: user.uplineId3,
                   };
                   result.password = '';
                   req.userDetail = result;

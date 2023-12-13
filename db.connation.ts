@@ -8,9 +8,9 @@ class connect {
                 // useUnifiedTopology: true,   
                 // useFindAndModify: false,
             });
-            console.log("connected to db");
+           // console.log("connected to db");
         } catch (error) {
-            // console.log("Database connection error.",error);
+           // console.log("Database connection error.",error);
         }
     }
 }

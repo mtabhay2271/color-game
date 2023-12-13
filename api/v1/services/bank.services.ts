@@ -1,8 +1,11 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 import { ICommonServices, IPayAuth } from "../interfaces/response_interfaces";
 import _ from "lodash";
 import responseMessages from "../common/response.messages";
+import BankDetails from "../models/bank";
+import SupportModel from "../models/support";
 import { BankDetailsViewModel } from "../view_model/bank";
+import { UserModel } from "../models/users";
 import Users from "../models/users";
 
 
@@ -11,7 +14,7 @@ class dataServicesData {
   addBankDetails = async (req: Request, reqData: BankDetailsViewModel): Promise<ICommonServices> => {
     try {
       let payload = req.user as IPayAuth;
-      let data: any = await Users.findByIdAndUpdate(payload.userId, { $set: { ...reqData } });
+      let data: any = await BankDetails.create({ ...reqData, userId: payload.userId });
       if (data) {
         // console.log(data);
         return {
@@ -33,7 +36,7 @@ class dataServicesData {
 
   getBankDetails = async (userId: string): Promise<ICommonServices> => {
     try {
-      let data: any = await Users.findById(userId, { bank: 1, accountHolderName: 1, ifscCode: 1 }).lean();
+      let data: any = await BankDetails.findOne({ userId }).lean();
       if (data) {
         // console.log(data);
         return {
@@ -55,17 +58,16 @@ class dataServicesData {
 
   getBalance = async (userId: string): Promise<ICommonServices> => {
     try {
-      let data: any = await Users.findById({ _id: userId }, { availableAmount: 1, earningAmount: 1 }).lean();
+      let data: any = await Users.findOne({ userId }).lean();
       if (data) {
         // console.log(data);
         return {
           statusCode: 200,
           data: {
             success: true,
-            message: "Balance found",
+            message: "User found",
             data: {
-              availableAmount: data?.availableAmount ? data.availableAmount : 0,
-              earningAmount: data?.earningAmount ? data.earningAmount : 0
+              availabelAmount: data.availabelAmount ? data.availabelAmount : 0
             }
           }
         };

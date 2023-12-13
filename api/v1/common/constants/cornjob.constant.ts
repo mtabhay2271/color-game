@@ -1,6 +1,6 @@
 
 class cronConst {
-    daily = '0 0 * * *'
+    daily = '59 23 * * *'
     weekly = '59 23 * * 0'
     monthly = '0 0 1 * *'
 }

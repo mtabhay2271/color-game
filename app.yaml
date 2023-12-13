@@ -1,9 +1,0 @@
-runtime: nodejs18
-
-handlers:
-  - url: /.*
-    script: auto
-
-env_variables:
-  MONGO_URI: "mongodb+srv://abhay:abhay2271@leadgenrator.nwtud.mongodb.net/colorgame?retryWrites=true&w=majority"
-  PORT: "8080"
