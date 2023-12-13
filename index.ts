@@ -6,7 +6,8 @@ import path from "path";
 import cors from 'cors'
 import http from "http";
 import DBConnation from './db.connation'
-import cronJob from "./api/v1/common/cronJob";
+import Corn from './api/v1/common/cronJob';
+
 
 dotenv.config();
 // const cronJob = require("./api/v1/common/cronJob");
@@ -22,9 +23,10 @@ DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? "")
 // creating socket server using http server.;
 const server = http.createServer(app);
 
-cronJob.daily.start();
-cronJob.weekly.start();
-cronJob.monthly.start();
+dotenv.config();
+
+Corn.daily.start();
+Corn.monthly.start();
 
 app.use(cors());
 // app.use(cors({ origin: 'http://localhost:19006' }));
