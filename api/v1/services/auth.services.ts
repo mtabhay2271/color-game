@@ -57,7 +57,7 @@ class UserServicesData {
 
   login = async (req: Request): Promise<ICommonServices> => {
     try {
-      let user = await Users.findOne({ username: req.body.username.toLowerCase() });
+      let user = await Users.findOne({ username: req.body.username });
       // console.log(req.body.username,user,"<<<<<<<<<")
       if (!user) {
         return {
