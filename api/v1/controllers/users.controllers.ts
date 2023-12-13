@@ -7,7 +7,7 @@ import { PaymentRefViewModel } from "../view_model/users";
 class userControllersData {
 
   userDetails = async (req: Request, res: Response<ICommonController>) => {
-    try {      
+    try {
       let payload = req.user as IPayAuth;
       let user = await Services.userDetails(payload.userId);
       // let user = await Services.userDetails("62f7febe4f4e63541f479dcb");
@@ -88,7 +88,7 @@ class userControllersData {
       });
     }
   }
-  
+
   getUserMaxEarning = async (req: Request, res: Response<ICommonController>) => {
     try {
       // let payload = req.user as IPayAuth
@@ -104,9 +104,9 @@ class userControllersData {
     }
   }
 
-  activateUser = async (req: Request, res: Response<ICommonController>) => {
+  transferBalance = async (req: Request, res: Response<ICommonController>) => {
     try {
-      let data = await Services.activateUser(req)
+      let data = await Services.transferBalance(req)
       return res.status(data.statusCode).send(data.data)
     } catch (error) {
       // console.log("Error", error);

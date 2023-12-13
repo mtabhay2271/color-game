@@ -1,28 +1,37 @@
 import { getModelForClass, Index, mongoose, prop, Ref } from "@typegoose/typegoose";
 import { UserModel } from "./users";
 
-export class StaredDownlineModel {
+export class RewordModel {
   @prop({
     required: true,
     ref: UserModel,
     type: mongoose.Types.ObjectId,
   })
-  uplineId!: Ref<UserModel>;
-  
-  @prop({
-    required: true,
-    ref: UserModel,
-    type: mongoose.Types.ObjectId,
-  })
-  downlineId!: Ref<UserModel>;
+  userId: Ref<UserModel>;
 
+  @prop({
+    required: false,
+    ref: UserModel,
+    type: mongoose.Types.ObjectId,
+  })
+  downlineId: Ref<UserModel>;
+
+  @prop({
+    required: false
+  })
+  amount: number;
+
+  @prop({
+    required: false
+  })
+  oldBalance: number;
 }
 
-const StaredDownline = getModelForClass(StaredDownlineModel, {
+const Reword = getModelForClass(RewordModel, {
   schemaOptions: {
-    collection: "stareddownline",
+    collection: "reword",
     timestamps: true,
   },
 });
 
-export default StaredDownline;
+export default Reword;

@@ -5,6 +5,9 @@ export interface IPayAuth {
     exp: number;
     iat: number;
     role: string;
+    uplineId:string;
+    uplineId2:string;
+    uplineId3:string;
 }
 
 export interface IUser {
@@ -40,35 +43,6 @@ export interface ICommonServices {
     data: IResponce
 }
 
-export interface IRoomsWithMsg {
-    roomName: number;
-    msg: string;
-    lastMsgAt: string;
-}
-
 export interface ICommonController extends IResponce {
 
 }
-
-
-export interface ILocation {
-    type: string,
-    coordinates: number[]
-}
-
-export interface IPlanners {
-    _id: string,
-    name: string,
-    email: string,
-    role: string,
-    city?: string,
-    contactNumber?: number,
-    country?: string,
-    location?: ILocation
-    state?: string,
-    workExperience?: number,
-    image?: string,
-    isAccepted?:boolean,
-    isRejected?:boolean,
-}
-

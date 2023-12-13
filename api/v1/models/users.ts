@@ -23,7 +23,7 @@ export class UserModel {
   @prop()
   referCode: string
 
-  @prop({ default: 0})
+  @prop({ default: 0 })
   status: number
 
   @prop({
@@ -58,18 +58,11 @@ export class UserModel {
   })
   isPaymentDone: boolean;
 
-
   @prop({
     required: false,
     default: 0
   })
   paymentStatus: number;
-
-  @prop({
-    required: false,
-    default: 0
-  })
-  plan: number;
 
   @prop()
   paymentRefNumber: number;
@@ -90,50 +83,13 @@ export class UserModel {
     required: false,
     default: 0
   })
-  todayEarning: number;
+  earningAmount!: number;
 
-  @prop({
-    required: false,
-    default: 0
-  })
-  thisWeekEarning: number;
-
-  @prop({
-    required: false,
-    default: 0
-  })
-  thisMonthEarning: number;
-  
   @prop({
     required: false,
     default: 0
   })
   totalEarning: number;
-
-  @prop({
-    required: false,
-    default: 0
-  })
-  todayLeads: number;
-
-  @prop({
-    required: false,
-    default: 0
-  })
-  todayRefLead: number;
-
-  @prop({
-    required: false,
-    default: 0
-  })
-  thisMonthRefLead: number;
-
-  @prop({
-    required: false,
-    default: 0
-  })
-  teamEarning: number;
-  
 
   @prop({
     required: false,
@@ -164,6 +120,21 @@ export class UserModel {
 
   @prop()
   otp: string;
+
+
+  //Bank details
+
+  @prop({ required: false })
+  accountHolderName: string;
+
+  @prop({ required: false })
+  bank: string;
+
+  @prop({ required: false })
+  ifscCode: string;
+
+  @prop({ required: false })
+  accountNumber: number;
 }
 
 const Users = getModelForClass(UserModel, {
