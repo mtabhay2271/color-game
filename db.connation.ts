@@ -12,7 +12,7 @@ class connect {
             });
             // console.log("connected to db");
         } catch (error) {
-            // console.log("Database connection error.",error);
+            console.log("Database connection error.",error);
         }
     }
 }
