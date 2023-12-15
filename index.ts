@@ -15,9 +15,6 @@ dotenv.config();
 //creating App
 const app: Application = express();
 
-
-
-
 //Connecting to database
 DBConnation.connect(process.env.MONGO_DB_CONNECTION_STRING ?? "")
 

@@ -19,7 +19,7 @@ class dataServicesData {
       let resultData1: any = await JoinLottery.find({ num: getGames?.length + 1 }, { choosenNum: 1 });
       let joinedNum = [...new Set(resultData1.map((item: any) => item.choosenNum))];
       // let joinedIds = [...new Set(resultData1.map((item: any) => item._id))];
-      console.log(joinedNum);
+      // console.log("joinedNum>>",joinedNum);
       const missingNumbers = [];
 
       for (let i = 1; i <= numberCount; i++) {
