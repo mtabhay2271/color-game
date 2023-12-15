@@ -6,7 +6,7 @@ class connect {
         try {
             await mongoose.connect(dbstring, {
                 // useNewUrlParser: true,
-                // useUnifiedTopology: true,
+                 // useUnifiedTopology: true,
                 socketTimeoutMS: 30000, // Adjust this value
                 connectTimeoutMS: 30000, // Adjust this value
             });

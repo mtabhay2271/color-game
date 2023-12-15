@@ -13,7 +13,7 @@ class dataServicesData {
   add = async () => {
     try {
       // number of games
-     const numberCount=10
+      const numberCount = 10
       const getGames = await Lottery.find({});
 
       let resultData1: any = await JoinLottery.find({ num: getGames?.length + 1 }, { choosenNum: 1 });
@@ -28,13 +28,13 @@ class dataServicesData {
         }
       }
       // console.log('missingNumbers>>>',missingNumbers);
-      
+
       let resultNum
       if (missingNumbers.length) {
         const randomIndex = Math.floor(Math.random() * missingNumbers.length);
         // Get the random missing number
         resultNum = missingNumbers[randomIndex];
-      // console.log('resultNum>>>',resultNum);
+        // console.log('resultNum>>>',resultNum);
 
       } else {
         const result = await JoinLottery.aggregate([
@@ -56,7 +56,7 @@ class dataServicesData {
         // console.log('result>>>',result);
       }
 
-      let data = await Lottery.create({ num: getGames?.length + 1, result: resultNum });
+      let data = await Lottery.create({ num: getGames?.length ? getGames?.length + 1 : 1, result: resultNum });
       await JoinLottery.updateMany({ num: data.num }, { $set: { result: data?.result } })
 
       let dataUser = await JoinLottery.find({ choosenNum: data.result, num: data.num }, { userId: 1, amount: 1, taxAmount: 1 })
@@ -79,7 +79,7 @@ class dataServicesData {
       });
       const updateResults = await Promise.all(updatePromises);
       console.log('aa');
-      
+
       // return { statusCode: 200, data: { success: false, data: resultNum, message: responseMessages.ERROR_OCCURRE } };
     } catch (error) {
       console.log(error);
