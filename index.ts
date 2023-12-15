@@ -31,11 +31,11 @@ let currentTime
 // Format the time to display hours, minutes, and seconds
 // let hours = currentTime.getHours();
 // let minutes = currentTime.getMinutes();
-let seconds 
-setInterval(()=>{
+let seconds
+setInterval(() => {
   currentTime = new Date();
-  seconds=60-currentTime.getSeconds();
-  if(seconds==4){
+  seconds = 60 - currentTime.getSeconds();
+  if (seconds == 4) {
     lotteryServices.add()
     colorServices.add()
   }
