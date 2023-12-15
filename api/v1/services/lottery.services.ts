@@ -28,7 +28,6 @@ class dataServicesData {
         }
       }
       // console.log('missingNumbers>>>',missingNumbers);
-
       let resultNum
       if (missingNumbers.length) {
         const randomIndex = Math.floor(Math.random() * missingNumbers.length);
