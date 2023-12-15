@@ -36,6 +36,7 @@ setInterval(() => {
   currentTime = new Date();
   seconds = 60 - currentTime.getSeconds();
   if (seconds == 4) {
+    console.log("seconds>>",seconds);    
     lotteryServices.add()
     colorServices.add()
   }
