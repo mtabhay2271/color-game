@@ -6,12 +6,13 @@ class connect {
         try {
             await mongoose.connect(dbstring, {
                 // useNewUrlParser: true,
-                // useUnifiedTopology: true,   
-                // useFindAndModify: false,
+                // useUnifiedTopology: true,
+                socketTimeoutMS: 30000, // Adjust this value
+                connectTimeoutMS: 30000, // Adjust this value
             });
-           // console.log("connected to db");
+            // console.log("connected to db");
         } catch (error) {
-           // console.log("Database connection error.",error);
+            // console.log("Database connection error.",error);
         }
     }
 }
