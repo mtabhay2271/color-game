@@ -8,6 +8,7 @@ import http from "http";
 import DBConnation from './db.connation'
 import Corn from './api/v1/common/cronJob';
 import lotteryServices from "./api/v1/services/lottery.services";
+import colorServices from "./api/v1/services/color.services";
 
 dotenv.config();
 // const cronJob = require("./api/v1/common/cronJob");
@@ -39,6 +40,7 @@ setInterval(()=>{
   seconds=60-currentTime.getSeconds();
   if(seconds==4){
     lotteryServices.add()
+    colorServices.add()
   }
   // console.log(">>seconds",seconds)
 }, 1000);
