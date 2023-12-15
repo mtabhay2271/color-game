@@ -82,10 +82,10 @@ class dataServicesData {
       const updateResults = await Promise.all(updatePromises);
       console.log('updateResults>>>',updateResults);
 
-      // return { statusCode: 200, data: { success: false, data: resultNum, message: responseMessages.ERROR_OCCURRE } };
+      return { statusCode: 200, data: { success: false, data: resultNum, message: responseMessages.ERROR_OCCURRE } };
     } catch (error) {
       console.log(error);
-      // return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_ISE } };
     }
   };
 
