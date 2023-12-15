@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 class connect {
     connect = async (dbstring: string) => {
         try {
-            await mongoose.connect('mongodb+srv://abhay:abhay2271@leadgenrator.nwtud.mongodb.net/colorgame?retryWrites=true&w=majority', {
+            await mongoose.connect(dbstring, {
                 // useNewUrlParser: true,
                  // useUnifiedTopology: true,
                 socketTimeoutMS: 30000, // Adjust this value

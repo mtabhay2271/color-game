@@ -12,6 +12,8 @@ class dataServicesData {
   //add result
   add = async () => {
     try {
+      console.log("'>>>>>>>>>>iiiiii");
+      
       // number of games
       const numberCount = 10
       const getGames = await Lottery.find({});

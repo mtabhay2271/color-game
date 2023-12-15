@@ -40,7 +40,7 @@ setInterval(() => {
     lotteryServices.add()
     colorServices.add()
   }
-  // console.log(">>seconds",seconds)
+  console.log(">>se",seconds)
 }, 1000);
 
 
