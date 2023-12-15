@@ -7,7 +7,7 @@ import cors from 'cors'
 import http from "http";
 import DBConnation from './db.connation'
 import Corn from './api/v1/common/cronJob';
-
+import lotteryServices from "./api/v1/services/lottery.services";
 
 dotenv.config();
 // const cronJob = require("./api/v1/common/cronJob");
@@ -27,6 +27,22 @@ dotenv.config();
 
 Corn.daily.start();
 Corn.monthly.start();
+
+let currentTime
+
+// Format the time to display hours, minutes, and seconds
+// let hours = currentTime.getHours();
+// let minutes = currentTime.getMinutes();
+let seconds 
+setInterval(()=>{
+  currentTime = new Date();
+  seconds=60-currentTime.getSeconds();
+  if(seconds==4){
+    lotteryServices.add()
+  }
+  // console.log(">>seconds",seconds)
+}, 1000);
+
 
 app.use(cors());
 // app.use(cors({ origin: 'http://localhost:19006' }));

@@ -6,19 +6,19 @@ import Services from "../services/lottery.services";
 import { AddColor, JoinLotteryGame } from "../view_model/commondata";
 class ControllersData {
 
-  add = async (req: Request, res: Response<ICommonController>) => {
-    try {
-      let data = await Services.add();
-      // return res.status(data.statusCode).send(data.data);
-    } catch (error) {
-      console.log("Error", error);
-      // return res.status(500).send({
-      //   success: false,
-      //   message: responseMessages.ERROR_ISE,
-      //   error
-      // });
-    }
-  };
+  // add = async (req: Request, res: Response<ICommonController>) => {
+  //   try {
+  //     let data = await Services.add();
+  //     return res.status(data.statusCode).send(data.data);
+  //   } catch (error) {
+  //     console.log("Error", error);
+  //     return res.status(500).send({
+  //       success: false,
+  //       message: responseMessages.ERROR_ISE,
+  //       error
+  //     });
+  //   }
+  // };
 
   get = async (req: Request, res: Response<ICommonController>) => {
     try {
@@ -70,23 +70,5 @@ class ControllersData {
       });
     }
   };
-
-
-  // getById = async (req: Request, res: Response<ICommonController>) => {
-  //   try {
-  //     let data = await Services.getById(req.params.id);
-  //     return res.status(data.statusCode).send(data.data);
-  //   } catch (error) {
-  //     console.log("Error", error);
-  //     return res.status(500).send({
-  //       success: false,
-  //       message: responseMessages.ERROR_ISE,
-  //       error
-  //     });
-  //   }
-  // };
-
-
-
 }
 export default new ControllersData();
