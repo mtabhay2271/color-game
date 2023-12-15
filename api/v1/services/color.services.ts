@@ -70,10 +70,13 @@ class dataServicesData {
         return Users.findByIdAndUpdate(userId,
           { $inc: { totalEarning: actualAmount, earningAmount: actualAmount } }
         );
-      });
+      }); 
       const updateResults = await Promise.all(updatePromises);
+      return { statusCode: 200, data: { success: false, message: "Result found" } };
+
     } catch (error) {
       console.log(error);
+      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_ISE } };
     }
   };
 

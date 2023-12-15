@@ -26,25 +26,6 @@ dotenv.config();
 Corn.daily.start();
 Corn.monthly.start();
 
-let currentTime
-
-// Format the time to display hours, minutes, and seconds
-// let hours = currentTime.getHours();
-// let minutes = currentTime.getMinutes();
-
-// let seconds
-// setInterval(() => {
-//   currentTime = new Date();
-//   seconds = 60 - currentTime.getSeconds();
-//   if (seconds == 4) {
-//     console.log("seconds>>",seconds);    
-//     // lotteryServices.add()
-//     // colorServices.add()
-//   }
-//   // console.log(">>se",seconds)
-// }, 1000);
-
-
 app.use(cors());
 // app.use(cors({ origin: 'http://localhost:19006' }));
 
