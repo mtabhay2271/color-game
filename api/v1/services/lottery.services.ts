@@ -56,14 +56,12 @@ class dataServicesData {
         resultNum = result[0]._id
         // console.log('result>>>',result);
       }
-      console.log("getGames?.length>>",getGames?.length);    
 
       let data = await Lottery.create({ num: getGames?.length ? getGames?.length + 1 : 1, result: resultNum });
       await JoinLottery.updateMany({ num: data.num }, { $set: { result: data?.result } })
 
       let dataUser = await JoinLottery.find({ choosenNum: data.result, num: data.num }, { userId: 1, amount: 1, taxAmount: 1 })
       //////////////////
-      console.log('dataUser>>>',dataUser);
 
       const updatePromises = dataUser.map(async (item) => {
         const userId = item.userId;
@@ -80,7 +78,6 @@ class dataServicesData {
         );
       });
       const updateResults = await Promise.all(updatePromises);
-      console.log('updateResults>>>',updateResults);
 
       return { statusCode: 200, data: { success: false, data: resultNum, message:  "Result found" } };
     } catch (error) {
