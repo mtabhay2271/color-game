@@ -71,7 +71,7 @@ class dataServicesData {
         userAmount *= numberCount;
         let actualAmount = Math.floor((userAmount - item.taxAmount));
         // console.log('actualAmount>>>',actualAmount);
-
+ ///
         // Update the amount for the user using userId and updated userAmount
         return Users.findByIdAndUpdate(userId,
           { $inc: { totalEarning: actualAmount, earningAmount: actualAmount } }
