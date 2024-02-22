@@ -12,7 +12,6 @@ class dataServicesData {
   //add result
   add = async () => {
     try {
-      console.log("'>>>>>>>>>>iiiiii");
 
       // number of games
       const numberCount = 10
@@ -79,7 +78,6 @@ class dataServicesData {
       });
       const updateResults = await Promise.all(updatePromises);
       
-      console.log("done");
 
       // return { statusCode: 200, data: { success: false, data: resultNum, message:  "Result found" } };
     } catch (error) {
