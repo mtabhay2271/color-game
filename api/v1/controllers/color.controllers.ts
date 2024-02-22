@@ -6,19 +6,19 @@ import Services from "../services/color.services";
 import { AddColor, JoinGame } from "../view_model/commondata";
 class ControllersData {
 
-  add = async (req: Request, res: Response<ICommonController>, next: NextFunction) => {
-    try {
-      let user = await Services.add();
-      return res.status(user.statusCode).send(user.data);
+  // add = async (req: Request, res: Response<ICommonController>, next: NextFunction) => {
+  //   try {
+  //     let user = await Services.add();
+  //     return res.status(user.statusCode).send(user.data);
 
-    } catch (error) {
-      return res.status(500).send({
-        success: false,
-        message: responseMessages.ERROR_ISE,
-        error
-      });
-    }
-  };
+  //   } catch (error) {
+  //     return res.status(500).send({
+  //       success: false,
+  //       message: responseMessages.ERROR_ISE,
+  //       error
+  //     });
+  //   }
+  // };
 
   get = async (req: Request, res: Response<ICommonController>) => {
     try {

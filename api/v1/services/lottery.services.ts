@@ -13,7 +13,7 @@ class dataServicesData {
   add = async () => {
     try {
       console.log("'>>>>>>>>>>iiiiii");
-      
+
       // number of games
       const numberCount = 10
       const getGames = await Lottery.find({});
@@ -71,18 +71,20 @@ class dataServicesData {
         userAmount *= numberCount;
         let actualAmount = Math.floor((userAmount - item.taxAmount));
         // console.log('actualAmount>>>',actualAmount);
- ///
+        ///
         // Update the amount for the user using userId and updated userAmount
         return Users.findByIdAndUpdate(userId,
           { $inc: { totalEarning: actualAmount, earningAmount: actualAmount } }
         );
       });
       const updateResults = await Promise.all(updatePromises);
+      
+      console.log("done");
 
-      return { statusCode: 200, data: { success: false, data: resultNum, message:  "Result found" } };
+      // return { statusCode: 200, data: { success: false, data: resultNum, message:  "Result found" } };
     } catch (error) {
       console.log(error);
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_ISE } };
+      // return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_ISE } };
     }
   };
 

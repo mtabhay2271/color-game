@@ -26,6 +26,7 @@ dotenv.config();
 Corn.daily.start();
 Corn.monthly.start();
 
+
 app.use(cors());
 // app.use(cors({ origin: 'http://localhost:19006' }));
 
@@ -48,6 +49,27 @@ app.get("/test", (req, res) => {
   res.json({ message: "Working" });
 })
 
-const PORT = process.env.PORT || 7009;
+////////////////////////
+
+setInterval(() => {
+  // let gameTimeInSeconds = 60;
+  let currentTime = new Date();
+
+  // Format the time to display hours, minutes, and seconds
+  // let hours = currentTime.getHours();
+  // let minutes = currentTime.getMinutes();
+  let seconds = 60 - currentTime.getSeconds();
+
+  if (seconds === 5) {
+    lotteryServices.add();
+    colorServices.add();
+  }
+  // console.log("seconds>>", seconds);
+
+}, 1000)
+
+///////////////////////////
+
+const PORT = process.env.PORT || 9001;
 server.listen(PORT, () => console.log(`App listening on ${PORT}`));
 

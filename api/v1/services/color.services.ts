@@ -72,11 +72,11 @@ class dataServicesData {
         );
       }); 
       const updateResults = await Promise.all(updatePromises);
-      return { statusCode: 200, data: { success: false, message: "Result found" } };
+      // return { statusCode: 200, data: { success: false, message: "Result found" } };
 
     } catch (error) {
       console.log(error);
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_ISE } };
+      // return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_ISE } };
     }
   };
 
