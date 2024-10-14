@@ -24,8 +24,7 @@ class dataServicesData {
         }
       ]);
 
-      // const aggregatedResult = { green: 0, red: 0, yellow: 0 };
-      const aggregatedResult = { green: 0, red: 0 };
+      const aggregatedResult = { green: 0, red: 0, yellow: 0 };
 
       resultData1.forEach((entry) => {
         if (entry._id === 1) {
@@ -33,7 +32,7 @@ class dataServicesData {
         } else if (entry._id === 2) {
           aggregatedResult.red = entry.totalAmount * 2;
         } else {
-          // aggregatedResult.yellow = entry.totalAmount * 5;
+          aggregatedResult.yellow = entry.totalAmount * 5;
         }
       });
 
@@ -44,7 +43,7 @@ class dataServicesData {
       const resultMapping: any = {
         green: 1,
         red: 2,
-        // yellow: 3
+        yellow: 3
       };
       const result = resultMapping[result1[0]];
 
@@ -62,10 +61,9 @@ class dataServicesData {
           userAmount *= 2;
         } else if (result === 2) {
           userAmount *= 2;
+        } else if (result === 3) {
+          userAmount *= 5;
         }
-        //  else if (result === 3) {
-        //   userAmount *= 5;
-        // }
         
         let actualAmount=Math.floor((userAmount - item.taxAmount));
         // Update the amount for the user using userId and updated userAmount
