@@ -114,7 +114,7 @@ class dataServicesData {
         return { statusCode: 200, data: { success: false, message: "Your Balance is less" } };
       } else {
         const texPercentage = 5
-        const ptgArray = [30, 20, 10]
+        const ptgArray = [30, 20, 10,5,5]
         let charges = (req.body.amount * texPercentage) / 100;
 
         let getGames = await Color.find({});
@@ -126,7 +126,7 @@ class dataServicesData {
 
           if (payload?.uplineId) {
             console.log(payload?.uplineId);
-            let rewordArray = [((charges * ptgArray[0]) / 100), ((charges * ptgArray[1]) / 100), ((charges * ptgArray[2]) / 100)];
+            let rewordArray = [((charges * ptgArray[0]) / 100), ((charges * ptgArray[1]) / 100), ((charges * ptgArray[2]) / 100), ((charges * ptgArray[3]) / 100), ((charges * ptgArray[4]) / 100)];
 
             let promiseUplineReword = [];
             promiseUplineReword.push(
@@ -186,6 +186,50 @@ class dataServicesData {
                         downlineId: payload.userId,
                         userId: payload.uplineId3,
                         amount: rewordArray[2],
+                        // oldBalance: user?.availableAmount
+                      })
+                    );
+                  })
+                );
+              }
+
+              if (payload?.uplineId4) {
+                promiseUplineReword.push(
+                  new Promise(function async(resolve, reject) {
+                    resolve(
+                      Users.findByIdAndUpdate(payload.uplineId4, { $inc: { earningAmount: rewordArray[3], totalEarning: rewordArray[3] } }, { new: true })
+                    );
+                  })
+                );
+                promiseUplineReword.push(
+                  new Promise(function async(resolve, reject) {
+                    resolve(
+                      Reword.create({
+                        downlineId: payload.userId,
+                        userId: payload.uplineId4,
+                        amount: rewordArray[3],
+                        // oldBalance: user?.availableAmount
+                      })
+                    );
+                  })
+                );
+              }
+
+              if (payload?.uplineId5) {
+                promiseUplineReword.push(
+                  new Promise(function async(resolve, reject) {
+                    resolve(
+                      Users.findByIdAndUpdate(payload.uplineId5, { $inc: { earningAmount: rewordArray[4], totalEarning: rewordArray[4] } }, { new: true })
+                    );
+                  })
+                );
+                promiseUplineReword.push(
+                  new Promise(function async(resolve, reject) {
+                    resolve(
+                      Reword.create({
+                        downlineId: payload.userId,
+                        userId: payload.uplineId5,
+                        amount: rewordArray[4],
                         // oldBalance: user?.availableAmount
                       })
                     );

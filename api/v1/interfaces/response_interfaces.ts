@@ -8,6 +8,8 @@ export interface IPayAuth {
     uplineId:string;
     uplineId2:string;
     uplineId3:string;
+    uplineId4:string;
+    uplineId5:string;
 }
 
 export interface IUser {

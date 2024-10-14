@@ -93,6 +93,8 @@ class UserServicesData {
                   uplineId: user.uplineId,
                   uplineId2: user.uplineId2,
                   uplineId3: user.uplineId3,
+                  uplineId4: user.uplineId4,
+                  uplineId5: user.uplineId5,
                   _id: user._id,
                   role: user.role,
                 },
