@@ -25,10 +25,10 @@ export class TxnViewModel {
   amount!: number;
   
   @Expose()
-  @IsDefined()
+  @IsOptional()
   @IsNumber()
   @Type(() => Number)
-  txnNum: number;
+  txnNum?: number;
 
   @Expose()
   @IsOptional()

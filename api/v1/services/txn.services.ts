@@ -107,7 +107,7 @@ class dataServicesData {
           data: {
             success: true,
             message: "Txn List found",
-            data: data.map((e: any) => { return { _id: e._id, txnNum: e.txnNum, amount: e.amount, userName: e?.userId?.username, status: e.status } })
+            data: data.map((e: any) => { return { ...e, userName: e?.userId?.username, userId: e?.userId?._id} })
           }
         };
       } else {
@@ -137,7 +137,7 @@ class dataServicesData {
 
             if (updatedUser?.uplineId && data.amount >= minAmount) {
               //%%%
-              let refBounce = (data.amount * 5) / 100
+              let refBounce = (data.amount * 10) / 100
               await Users.findByIdAndUpdate(updatedUser.uplineId, {
                 $inc: {
                   earningAmount: refBounce

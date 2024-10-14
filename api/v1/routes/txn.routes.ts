@@ -7,15 +7,17 @@ const router = Router();
 // for admin only
 //using
 router.get("/", Controller.getTxnByStatus);
-router.get("/:status", utility.authenticateUser, Controller.getTxn);
 //using
 //using
-router.post("/", utility.authenticateUser, Controller.addTxn);
+router.post("/add-money", utility.authenticateUser, Controller.addTxn);
+
+//bdg
 router.get("/history", utility.authenticateUser, Controller.getTxnByUser);
 router.get("/verify/:txnNum", Controller.verify);
 
 //using
 router.get("/history/:userId", utility.authenticateUser, Controller.getTxnByUserId);
+router.get("/:status", utility.authenticateUser, Controller.getTxn);
 // router.get("/history",Controller.getTxn);
 // router.get("/history/:userId", utility.authenticateUser, Controller.getTxn);
 
