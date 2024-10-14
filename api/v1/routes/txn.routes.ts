@@ -6,9 +6,9 @@ import Controller from "../controllers/txn.controllers";
 const router = Router();
 // for admin only
 //using
+router.get("/", Controller.getTxnByStatus);
 router.get("/:status", utility.authenticateUser, Controller.getTxn);
 //using
-router.get("/all/:status", utility.authenticateAdmin, Controller.getTxnByStatus);
 //using
 router.post("/", utility.authenticateUser, Controller.addTxn);
 router.get("/history", utility.authenticateUser, Controller.getTxnByUser);
