@@ -6,6 +6,7 @@ import Color from "../models/color";
 import Join, { JoinModel } from "../models/color.joined";
 import Users from "../models/users";
 import Reword from "../models/reword";
+import utility from '../common/utility'
 
 class dataServicesData {
   //add result
@@ -49,7 +50,7 @@ class dataServicesData {
       };
       const result = resultMapping[result1[0]];
 
-      const data = await Color.create({ result, num: getGames.length + 1 });
+      const data = await Color.create({ result, num: utility.formatDateToNumber().toString() + (getGames.length + 1) });
       await Join.updateMany({ num: data.num }, { $set: { result } });
 
       let dataUser = await Join.find(
@@ -138,10 +139,12 @@ class dataServicesData {
         let charges = (req.body.amount * texPercentage) / 100;
 
         let getGames = await Color.find({});
+        // console.log(getGames.length,utility.formatDateToNumber().toString(),utility.formatDateToNumber().toString() + (getGames.length + 1));
+        
         let data: any = await Join.create({
           ...req.body,
           userId: payload.userId,
-          num: getGames.length + 1,
+          num: utility.formatDateToNumber().toString() + (getGames.length + 1),
           taxAmount: charges,
         });
         let data1: any;

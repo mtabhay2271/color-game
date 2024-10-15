@@ -1,7 +1,7 @@
 import { plainToClass } from "class-transformer";
 import { validate } from "class-validator";
 import { NextFunction } from "express";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 import _ from "lodash";
 import Users from "../models/users";
 import { DEFAULT_EXP_TIME } from "./constants/time.constants";
@@ -37,15 +37,23 @@ class Utility {
 
             if (user.exp > Date.now()) {
               // console.log(user.exp - Date.now());
-              if (req.baseUrl == '/api/v1/auth/logOut') {
-                return res.status(200).json({ status: true, msg: 'logout successfully' });
+              if (req.baseUrl == "/api/v1/auth/logOut") {
+                return res
+                  .status(200)
+                  .json({ status: true, msg: "logout successfully" });
               } else {
-                return res.status(401).json({ status: false, msg: "Token expired" });
+                return res
+                  .status(401)
+                  .json({ status: false, msg: "Token expired" });
               }
             } else if (user && user._id) {
               let result: any;
               result = await Users.findById(user._id);
-              if (result && result.username && result.username === user.username) {
+              if (
+                result &&
+                result.username &&
+                result.username === user.username
+              ) {
                 req.user = {
                   userId: user._id,
                   email: user.email,
@@ -57,26 +65,36 @@ class Utility {
                   uplineId2: user.uplineId2,
                   uplineId3: user.uplineId3,
                 };
-                result.password = '';
+                result.password = "";
                 req.userDetail = result;
                 next();
               } else {
-                return res.status(401).json({ status: false, error: "User not exist.", });
+                return res
+                  .status(401)
+                  .json({ status: false, error: "User not exist." });
               }
             } else {
-              return res.status(401).json({ status: false, error: "Unauthorized access.", });
+              return res
+                .status(401)
+                .json({ status: false, error: "Unauthorized access." });
             }
           } catch (error) {
-            return res.status(401).json({ status: false, msg: "Token expired" });
+            return res
+              .status(401)
+              .json({ status: false, msg: "Token expired" });
           }
         });
       } else {
-        return res.status(401).json({ status: false, error: "Authentication header required", });
+        return res
+          .status(401)
+          .json({ status: false, error: "Authentication header required" });
       }
     } catch (error) {
-      return res.status(500).json({ status: false, error: "Internal Server Error", });
+      return res
+        .status(500)
+        .json({ status: false, error: "Internal Server Error" });
     }
-  }
+  };
 
   authenticateAdmin = async (req: any, res: any, next: NextFunction) => {
     try {
@@ -88,18 +106,26 @@ class Utility {
 
             if (user.exp > Date.now()) {
               // console.log(user.exp - Date.now());
-              if (req.baseUrl == '/api/v1/auth/logOut') {
-                return res.status(200).json({ status: true, msg: 'logout successfully' });
+              if (req.baseUrl == "/api/v1/auth/logOut") {
+                return res
+                  .status(200)
+                  .json({ status: true, msg: "logout successfully" });
               } else {
-                return res.status(401).json({ status: false, msg: "Token expired" });
+                return res
+                  .status(401)
+                  .json({ status: false, msg: "Token expired" });
               }
             } else if (user && user._id) {
               let result: any;
               result = await Users.findById(user._id);
-              if (result && result.username && result.username === user.username) {
+              if (
+                result &&
+                result.username &&
+                result.username === user.username
+              ) {
                 // console.log(result.role);
 
-                if (result.role == 'admin') {
+                if (result.role == "admin") {
                   req.user = {
                     userId: user._id,
                     email: user.email,
@@ -111,29 +137,41 @@ class Utility {
                     uplineId2: user.uplineId2,
                     uplineId3: user.uplineId3,
                   };
-                  result.password = '';
+                  result.password = "";
                   req.userDetail = result;
                   next();
                 } else {
-                  return res.status(401).json({ status: false, error: "You are not Admin", });
+                  return res
+                    .status(401)
+                    .json({ status: false, error: "You are not Admin" });
                 }
               } else {
-                return res.status(401).json({ status: false, error: "User not exist.", });
+                return res
+                  .status(401)
+                  .json({ status: false, error: "User not exist." });
               }
             } else {
-              return res.status(401).json({ status: false, error: "Unauthorized access.", });
+              return res
+                .status(401)
+                .json({ status: false, error: "Unauthorized access." });
             }
           } catch (error) {
-            return res.status(401).json({ status: false, msg: "Token expired" });
+            return res
+              .status(401)
+              .json({ status: false, msg: "Token expired" });
           }
         });
       } else {
-        return res.status(401).json({ status: false, error: "Authentication header required", });
+        return res
+          .status(401)
+          .json({ status: false, error: "Authentication header required" });
       }
     } catch (error) {
-      return res.status(500).json({ status: false, error: "Internal Server Error", });
+      return res
+        .status(500)
+        .json({ status: false, error: "Internal Server Error" });
     }
-  }
+  };
   signJWT = (payload: any, expires_in?: string): string => {
     let jwtToken = jwt.sign(payload, secret_key, {
       expiresIn: expires_in ?? DEFAULT_EXP_TIME,
@@ -144,12 +182,22 @@ class Utility {
   SaveUploadedFileToLocal = (imageFile: any, path: any) => {
     imageFile.mv(path, function (error: any) {
       if (error) {
-        return error
+        return error;
       }
-    })
-    return path
-  }
-};
+    });
+    return path;
+  };
 
+  formatDateToNumber = () => {
+    const today = new Date();
+
+    const day = String(today.getDate()).padStart(2, "0"); // Ensure two digits for day
+    const month = String(today.getMonth() + 1); // getMonth() is zero-based, so add 1
+    const year = today.getFullYear(); // Full year (e.g., 2024)
+
+    // Format as YYYYMMDD
+    return `${month}${year}${day}`;
+  };
+}
 
 export default new Utility();
