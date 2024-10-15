@@ -88,7 +88,7 @@ class dataServicesData {
 
   get = async (): Promise<ICommonServices> => {
     try {
-      let data: any = await Color.find({}, { num: 1, result: 1 })
+      let data: any = await Color.find({})
         .sort({ num: -1 })
         .limit(50)
         .lean();
@@ -390,5 +390,36 @@ class dataServicesData {
       };
     }
   };
+
+  getCurrentGame = async (): Promise<ICommonServices> => {
+    try {
+      let data: any = await Color.find({})
+      if (data) {
+        return {
+          statusCode: 200,
+          data: {
+            success: true,
+            message: "current game found successfully",
+            data:utility.formatDateToNumber().toString() + (data.length + 1),
+          },
+        };
+      } else {
+        return {
+          statusCode: 200,
+          data: {
+            success: false,
+            message: "current game not found successfully",
+          },
+        };
+      }
+    } catch (error) {
+      console.log(error);
+      return {
+        statusCode: 500,
+        data: { success: false, message: responseMessages.ERROR_OCCURRE },
+      };
+    }
+  };
+
 }
 export default new dataServicesData();

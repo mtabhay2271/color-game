@@ -8,6 +8,7 @@ const router = Router();
 router.get("/", Controller.get);
 router.post("/join", utility.authenticateUser, Controller.join);
 router.get("/join", utility.authenticateUser, Controller.getJoinList);
+router.get("/current", Controller.getCurrentGame);
 // router.get("/:id", Controller.getById);
 
 export default router;

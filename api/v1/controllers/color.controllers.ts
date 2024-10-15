@@ -87,6 +87,19 @@ class ControllersData {
   // };
 
 
+  getCurrentGame = async (req: Request, res: Response<ICommonController>) => {
+    try {
+      let data = await Services.getCurrentGame();
+      return res.status(data.statusCode).send(data.data);
+    } catch (error) {
+      console.log("Error", error);
+      return res.status(500).send({
+        success: false,
+        message: responseMessages.ERROR_ISE,
+        error
+      });
+    }
+  };
 
 }
 export default new ControllersData();
