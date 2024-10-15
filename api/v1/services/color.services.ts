@@ -8,7 +8,6 @@ import Users from "../models/users";
 import Reword from "../models/reword";
 
 class dataServicesData {
-
   //add result
   add = async () => {
     try {
@@ -19,9 +18,9 @@ class dataServicesData {
         {
           $group: {
             _id: "$color",
-            totalAmount: { $sum: "$amount" }
-          }
-        }
+            totalAmount: { $sum: "$amount" },
+          },
+        },
       ]);
 
       // const aggregatedResult = { green: 0, red: 0, yellow: 0 };
@@ -37,8 +36,10 @@ class dataServicesData {
         }
       });
 
-      const sortedResult = Object.entries(aggregatedResult).sort(([, v1], [, v2]) => v1 - v2);
-      const newArray = sortedResult.filter(e => e[1] === sortedResult[0][1]);
+      const sortedResult = Object.entries(aggregatedResult).sort(
+        ([, v1], [, v2]) => v1 - v2
+      );
+      const newArray = sortedResult.filter((e) => e[1] === sortedResult[0][1]);
       const result1 = newArray[Math.floor(Math.random() * newArray.length)];
 
       const resultMapping: any = {
@@ -48,11 +49,14 @@ class dataServicesData {
       };
       const result = resultMapping[result1[0]];
 
-      const data = await Color.create({ result, num: (getGames.length + 1) });
+      const data = await Color.create({ result, num: getGames.length + 1 });
       await Join.updateMany({ num: data.num }, { $set: { result } });
 
-      let dataUser = await Join.find({ color: result, num: data.num }, { userId: 1, amount: 1, taxAmount: 1 })
-      ////////////////// 
+      let dataUser = await Join.find(
+        { color: result, num: data.num },
+        { userId: 1, amount: 1, taxAmount: 1 }
+      );
+      //////////////////
 
       const updatePromises = dataUser.map(async (item) => {
         const userId = item.userId;
@@ -66,16 +70,15 @@ class dataServicesData {
         //  else if (result === 3) {
         //   userAmount *= 5;
         // }
-        
-        let actualAmount=Math.floor((userAmount - item.taxAmount));
+
+        let actualAmount = Math.floor(userAmount - item.taxAmount);
         // Update the amount for the user using userId and updated userAmount
-        return Users.findByIdAndUpdate(userId,
-          { $inc: { totalEarning: actualAmount, earningAmount: actualAmount } }
-        );
-      }); 
+        return Users.findByIdAndUpdate(userId, {
+          $inc: { totalEarning: actualAmount, earningAmount: actualAmount },
+        });
+      });
       const updateResults = await Promise.all(updatePromises);
       // return { statusCode: 200, data: { success: false, message: "Result found" } };
-
     } catch (error) {
       console.log(error);
       // return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_ISE } };
@@ -84,22 +87,34 @@ class dataServicesData {
 
   get = async (): Promise<ICommonServices> => {
     try {
-      let data: any = await Color.find({}, { num: 1, result: 1 }).sort({ num: -1 }).limit(50).lean();
+      let data: any = await Color.find({}, { num: 1, result: 1 })
+        .sort({ num: -1 })
+        .limit(50)
+        .lean();
       if (data) {
         return {
           statusCode: 200,
           data: {
             success: true,
             message: "list found successfully",
-            data
-          }
+            data,
+          },
         };
       } else {
-        return { statusCode: 200, data: { success: false, message: "Color list not found successfully" } };
+        return {
+          statusCode: 200,
+          data: {
+            success: false,
+            message: "Color list not found successfully",
+          },
+        };
       }
     } catch (error) {
       console.log(error);
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+      return {
+        statusCode: 500,
+        data: { success: false, message: responseMessages.ERROR_OCCURRE },
+      };
     }
   };
 
@@ -109,30 +124,59 @@ class dataServicesData {
 
       // console.log(req.user);
       let payload = req.user as IPayAuth;
-      let user = await Users.findById(payload.userId, { availableAmount: 1 }).lean();
+      let user = await Users.findById(payload.userId, {
+        availableAmount: 1,
+      }).lean();
       if (user && user?.availableAmount < req.body.amount) {
-        return { statusCode: 200, data: { success: false, message: "Your Balance is less" } };
+        return {
+          statusCode: 200,
+          data: { success: false, message: "Your Balance is less" },
+        };
       } else {
-        const texPercentage = 5
-        const ptgArray = [30, 20, 10,5,5]
+        const texPercentage = 5;
+        const ptgArray = [30, 20, 10, 5, 5];
         let charges = (req.body.amount * texPercentage) / 100;
 
         let getGames = await Color.find({});
-        let data: any = await Join.create({ ...req.body, userId: payload.userId, num: (getGames.length + 1), taxAmount: charges });
-        let data1: any
+        let data: any = await Join.create({
+          ...req.body,
+          userId: payload.userId,
+          num: getGames.length + 1,
+          taxAmount: charges,
+        });
+        let data1: any;
         if (user) {
-          let user = await Users.findByIdAndUpdate(payload.userId, { $inc: { availableAmount: - data.amount } }, { new: true });
+          let user = await Users.findByIdAndUpdate(
+            payload.userId,
+            { $inc: { availableAmount: -data.amount } },
+            { new: true }
+          );
           console.log(payload?.uplineId);
 
           if (payload?.uplineId) {
             console.log(payload?.uplineId);
-            let rewordArray = [((charges * ptgArray[0]) / 100), ((charges * ptgArray[1]) / 100), ((charges * ptgArray[2]) / 100), ((charges * ptgArray[3]) / 100), ((charges * ptgArray[4]) / 100)];
+            let rewordArray = [
+              (charges * ptgArray[0]) / 100,
+              (charges * ptgArray[1]) / 100,
+              (charges * ptgArray[2]) / 100,
+              (charges * ptgArray[3]) / 100,
+              (charges * ptgArray[4]) / 100,
+            ];
 
             let promiseUplineReword = [];
             promiseUplineReword.push(
               new Promise(function async(resolve, reject) {
                 resolve(
-                  Users.findByIdAndUpdate(payload.uplineId, { $inc: { earningAmount: rewordArray[0], totalEarning: rewordArray[0] } }, { new: true })
+                  Users.findByIdAndUpdate(
+                    payload.uplineId,
+                    {
+                      $inc: {
+                        earningAmount: rewordArray[0],
+                        totalEarning: rewordArray[0],
+                      },
+                    },
+                    { new: true }
+                  )
                 );
               })
             );
@@ -154,7 +198,16 @@ class dataServicesData {
               promiseUplineReword.push(
                 new Promise(function async(resolve, reject) {
                   resolve(
-                    Users.findByIdAndUpdate(payload.uplineId2, { $inc: { earningAmount: rewordArray[1], totalEarning: rewordArray[1] } }, { new: true })
+                    Users.findByIdAndUpdate(
+                      payload.uplineId2,
+                      {
+                        $inc: {
+                          earningAmount: rewordArray[1],
+                          totalEarning: rewordArray[1],
+                        },
+                      },
+                      { new: true }
+                    )
                   );
                 })
               );
@@ -170,72 +223,98 @@ class dataServicesData {
                   );
                 })
               );
+            }
+            if (payload?.uplineId3) {
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Users.findByIdAndUpdate(
+                      payload.uplineId3,
+                      {
+                        $inc: {
+                          earningAmount: rewordArray[2],
+                          totalEarning: rewordArray[2],
+                        },
+                      },
+                      { new: true }
+                    )
+                  );
+                })
+              );
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Reword.create({
+                      downlineId: payload.userId,
+                      userId: payload.uplineId3,
+                      amount: rewordArray[2],
+                      // oldBalance: user?.availableAmount
+                    })
+                  );
+                })
+              );
+            }
 
-              if (payload?.uplineId3) {
-                promiseUplineReword.push(
-                  new Promise(function async(resolve, reject) {
-                    resolve(
-                      Users.findByIdAndUpdate(payload.uplineId3, { $inc: { earningAmount: rewordArray[2], totalEarning: rewordArray[2] } }, { new: true })
-                    );
-                  })
-                );
-                promiseUplineReword.push(
-                  new Promise(function async(resolve, reject) {
-                    resolve(
-                      Reword.create({
-                        downlineId: payload.userId,
-                        userId: payload.uplineId3,
-                        amount: rewordArray[2],
-                        // oldBalance: user?.availableAmount
-                      })
-                    );
-                  })
-                );
-              }
+            if (payload?.uplineId4) {
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Users.findByIdAndUpdate(
+                      payload.uplineId4,
+                      {
+                        $inc: {
+                          earningAmount: rewordArray[3],
+                          totalEarning: rewordArray[3],
+                        },
+                      },
+                      { new: true }
+                    )
+                  );
+                })
+              );
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Reword.create({
+                      downlineId: payload.userId,
+                      userId: payload.uplineId4,
+                      amount: rewordArray[3],
+                      // oldBalance: user?.availableAmount
+                    })
+                  );
+                })
+              );
+            }
 
-              if (payload?.uplineId4) {
-                promiseUplineReword.push(
-                  new Promise(function async(resolve, reject) {
-                    resolve(
-                      Users.findByIdAndUpdate(payload.uplineId4, { $inc: { earningAmount: rewordArray[3], totalEarning: rewordArray[3] } }, { new: true })
-                    );
-                  })
-                );
-                promiseUplineReword.push(
-                  new Promise(function async(resolve, reject) {
-                    resolve(
-                      Reword.create({
-                        downlineId: payload.userId,
-                        userId: payload.uplineId4,
-                        amount: rewordArray[3],
-                        // oldBalance: user?.availableAmount
-                      })
-                    );
-                  })
-                );
-              }
-
-              if (payload?.uplineId5) {
-                promiseUplineReword.push(
-                  new Promise(function async(resolve, reject) {
-                    resolve(
-                      Users.findByIdAndUpdate(payload.uplineId5, { $inc: { earningAmount: rewordArray[4], totalEarning: rewordArray[4] } }, { new: true })
-                    );
-                  })
-                );
-                promiseUplineReword.push(
-                  new Promise(function async(resolve, reject) {
-                    resolve(
-                      Reword.create({
-                        downlineId: payload.userId,
-                        userId: payload.uplineId5,
-                        amount: rewordArray[4],
-                        // oldBalance: user?.availableAmount
-                      })
-                    );
-                  })
-                );
-              }
+            if (payload?.uplineId5) {
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Users.findByIdAndUpdate(
+                      payload.uplineId5,
+                      {
+                        $inc: {
+                          earningAmount: rewordArray[4],
+                          totalEarning: rewordArray[4],
+                        },
+                      },
+                      { new: true }
+                    )
+                  );
+                })
+              );
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Reword.create({
+                      downlineId: payload.userId,
+                      userId: payload.uplineId5,
+                      amount: rewordArray[4],
+                      // oldBalance: user?.availableAmount
+                    })
+                  );
+                })
+              );
             }
             let upLineReword = await Promise.all(promiseUplineReword);
             data1 = upLineReword;
@@ -245,16 +324,22 @@ class dataServicesData {
             data: {
               success: true,
               message: "Join successfully",
-              data: data1
-            }
+              data: data1,
+            },
           };
         } else {
-          return { statusCode: 200, data: { success: false, message: "Not Joined" } };
+          return {
+            statusCode: 200,
+            data: { success: false, message: "Not Joined" },
+          };
         }
       }
     } catch (error) {
       console.log(error);
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+      return {
+        statusCode: 500,
+        data: { success: false, message: responseMessages.ERROR_OCCURRE },
+      };
     }
   };
 
@@ -263,31 +348,44 @@ class dataServicesData {
       let payload = req.user as IPayAuth;
 
       const today = new Date();
-      const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-      let data = await Join.find({
-        userId: payload.userId,
-        createdAt: {
-          $gte: startOfDay
-        }
-      }, { __v: 0, updatedAt: 0 }).sort({ createdAt: -1 }).lean();
+      const startOfDay = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+      );
+      let data = await Join.find(
+        {
+          userId: payload.userId,
+          createdAt: {
+            $gte: startOfDay,
+          },
+        },
+        { __v: 0, updatedAt: 0 }
+      )
+        .sort({ createdAt: -1 })
+        .lean();
       if (data) {
         return {
           statusCode: 200,
           data: {
             success: true,
             message: "User game list found",
-            data: data
-          }
+            data: data,
+          },
         };
       } else {
-        return { statusCode: 200, data: { success: false, message: "Not Joined" } };
+        return {
+          statusCode: 200,
+          data: { success: false, message: "Not Joined" },
+        };
       }
-
     } catch (error) {
       console.log(error);
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+      return {
+        statusCode: 500,
+        data: { success: false, message: responseMessages.ERROR_OCCURRE },
+      };
     }
   };
 }
 export default new dataServicesData();
-

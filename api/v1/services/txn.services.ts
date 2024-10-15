@@ -4,10 +4,9 @@ import _ from "lodash";
 import responseMessages from "../common/response.messages";
 import TxnModel from "../models/txn";
 import Users from "../models/users";
-
+import Reword from "../models/reword";
 
 class dataServicesData {
-
   //using
   addTxn = async (req: Request): Promise<ICommonServices> => {
     try {
@@ -16,55 +15,89 @@ class dataServicesData {
       let data: any = await TxnModel.create({
         ...req.body,
         userId: payload.userId,
-        pay: req.body.widhrawal ? (req.body.amount - ((req.body.amount * 5) / 100)) : 0
+        pay: req.body.widhrawal
+          ? req.body.amount - (req.body.amount * 5) / 100
+          : 0,
       });
       if (data.widhrawal) {
-        let userData: any = await Users.findByIdAndUpdate(payload.userId, { $inc: { earningAmount: - data.amount } }, { new: true })
+        let userData: any = await Users.findByIdAndUpdate(
+          payload.userId,
+          { $inc: { earningAmount: -data.amount } },
+          { new: true }
+        );
       }
       if (data) {
         return {
           statusCode: 200,
           data: {
             success: true,
-            message: "Txn added"
-          }
+            message: "Txn added",
+          },
         };
       } else {
-        return { statusCode: 200, data: { success: false, message: responseMessages.USER_DETAILS_FOUND_NOT } };
+        return {
+          statusCode: 200,
+          data: {
+            success: false,
+            message: responseMessages.USER_DETAILS_FOUND_NOT,
+          },
+        };
       }
     } catch (error) {
       console.log(error);
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+      return {
+        statusCode: 500,
+        data: { success: false, message: responseMessages.ERROR_OCCURRE },
+      };
     }
   };
 
   //using
   getTxn = async (req: Request): Promise<ICommonServices> => {
     try {
-
       let payload = req.user as IPayAuth;
-      let data: any
+      let data: any;
       let query: any = { userId: payload.userId };
-      let status: any = req.params.status
+      let status: any = req.params.status;
       if (status && status != 4) {
-        query["status"] = status
+        query["status"] = status;
       }
-      data = await TxnModel.find(query).sort({ createdAt: -1 }).populate('userId').lean();
+      data = await TxnModel.find(query)
+        .sort({ createdAt: -1 })
+        .populate("userId")
+        .lean();
       if (data) {
         return {
           statusCode: 200,
           data: {
             success: true,
             message: "Txn List found",
-            data: data.map((e: any) => { return { _id: e._id, txnNum: e.txnNum, amount: e.amount, userName: e?.userId?.username, status: e.status } })
-          }
+            data: data.map((e: any) => {
+              return {
+                _id: e._id,
+                txnNum: e.txnNum,
+                amount: e.amount,
+                userName: e?.userId?.username,
+                status: e.status,
+              };
+            }),
+          },
         };
       } else {
-        return { statusCode: 200, data: { success: false, message: responseMessages.USER_DETAILS_FOUND_NOT } };
+        return {
+          statusCode: 200,
+          data: {
+            success: false,
+            message: responseMessages.USER_DETAILS_FOUND_NOT,
+          },
+        };
       }
     } catch (error) {
       console.log(error, "erro");
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+      return {
+        statusCode: 500,
+        data: { success: false, message: responseMessages.ERROR_OCCURRE },
+      };
     }
   };
 
@@ -80,96 +113,322 @@ class dataServicesData {
           data: {
             success: true,
             message: "Txn History found",
-            data
-          }
+            data,
+          },
         };
       } else {
-        return { statusCode: 200, data: { success: false, message: responseMessages.USER_DETAILS_FOUND_NOT } };
+        return {
+          statusCode: 200,
+          data: {
+            success: false,
+            message: responseMessages.USER_DETAILS_FOUND_NOT,
+          },
+        };
       }
     } catch (error) {
       console.log(error);
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+      return {
+        statusCode: 500,
+        data: { success: false, message: responseMessages.ERROR_OCCURRE },
+      };
     }
   };
 
   //using
-  getTxnByUserId = async (userId: string, status: any): Promise<ICommonServices> => {
+  getTxnByUserId = async (
+    userId: string,
+    status: any
+  ): Promise<ICommonServices> => {
     try {
-      let data: any
-      let query: any = { userId }
+      let data: any;
+      let query: any = { userId };
       if (status && status != 4) {
-        query["status"] = status
+        query["status"] = status;
       }
-      data = await TxnModel.find(query).sort({ createdAt: -1 }).populate('userId').lean();
+      data = await TxnModel.find(query)
+        .sort({ createdAt: -1 })
+        .populate("userId")
+        .lean();
       if (data) {
         return {
           statusCode: 200,
           data: {
             success: true,
             message: "Txn List found",
-            data: data.map((e: any) => { return { ...e, userName: e?.userId?.username, userId: e?.userId?._id} })
-          }
+            data: data.map((e: any) => {
+              return {
+                ...e,
+                userName: e?.userId?.username,
+                userId: e?.userId?._id,
+              };
+            }),
+          },
         };
       } else {
-        return { statusCode: 200, data: { success: false, message: responseMessages.USER_DETAILS_FOUND_NOT } };
+        return {
+          statusCode: 200,
+          data: {
+            success: false,
+            message: responseMessages.USER_DETAILS_FOUND_NOT,
+          },
+        };
       }
     } catch (error) {
       console.log(error, "erro");
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+      return {
+        statusCode: 500,
+        data: { success: false, message: responseMessages.ERROR_OCCURRE },
+      };
     }
   };
 
   //using
   approveTxn = async (req: Request, id: string): Promise<ICommonServices> => {
     try {
-      let data: any = await TxnModel.findByIdAndUpdate(id, { $set: { status: 1 } }, { new: true });
+      let data: any = await TxnModel.findByIdAndUpdate(
+        id,
+        { $set: { status: 1 } },
+        { new: true }
+      );
       if (data) {
         if (!data?.widhrawal) {
-          let actualAmount = data.amount < 1000 ? (data.amount < 500 ? data.amount : (data.amount + ((data.amount * 10) / 100))) : (data.amount + ((data.amount * 15) / 100))
-          let user = await Users.findByIdAndUpdate(data.userId, {
-            $inc: {
-              availableAmount: actualAmount
-            }
-          }, { new: true })
+          let actualAmount =
+            data.amount < 500
+              ? data.amount
+              : data.amount + (data.amount * 10) / 100;
+          let user = await Users.findByIdAndUpdate(
+            data.userId,
+            {
+              $inc: {
+                availableAmount: actualAmount,
+              },
+            },
+            { new: true }
+          );
           if (!user?.paymentStatus) {
-            let updatedUser: any = await Users.findByIdAndUpdate(data.userId, { $set: { isPaymentDone: true, status: 1, paymentStatus: 1 } }, { new: true });
+            let updatedUser: any = await Users.findByIdAndUpdate(
+              data.userId,
+              { $set: { isPaymentDone: true, status: 1, paymentStatus: 1 } },
+              { new: true }
+            );
             let minAmount = 500;
 
-            if (updatedUser?.uplineId && data.amount >= minAmount) {
+            const ptgArray = [10, 1, 1, 1, 1];
+            let rewordArray = [
+              (data.amount * ptgArray[0]) / 100,
+              (data.amount * ptgArray[1]) / 100,
+              (data.amount * ptgArray[2]) / 100,
+              (data.amount * ptgArray[3]) / 100,
+              (data.amount * ptgArray[4]) / 100,
+            ];
+
+            let promiseUplineReword = [];
+
+            if (updatedUser?.uplineId) {
+              // if (updatedUser?.uplineId && data.amount >= minAmount) {
               //%%%
-              let refBounce = (data.amount * 10) / 100
-              await Users.findByIdAndUpdate(updatedUser.uplineId, {
-                $inc: {
-                  earningAmount: refBounce
-                }
-              })
+              // let refBounce = (data.amount * 10) / 100;
+              // await Users.findByIdAndUpdate(updatedUser.uplineId, {
+              //   $inc: {
+              //     earningAmount: refBounce,
+              //   },
+              // });
+
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Users.findByIdAndUpdate(
+                      updatedUser.uplineId,
+                      {
+                        $inc: {
+                          earningAmount: rewordArray[0],
+                          totalEarning: rewordArray[0],
+                        },
+                      },
+                      { new: true }
+                    )
+                  );
+                })
+              );
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Reword.create({
+                      downlineId: updatedUser._id,
+                      userId: updatedUser.uplineId,
+                      amount: rewordArray[0],
+                      // oldBalance: user?.availableAmount
+                    })
+                  );
+                })
+              );
             }
+
+            if (updatedUser?.uplineId2) {
+              console.log(updatedUser?.uplineId2);
+
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Users.findByIdAndUpdate(
+                      updatedUser.uplineId2,
+                      {
+                        $inc: {
+                          earningAmount: rewordArray[1],
+                          totalEarning: rewordArray[1],
+                        },
+                      },
+                      { new: true }
+                    )
+                  );
+                })
+              );
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Reword.create({
+                      downlineId: updatedUser._id,
+                      userId: updatedUser.uplineId2,
+                      amount: rewordArray[1],
+                      // oldBalance: user?.availableAmount
+                    })
+                  );
+                })
+              );
+            }
+            if (updatedUser?.uplineId3) {
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Users.findByIdAndUpdate(
+                      updatedUser.uplineId3,
+                      {
+                        $inc: {
+                          earningAmount: rewordArray[2],
+                          totalEarning: rewordArray[2],
+                        },
+                      },
+                      { new: true }
+                    )
+                  );
+                })
+              );
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Reword.create({
+                      downlineId: updatedUser._id,
+                      userId: updatedUser.uplineId3,
+                      amount: rewordArray[2],
+                      // oldBalance: user?.availableAmount
+                    })
+                  );
+                })
+              );
+            }
+
+            if (updatedUser?.uplineId4) {
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Users.findByIdAndUpdate(
+                      updatedUser.uplineId4,
+                      {
+                        $inc: {
+                          earningAmount: rewordArray[3],
+                          totalEarning: rewordArray[3],
+                        },
+                      },
+                      { new: true }
+                    )
+                  );
+                })
+              );
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Reword.create({
+                      downlineId: updatedUser._id,
+                      userId: updatedUser.uplineId4,
+                      amount: rewordArray[3],
+                      // oldBalance: user?.availableAmount
+                    })
+                  );
+                })
+              );
+            }
+
+            if (updatedUser?.uplineId5) {
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Users.findByIdAndUpdate(
+                      updatedUser.uplineId5,
+                      {
+                        $inc: {
+                          earningAmount: rewordArray[4],
+                          totalEarning: rewordArray[4],
+                        },
+                      },
+                      { new: true }
+                    )
+                  );
+                })
+              );
+              promiseUplineReword.push(
+                new Promise(function async(resolve, reject) {
+                  resolve(
+                    Reword.create({
+                      downlineId: updatedUser._id,
+                      userId: updatedUser.uplineId5,
+                      amount: rewordArray[4],
+                      // oldBalance: user?.availableAmount
+                    })
+                  );
+                })
+              );
+            }
+            let upLineReword = await Promise.all(promiseUplineReword);
           }
         }
         return {
           statusCode: 200,
           data: {
             success: true,
-            message: "Txn approved"
-          }
+            message: "Txn approved",
+          },
         };
       } else {
-        return { statusCode: 200, data: { success: false, message: "Not Found" } };
+        return {
+          statusCode: 200,
+          data: { success: false, message: "Not Found" },
+        };
       }
     } catch (error) {
       console.log(error);
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+      return {
+        statusCode: 500,
+        data: { success: false, message: responseMessages.ERROR_OCCURRE },
+      };
     }
   };
 
   //using
   rejectTxn = async (req: Request, id: string): Promise<ICommonServices> => {
     try {
-      let data: any = await TxnModel.findByIdAndUpdate(id, { $set: { status: 2 } }, { new: true });
+      let data: any = await TxnModel.findByIdAndUpdate(
+        id,
+        { $set: { status: 2 } },
+        { new: true }
+      );
       if (data?.widhrawal) {
         //%%%
-        let refBounce = (data.amount * 5) / 100
-        let balance = await Users.findByIdAndUpdate(data.userId, { $inc: { availableAmount: (data.amount + refBounce) } }, { new: true })
+        let refBounce = (data.amount * 5) / 100;
+        let balance = await Users.findByIdAndUpdate(
+          data.userId,
+          { $inc: { earningAmount: data.amount + refBounce } },
+          { new: true }
+        );
       }
 
       if (data) {
@@ -178,44 +437,72 @@ class dataServicesData {
           statusCode: 200,
           data: {
             success: true,
-            message: "Txn rejected"
-          }
+            message: "Txn rejected",
+          },
         };
       } else {
-        return { statusCode: 200, data: { success: false, message: responseMessages.USER_DETAILS_FOUND_NOT } };
+        return {
+          statusCode: 200,
+          data: {
+            success: false,
+            message: responseMessages.USER_DETAILS_FOUND_NOT,
+          },
+        };
       }
     } catch (error) {
       console.log(error);
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+      return {
+        statusCode: 500,
+        data: { success: false, message: responseMessages.ERROR_OCCURRE },
+      };
     }
   };
 
   //using
   getTxnByStatus = async (status: any): Promise<ICommonServices> => {
     try {
-      let data: any
-      let query: any = {}
+      let data: any;
+      let query: any = {};
       if (status && status != 4) {
-        query["status"] = status
+        query["status"] = status;
       }
-      data = await TxnModel.find(query).sort({ createdAt: -1 }).populate('userId').lean();
+      data = await TxnModel.find(query)
+        .sort({ createdAt: -1 })
+        .populate("userId")
+        .lean();
       if (data) {
         return {
           statusCode: 200,
           data: {
             success: true,
             message: "Txn List found",
-            data: data.map((e: any) => { return { _id: e._id, txnNum: e.txnNum, amount: e.amount, userName: e?.userId?.username, status: e.status } })
-          }
+            data: data.map((e: any) => {
+              return {
+                _id: e._id,
+                txnNum: e.txnNum,
+                amount: e.amount,
+                userName: e?.userId?.username,
+                status: e.status,
+              };
+            }),
+          },
         };
       } else {
-        return { statusCode: 200, data: { success: false, message: responseMessages.USER_DETAILS_FOUND_NOT } };
+        return {
+          statusCode: 200,
+          data: {
+            success: false,
+            message: responseMessages.USER_DETAILS_FOUND_NOT,
+          },
+        };
       }
     } catch (error) {
       console.log(error, "erro");
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+      return {
+        statusCode: 500,
+        data: { success: false, message: responseMessages.ERROR_OCCURRE },
+      };
     }
   };
 }
 export default new dataServicesData();
-
