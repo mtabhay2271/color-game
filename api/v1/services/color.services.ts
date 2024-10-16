@@ -89,8 +89,9 @@ class dataServicesData {
   get = async (): Promise<ICommonServices> => {
     try {
       let data: any = await Color.find({})
-        .sort({ num: -1 })
+        .sort({ num: 1 })
         .limit(50)
+        .sort({ num: -1 })
         .lean();
       if (data) {
         return {

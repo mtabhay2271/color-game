@@ -61,7 +61,7 @@ class UserServicesData {
       // console.log(req.body.username,user,"<<<<<<<<<")
       if (!user) {
         return {
-          statusCode: 200,
+          statusCode: 400,
           data: {
             success: false,
             message: responseMessages.USER_FOUND_NOT
@@ -105,7 +105,7 @@ class UserServicesData {
         };
       } else {
         return {
-          statusCode: 200,
+          statusCode: 400,
           data: {
             success: false,
             message: "Wronge Password"

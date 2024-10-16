@@ -33,9 +33,9 @@ export class SignupViewModel {
   username!: string;
 
   @Expose()
-  @IsDefined()
+  @IsOptional()
   @IsEmail()
-  email!: string;
+  email?: string;
 
   @Expose()
   @IsDefined()
