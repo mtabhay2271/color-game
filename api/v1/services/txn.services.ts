@@ -195,7 +195,9 @@ class dataServicesData {
           let actualAmount =
             data.amount < 500
               ? data.amount
-              : data.amount + (data.amount * 10) / 100;
+              : data.amount < 1000
+              ? data.amount + ((data.amount * 10) / 100)
+              : data.amount + ((data.amount * 15) / 100);
           let user = await Users.findByIdAndUpdate(
             data.userId,
             {
