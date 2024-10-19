@@ -65,7 +65,7 @@ setInterval(() => {
     colorServices.add();
   }
   // console.log("seconds>>", seconds);
-
+  
 }, 1000)
 
 ///////////////////////////

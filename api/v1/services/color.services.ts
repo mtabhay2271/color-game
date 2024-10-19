@@ -9,13 +9,17 @@ import Reword from "../models/reword";
 import utility from '../common/utility'
 
 class dataServicesData {
+
   //add result
   add = async () => {
     try {
       const getGames = await Color.find({});
-
+  let num =Number(utility.formatDateToNumber().toString() + (getGames.length + 1))
+  console.log("num",typeof num);
+  
+      // Aggregate data for green and red only
       const resultData1 = await Join.aggregate([
-        { $match: { num: getGames.length + 1 } },
+        { $match: { num } },
         {
           $group: {
             _id: "$color",
@@ -23,68 +27,71 @@ class dataServicesData {
           },
         },
       ]);
-
-      // const aggregatedResult = { green: 0, red: 0, yellow: 0 };
-      const aggregatedResult = { green: 0, red: 0 };
-
+  console.log(resultData1);
+  
+      const aggregatedResult = { green: 0, red: 0 }; // Only green and red
+  
       resultData1.forEach((entry) => {
         if (entry._id === 1) {
           aggregatedResult.green = entry.totalAmount * 2;
         } else if (entry._id === 2) {
           aggregatedResult.red = entry.totalAmount * 2;
-        } else {
-          // aggregatedResult.yellow = entry.totalAmount * 5;
         }
       });
-
+  console.log(aggregatedResult,"aggregatedResult");
+  
+      // Sort based on the amount and find the lowest one
       const sortedResult = Object.entries(aggregatedResult).sort(
         ([, v1], [, v2]) => v1 - v2
       );
       const newArray = sortedResult.filter((e) => e[1] === sortedResult[0][1]);
       const result1 = newArray[Math.floor(Math.random() * newArray.length)];
-
-      const resultMapping: any = {
+  
+      // Mapping the result to 1 (green) and 2 (red)
+      const resultMapping: any  = {
         green: 1,
-        red: 2,
-        // yellow: 3
+        red: 2
       };
       const result = resultMapping[result1[0]];
-
+  
+      // Insert the result into the Color collection with the new game number
       const data = await Color.create({ result, num: utility.formatDateToNumber().toString() + (getGames.length + 1) });
       await Join.updateMany({ num: data.num }, { $set: { result } });
-
+  
+      // Find users who selected the winning color
       let dataUser = await Join.find(
         { color: result, num: data.num },
         { userId: 1, amount: 1, taxAmount: 1 }
       );
+  
       //////////////////
-
+  
+      // Update user earnings based on the winning result (green or red)
       const updatePromises = dataUser.map(async (item) => {
         const userId = item.userId;
-        let userAmount = item.amount; // The amount value from Join collection
-        // Update the userAmount based on the color
+        let userAmount = item.amount;
+  
+        // Update the userAmount based on the color (green or red)
         if (result === 1) {
-          userAmount *= 2;
+          userAmount *= 2; // Green (multiplied by 2)
         } else if (result === 2) {
-          userAmount *= 2;
+          userAmount *= 2; // Red (multiplied by 2)
         }
-        //  else if (result === 3) {
-        //   userAmount *= 5;
-        // }
-
+  
         let actualAmount = Math.floor(userAmount - item.taxAmount);
-        // Update the amount for the user using userId and updated userAmount
+        // Update the user's totalEarning and earningAmount
         return Users.findByIdAndUpdate(userId, {
           $inc: { totalEarning: actualAmount, earningAmount: actualAmount },
         });
       });
+  
       const updateResults = await Promise.all(updatePromises);
-      // return { statusCode: 200, data: { success: false, message: "Result found" } };
+  
     } catch (error) {
       console.log(error);
-      // return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_ISE } };
     }
   };
+  
 
   get = async (): Promise<ICommonServices> => {
     try {
@@ -424,3 +431,80 @@ class dataServicesData {
 
 }
 export default new dataServicesData();
+
+
+// add = async () => {
+  //   try {
+  //     const getGames = await Color.find({});
+
+  //     const resultData1 = await Join.aggregate([
+  //       { $match: { num: getGames.length + 1 } },
+  //       {
+  //         $group: {
+  //           _id: "$color",
+  //           totalAmount: { $sum: "$amount" },
+  //         },
+  //       },
+  //     ]);
+
+  //     const aggregatedResult = { green: 0, red: 0, yellow: 0 };
+  //     // const aggregatedResult = { green: 0, red: 0 };
+
+  //     resultData1.forEach((entry) => {
+  //       if (entry._id === 1) {
+  //         aggregatedResult.green = entry.totalAmount * 2;
+  //       } else if (entry._id === 2) {
+  //         aggregatedResult.red = entry.totalAmount * 2;
+  //       } else {
+  //         aggregatedResult.yellow = entry.totalAmount * 5;
+  //       }
+  //     });
+
+  //     const sortedResult = Object.entries(aggregatedResult).sort(
+  //       ([, v1], [, v2]) => v1 - v2
+  //     );
+  //     const newArray = sortedResult.filter((e) => e[1] === sortedResult[0][1]);
+  //     const result1 = newArray[Math.floor(Math.random() * newArray.length)];
+
+  //     const resultMapping: any = {
+  //       green: 1,
+  //       red: 2,
+  //       yellow: 3
+  //     };
+  //     const result = resultMapping[result1[0]];
+
+  //     const data = await Color.create({ result, num: utility.formatDateToNumber().toString() + (getGames.length + 1) });
+  //     await Join.updateMany({ num: data.num }, { $set: { result } });
+
+  //     let dataUser = await Join.find(
+  //       { color: result, num: data.num },
+  //       { userId: 1, amount: 1, taxAmount: 1 }
+  //     );
+  //     //////////////////
+
+  //     const updatePromises = dataUser.map(async (item) => {
+  //       const userId = item.userId;
+  //       let userAmount = item.amount; // The amount value from Join collection
+  //       // Update the userAmount based on the color
+  //       if (result === 1) {
+  //         userAmount *= 2;
+  //       } else if (result === 2) {
+  //         userAmount *= 2;
+  //       }
+  //        else if (result === 3) {
+  //         userAmount *= 5;
+  //       }
+
+  //       let actualAmount = Math.floor(userAmount - item.taxAmount);
+  //       // Update the amount for the user using userId and updated userAmount
+  //       return Users.findByIdAndUpdate(userId, {
+  //         $inc: { totalEarning: actualAmount, earningAmount: actualAmount },
+  //       });
+  //     });
+  //     const updateResults = await Promise.all(updatePromises);
+  //     // return { statusCode: 200, data: { success: false, message: "Result found" } };
+  //   } catch (error) {
+  //     console.log(error);
+  //     // return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_ISE } };
+  //   }
+  // };

@@ -16,7 +16,6 @@ export class AddColor {
 export class JoinGame {
   @Expose()
   @IsDefined()
-  @IsNumber()
   amount: number;
 
   @Expose()
