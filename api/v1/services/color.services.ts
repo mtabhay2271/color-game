@@ -472,7 +472,7 @@ export default new dataServicesData();
   //       yellow: 3
   //     };
   //     const result = resultMapping[result1[0]];
-
+ 
   //     const data = await Color.create({ result, num: utility.formatDateToNumber().toString() + (getGames.length + 1) });
   //     await Join.updateMany({ num: data.num }, { $set: { result } });
 
