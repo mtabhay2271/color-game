@@ -198,17 +198,17 @@ class UserServicesData {
     }
   };
 
-  transferBalance = async (req: Request): Promise<ICommonServices> => {
-    try {
-      let payload = req.user as IPayAuth;
-      let sender = await Users.findByIdAndUpdate(payload?.userId, { $inc: { earningAmount: - req.body.amount, availableAmount: +(req.body.amount - ((req.body.amount * 1) / 100)) } }, { new: true })
-      return { statusCode: 200, data: { success: true, message: 'Money has succesfully added.' } };
+  // transferBalance = async (req: Request): Promise<ICommonServices> => {
+  //   try {
+  //     let payload = req.user as IPayAuth;
+  //     let sender = await Users.findByIdAndUpdate(payload?.userId, { $inc: { earningAmount: - req.body.amount, availableAmount: +(req.body.amount - ((req.body.amount * 1) / 100)) } }, { new: true })
+  //     return { statusCode: 200, data: { success: true, message: 'Money has succesfully added.' } };
 
-    } catch (error) {
-      console.log(error);
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
-    }
-  };
+  //   } catch (error) {
+  //     console.log(error);
+  //     return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+  //   }
+  // };
 
 }
 export default new UserServicesData();

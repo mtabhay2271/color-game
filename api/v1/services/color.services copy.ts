@@ -68,7 +68,7 @@ class dataServicesData {
         let actualAmount=Math.floor((userAmount - item.taxAmount));
         // Update the amount for the user using userId and updated userAmount
         return Users.findByIdAndUpdate(userId,
-          { $inc: { totalEarning: actualAmount, earningAmount: actualAmount } }
+          { $inc: { totalEarning: actualAmount, availableAmount: actualAmount } }
         );
       }); 
       const updateResults = await Promise.all(updatePromises);
@@ -119,7 +119,7 @@ class dataServicesData {
         let data: any = await Join.create({ ...req.body, userId: payload.userId, num: (getGames.length + 1), taxAmount: charges });
         let data1: any
         if (user) {
-          let user = await Users.findByIdAndUpdate(payload.userId, { $inc: { availableAmount: - data.amount } }, { new: true });
+          let user = await Users.findByIdAndUpdate(payload.userId, { $inc: { availableAmount: - data.amount, rechargedAmount:- data.amount } }, { new: true });
           console.log(payload?.uplineId);
 
           if (payload?.uplineId) {
@@ -130,7 +130,7 @@ class dataServicesData {
             promiseUplineReword.push(
               new Promise(function async(resolve, reject) {
                 resolve(
-                  Users.findByIdAndUpdate(payload.uplineId, { $inc: { earningAmount: rewordArray[0], totalEarning: rewordArray[0] } }, { new: true })
+                  Users.findByIdAndUpdate(payload.uplineId, { $inc: { availableAmount: rewordArray[0], totalEarning: rewordArray[0] } }, { new: true })
                 );
               })
             );
@@ -152,7 +152,7 @@ class dataServicesData {
               promiseUplineReword.push(
                 new Promise(function async(resolve, reject) {
                   resolve(
-                    Users.findByIdAndUpdate(payload.uplineId2, { $inc: { earningAmount: rewordArray[1], totalEarning: rewordArray[1] } }, { new: true })
+                    Users.findByIdAndUpdate(payload.uplineId2, { $inc: { availableAmount: rewordArray[1], totalEarning: rewordArray[1] } }, { new: true })
                   );
                 })
               );
@@ -173,7 +173,7 @@ class dataServicesData {
                 promiseUplineReword.push(
                   new Promise(function async(resolve, reject) {
                     resolve(
-                      Users.findByIdAndUpdate(payload.uplineId3, { $inc: { earningAmount: rewordArray[2], totalEarning: rewordArray[2] } }, { new: true })
+                      Users.findByIdAndUpdate(payload.uplineId3, { $inc: { availableAmount: rewordArray[2], totalEarning: rewordArray[2] } }, { new: true })
                     );
                   })
                 );

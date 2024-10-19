@@ -104,19 +104,19 @@ class userControllersData {
     }
   }
 
-  transferBalance = async (req: Request, res: Response<ICommonController>) => {
-    try {
-      let data = await Services.transferBalance(req)
-      return res.status(data.statusCode).send(data.data)
-    } catch (error) {
-      // console.log("Error", error);
-      return res.status(500).send({
-        success: false,
-        message: responseMessages.ERROR_ISE,
-        error
-      });
-    }
-  }
+  // transferBalance = async (req: Request, res: Response<ICommonController>) => {
+  //   try {
+  //     let data = await Services.transferBalance(req)
+  //     return res.status(data.statusCode).send(data.data)
+  //   } catch (error) {
+  //     // console.log("Error", error);
+  //     return res.status(500).send({
+  //       success: false,
+  //       message: responseMessages.ERROR_ISE,
+  //       error
+  //     });
+  //   }
+  // }
 
   filter = async (req: Request, res: Response<ICommonController>) => {
     try {

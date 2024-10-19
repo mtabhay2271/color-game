@@ -83,7 +83,7 @@ export class UserModel {
     required: false,
     default: 0
   })
-  earningAmount!: number;
+  rechargedAmount!: number;
 
   @prop({
     required: false,

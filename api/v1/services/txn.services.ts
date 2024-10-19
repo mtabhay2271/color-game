@@ -22,7 +22,7 @@ class dataServicesData {
       if (data.widhrawal) {
         let userData: any = await Users.findByIdAndUpdate(
           payload.userId,
-          { $inc: { earningAmount: -data.amount } },
+          { $inc: { availableAmount: -data.amount } },
           { new: true }
         );
       }
@@ -201,6 +201,7 @@ class dataServicesData {
             {
               $inc: {
                 availableAmount: actualAmount,
+                rechargedAmount: actualAmount,
               },
             },
             { new: true }
@@ -230,7 +231,7 @@ class dataServicesData {
               // let refBounce = (data.amount * 10) / 100;
               // await Users.findByIdAndUpdate(updatedUser.uplineId, {
               //   $inc: {
-              //     earningAmount: refBounce,
+              //     availableAmount: refBounce,
               //   },
               // });
 
@@ -241,7 +242,7 @@ class dataServicesData {
                       updatedUser.uplineId,
                       {
                         $inc: {
-                          earningAmount: rewordArray[0],
+                          availableAmount: rewordArray[0],
                           totalEarning: rewordArray[0],
                         },
                       },
@@ -274,7 +275,7 @@ class dataServicesData {
                       updatedUser.uplineId2,
                       {
                         $inc: {
-                          earningAmount: rewordArray[1],
+                          availableAmount: rewordArray[1],
                           totalEarning: rewordArray[1],
                         },
                       },
@@ -304,7 +305,7 @@ class dataServicesData {
                       updatedUser.uplineId3,
                       {
                         $inc: {
-                          earningAmount: rewordArray[2],
+                          availableAmount: rewordArray[2],
                           totalEarning: rewordArray[2],
                         },
                       },
@@ -335,7 +336,7 @@ class dataServicesData {
                       updatedUser.uplineId4,
                       {
                         $inc: {
-                          earningAmount: rewordArray[3],
+                          availableAmount: rewordArray[3],
                           totalEarning: rewordArray[3],
                         },
                       },
@@ -366,7 +367,7 @@ class dataServicesData {
                       updatedUser.uplineId5,
                       {
                         $inc: {
-                          earningAmount: rewordArray[4],
+                          availableAmount: rewordArray[4],
                           totalEarning: rewordArray[4],
                         },
                       },
@@ -426,7 +427,7 @@ class dataServicesData {
         let refBounce = (data.amount * 5) / 100;
         let balance = await Users.findByIdAndUpdate(
           data.userId,
-          { $inc: { earningAmount: data.amount + refBounce } },
+          { $inc: { availableAmount: data.amount + refBounce } },
           { new: true }
         );
       }
