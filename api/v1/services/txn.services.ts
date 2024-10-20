@@ -193,9 +193,9 @@ class dataServicesData {
       if (data) {
         if (!data?.widhrawal) {
           let actualAmount =
-            data.amount < 500
+            data.amount < 1000
               ? data.amount
-              : data.amount < 1000
+              : data.amount < 10000
               ? data.amount + ((data.amount * 10) / 100)
               : data.amount + ((data.amount * 15) / 100);
           let user = await Users.findByIdAndUpdate(
