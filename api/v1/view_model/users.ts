@@ -57,6 +57,11 @@ export class SignupViewModel {
   // @IsDefined()
   // status!: string;
 
+  @Expose()
+  @IsMongoId()
+  @Type(() => mongoose.Types.ObjectId)
+  mainUserId?: Ref<UserModel>;
+
 
   @Expose()
   @IsMongoId()
@@ -72,6 +77,16 @@ export class SignupViewModel {
   @IsMongoId()
   @Type(() => mongoose.Types.ObjectId)
   uplineId3?: Ref<UserModel>;
+
+  @Expose()
+  @IsMongoId()
+  @Type(() => mongoose.Types.ObjectId)
+  uplineId4?: Ref<UserModel>;
+
+  @Expose()
+  @IsMongoId()
+  @Type(() => mongoose.Types.ObjectId)
+  uplineId5?: Ref<UserModel>;
 }
 
 

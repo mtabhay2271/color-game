@@ -7,6 +7,26 @@ export class UserModel {
   @prop()
   username!: string;
 
+
+  @prop({
+    ref: UserModel,
+    type: mongoose.Types.ObjectId,
+  })
+  mainUserId!: Ref<UserModel>;
+
+  @prop({
+    required: false,
+    default: 0
+  })
+  mainRecharge!: number;
+
+
+  @prop({
+    required: false,
+    default: 0
+  })
+  mainWithdrawal!: number;
+
   @prop()
   email!: string;
 

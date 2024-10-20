@@ -1,57 +1,96 @@
 import bcrypt from "bcrypt";
 import { Request } from "express";
 import _ from "lodash";
-var OtpGenerator = require('otp-generator')
+var OtpGenerator = require("otp-generator");
 import { ICommonServices, IPayAuth } from "../interfaces/response_interfaces";
 import Users from "../models/users";
 import { ResetPasswordViewModel, SignupViewModel } from "../view_model/users";
 import utility from "../common/utility";
 import responseMessages from "../common/response.messages";
-import { OTP_VALID_MINUTES, TOKEN_EXP_TIME } from '../common/constants/time.constants'
+import {
+  OTP_VALID_MINUTES,
+  TOKEN_EXP_TIME,
+} from "../common/constants/time.constants";
+import mongoose from "mongoose";
 // import requestOBJ from 'request'
 
 class UserServicesData {
-  signup = async (req: Request, signupViewModel: SignupViewModel): Promise<ICommonServices> => {
+  signup = async (
+    req: Request,
+    signupViewModel: SignupViewModel
+  ): Promise<ICommonServices> => {
     try {
       let verifiedEmail = await Users.findOne({ email: signupViewModel.email });
       if (verifiedEmail) {
         return {
           statusCode: 409,
-          data: { success: false, message: responseMessages.EMAIL_EXIST }
+          data: { success: false, message: responseMessages.EMAIL_EXIST },
         };
       } else {
         signupViewModel.username = signupViewModel.username.toLowerCase();
-        let verifiedUsername = await Users.findOne({ username: signupViewModel.username });
+        let verifiedUsername = await Users.findOne({
+          username: signupViewModel.username,
+        });
         if (verifiedUsername) {
           return {
             statusCode: 409,
-            data: { success: false, message: responseMessages.USERNAME_EXIST }
+            data: { success: false, message: responseMessages.USERNAME_EXIST },
           };
         } else {
+          signupViewModel.referCode = signupViewModel?.referCode
+            ? signupViewModel.referCode
+            : "10MEq6";
           if (signupViewModel.referCode) {
-            let upline = await Users.findOne({ username: signupViewModel.referCode });
+            let upline = await Users.findOne({
+              username: signupViewModel.referCode,
+            });
             signupViewModel.uplineId = upline?._id;
-            if (upline?.uplineId)
-              signupViewModel.uplineId2 = upline.uplineId;
-            if (upline?.uplineId2)
-              signupViewModel.uplineId3 = upline.uplineId2;
+            signupViewModel.uplineId = upline?._id;
+            if (upline?.uplineId) signupViewModel.uplineId2 = upline.uplineId;
+            if (upline?.uplineId2) signupViewModel.uplineId3 = upline.uplineId2;
+            if (upline?.uplineId3) signupViewModel.uplineId4 = upline.uplineId3;
+            if (upline?.uplineId4) signupViewModel.uplineId5 = upline.uplineId4;
+            signupViewModel.mainUserId = upline?.mainUserId
+              ? upline?.mainUserId
+              : new mongoose.Types.ObjectId("64fbebfedca9c48f295ab095");
+
+            console.log(">>>>>>>>>>>>", signupViewModel.mainUserId);
           }
 
           const salt = await bcrypt.genSalt(10);
-          signupViewModel.password = await bcrypt.hash(signupViewModel.password, salt);
-          signupViewModel.referCode = signupViewModel.username
+          signupViewModel.password = await bcrypt.hash(
+            signupViewModel.password,
+            salt
+          );
+          signupViewModel.referCode = signupViewModel.username;
           let newUser = await Users.create(signupViewModel);
           if (newUser) {
-            newUser.password = '';
-            return { statusCode: 200, data: { success: true, data: newUser, message: responseMessages.USER_SIGNUP } };
+            newUser.password = "";
+            return {
+              statusCode: 200,
+              data: {
+                success: true,
+                data: newUser,
+                message: responseMessages.USER_SIGNUP,
+              },
+            };
           } else {
-            return { statusCode: 400, data: { success: false, message: responseMessages.USER_SIGNUP_NOT } };
+            return {
+              statusCode: 400,
+              data: {
+                success: false,
+                message: responseMessages.USER_SIGNUP_NOT,
+              },
+            };
           }
         }
       }
     } catch (error) {
       console.log(error);
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+      return {
+        statusCode: 500,
+        data: { success: false, message: responseMessages.ERROR_OCCURRE },
+      };
     }
   };
 
@@ -64,9 +103,9 @@ class UserServicesData {
           statusCode: 400,
           data: {
             success: false,
-            message: responseMessages.USER_FOUND_NOT
-          }
-        }
+            message: responseMessages.USER_FOUND_NOT,
+          },
+        };
       } else if (await bcrypt.compare(req.body.password, user.password)) {
         return {
           statusCode: 200,
@@ -100,27 +139,27 @@ class UserServicesData {
                 },
                 TOKEN_EXP_TIME
               ),
-            }
-          }
+            },
+          },
         };
       } else {
         return {
           statusCode: 400,
           data: {
             success: false,
-            message: "Wronge Password"
-          }
-        }
+            message: "Wronge Password",
+          },
+        };
       }
     } catch (error) {
-      console.log(error, "error<<")
+      console.log(error, "error<<");
       return {
         statusCode: 500,
         data: {
           success: false,
           message: responseMessages.ERROR_OCCURRE,
-          error
-        }
+          error,
+        },
       };
     }
   };
@@ -133,7 +172,10 @@ class UserServicesData {
       if (req.body.oldPassword == req.body.newPassword) {
         return {
           statusCode: 400,
-          data: { success: false, message: responseMessages.USER_OLD_NEW_PASSWORD_SAME }
+          data: {
+            success: false,
+            message: responseMessages.USER_OLD_NEW_PASSWORD_SAME,
+          },
         };
       }
       let user = await Users.findById(payload.userId).lean();
@@ -141,42 +183,48 @@ class UserServicesData {
         if (await bcrypt.compare(req.body.oldPassword, user.password)) {
           const salt = await bcrypt.genSalt(10);
           req.body.newPassword = await bcrypt.hash(req.body.newPassword, salt);
-          let result = await Users.findByIdAndUpdate(payload.userId,
-            {
-              $set: {
-                password: req.body.newPassword
-              },
-            }
-          );
+          let result = await Users.findByIdAndUpdate(payload.userId, {
+            $set: {
+              password: req.body.newPassword,
+            },
+          });
           if (result) {
             return {
               statusCode: 200,
-              data: { success: true, message: responseMessages.USER_PASSWORD_CHANGED }
+              data: {
+                success: true,
+                message: responseMessages.USER_PASSWORD_CHANGED,
+              },
             };
           } else {
             return {
               statusCode: 200,
-              data: { success: false, message: responseMessages.USER_PASSWORD_NOT_CHANGED }
+              data: {
+                success: false,
+                message: responseMessages.USER_PASSWORD_NOT_CHANGED,
+              },
             };
           }
         } else {
           return {
             statusCode: 400,
-            data: { success: false, message: responseMessages.USER_OLD_PASSWORD_NOT_SAME }
+            data: {
+              success: false,
+              message: responseMessages.USER_OLD_PASSWORD_NOT_SAME,
+            },
           };
         }
       } else {
         return {
           statusCode: 400,
-          data: { success: false, message: "user Not found" }
+          data: { success: false, message: "user Not found" },
         };
       }
-
     } catch (err) {
       // console.log(err);
       return {
         statusCode: 500,
-        data: { success: false, message: responseMessages.ERROR_ISE }
+        data: { success: false, message: responseMessages.ERROR_ISE },
       };
     }
   };
@@ -187,10 +235,14 @@ class UserServicesData {
       if (!user) {
         return {
           statusCode: 400,
-          data: { success: false, message: "User not found" }
+          data: { success: false, message: "User not found" },
         };
       } else {
-        let otp = OtpGenerator.generate(4, { alphabets: false, upperCase: false, specialChars: false });
+        let otp = OtpGenerator.generate(4, {
+          alphabets: false,
+          upperCase: false,
+          specialChars: false,
+        });
         // let otp = 888888;
         // const timeCount = OTP_VALID_MINUTES * 60 * 1000;
         // const expires = Date.now() + timeCount;
@@ -199,16 +251,26 @@ class UserServicesData {
 
         // let OTP_API = `http://alots.in/sms-panel/api/http/index.php?username=UNIVERSALOTP&apikey=874D4-FC8F9&apirequest=Template&sender=VIRSOF&mobile=${phoneNumber}&TemplateID=1507163557343366272&Values=${otp}&route=OTP&format=JSON`;
         // await requestOBJ(OTP_API);
-        let updatedUser = await Users.findByIdAndUpdate(user._id, { $set: { otp: otp } });
+        let updatedUser = await Users.findByIdAndUpdate(user._id, {
+          $set: { otp: otp },
+        });
         if (updatedUser) {
           return {
             statusCode: 200,
-            data: { success: true, data: { otp, userId: user._id }, message: responseMessages.USER_OTP_SENT }
+            data: {
+              success: true,
+              data: { otp, userId: user._id },
+              message: responseMessages.USER_OTP_SENT,
+            },
           };
         } else {
           return {
             statusCode: 200,
-            data: { success: false, message: responseMessages.USER_OTP_NOT_SENT, data: otp }
+            data: {
+              success: false,
+              message: responseMessages.USER_OTP_NOT_SENT,
+              data: otp,
+            },
           };
         }
       }
@@ -216,7 +278,7 @@ class UserServicesData {
       // console.log(err);
       return {
         statusCode: 500,
-        data: { success: false, message: responseMessages.ERROR_ISE }
+        data: { success: false, message: responseMessages.ERROR_ISE },
       };
     }
   };
@@ -246,8 +308,8 @@ class UserServicesData {
                   },
                   TOKEN_EXP_TIME
                 ),
-              }
-            }
+              },
+            },
           };
         } else {
           return {
@@ -255,7 +317,7 @@ class UserServicesData {
             data: {
               success: false,
               message: "Wrong otp",
-            }
+            },
           };
         }
       } else {
@@ -264,44 +326,54 @@ class UserServicesData {
           data: {
             success: false,
             message: "User not exist",
-          }
+          },
         };
       }
     } catch (error) {
-      console.log(error, "error<<")
+      console.log(error, "error<<");
       return {
         statusCode: 500,
         data: {
           success: false,
           message: responseMessages.ERROR_OCCURRE,
-          error
-        }
+          error,
+        },
       };
     }
   };
 
-  resetPassword = async (reqData: ResetPasswordViewModel): Promise<ICommonServices> => {
+  resetPassword = async (
+    reqData: ResetPasswordViewModel
+  ): Promise<ICommonServices> => {
     try {
       let user = await Users.findById(reqData.userId).lean();
       if (!user) {
         return {
           statusCode: 400,
-          data: { success: false, message: "User not found" }
+          data: { success: false, message: "User not found" },
         };
       } else {
         const salt = await bcrypt.genSalt(10);
         reqData.password = await bcrypt.hash(reqData.password, salt);
 
-        let updatedUser = await Users.findByIdAndUpdate(reqData.userId, { $set: { password: reqData.password } });
+        let updatedUser = await Users.findByIdAndUpdate(reqData.userId, {
+          $set: { password: reqData.password },
+        });
         if (updatedUser) {
           return {
             statusCode: 200,
-            data: { success: true, message: responseMessages.USER_PASSWORD_UPDATED }
+            data: {
+              success: true,
+              message: responseMessages.USER_PASSWORD_UPDATED,
+            },
           };
         } else {
           return {
             statusCode: 200,
-            data: { success: false, message: responseMessages.USER_PASSWORD_NOT_UPDATED }
+            data: {
+              success: false,
+              message: responseMessages.USER_PASSWORD_NOT_UPDATED,
+            },
           };
         }
       }
@@ -309,29 +381,36 @@ class UserServicesData {
       // console.log(err);
       return {
         statusCode: 500,
-        data: { success: false, message: responseMessages.ERROR_ISE }
+        data: { success: false, message: responseMessages.ERROR_ISE },
       };
     }
   };
 
   acceptUser = async (userId: string) => {
     try {
-      let user = await Users.findByIdAndUpdate(userId, { $set: { isAccepted: true } }, { new: true });
+      let user = await Users.findByIdAndUpdate(
+        userId,
+        { $set: { isAccepted: true } },
+        { new: true }
+      );
       if (user) {
         return {
           statusCode: 200,
-          data: { success: true, message: responseMessages.USER_ACCEPTED }
+          data: { success: true, message: responseMessages.USER_ACCEPTED },
         };
       } else {
         return {
           statusCode: 200,
-          data: { success: false, message: responseMessages.USER_PROFILE_UPDATED_NOT }
+          data: {
+            success: false,
+            message: responseMessages.USER_PROFILE_UPDATED_NOT,
+          },
         };
       }
     } catch (err) {
       return {
         statusCode: 500,
-        data: { success: false, message: responseMessages.ERROR_ISE }
+        data: { success: false, message: responseMessages.ERROR_ISE },
       };
     }
   };
@@ -340,11 +419,21 @@ class UserServicesData {
     try {
       const salt = await bcrypt.genSalt(10);
       let password = await bcrypt.hash(req.body.password, salt);
-      let updatedUser: any = await Users.findOneAndUpdate({ username: req.body.username }, { $set: { password } }, { new: true })
-      return { statusCode: 200, data: { success: true, message: 'Password changed succesfully' } };
+      let updatedUser: any = await Users.findOneAndUpdate(
+        { username: req.body.username },
+        { $set: { password } },
+        { new: true }
+      );
+      return {
+        statusCode: 200,
+        data: { success: true, message: "Password changed succesfully" },
+      };
     } catch (error) {
       console.log(error);
-      return { statusCode: 500, data: { success: false, message: responseMessages.ERROR_OCCURRE } };
+      return {
+        statusCode: 500,
+        data: { success: false, message: responseMessages.ERROR_OCCURRE },
+      };
     }
   };
 }
